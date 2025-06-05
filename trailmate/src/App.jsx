@@ -1,7 +1,7 @@
+import {Route, Routes} from "react-router-dom"
 import Home from "./pages/Home"
+import Map from "./pages/Map.jsx"
 import Nav from "./components/Nav"
-import { Route } from "react-router-dom"
-
 function App() {
 
   return (
@@ -10,10 +10,11 @@ function App() {
       <h1 className="text-lg font-bold">TrailMate</h1>
       <Nav />
     </div>
-    {/* <Route>
-      
-    </Route> */}
-    <Home />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/map" element={<Map />} />
+      </Routes>
+
     </>
   )
 }
