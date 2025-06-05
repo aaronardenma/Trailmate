@@ -1,5 +1,6 @@
-import {Link} from "react-router"
+import {Link} from "react-router-dom"
 import { useDispatch, useSelector} from "react-redux"
+import { FaRegUserCircle } from "react-icons/fa";
 
 export default function Nav() {
 
@@ -13,11 +14,15 @@ export default function Nav() {
 return (
     <nav>
         <ul className="flex">
-          {/* <li className="mr-2 font-semibold"><Link to="/trails">Trails</Link></li> */}
-          {/* <li className="mr-2 font-semibold"><Link to="/filters">Browse</Link></li> */}
-          {/* <li className="mr-2 font-semibold"><Link to="/routes">Routes</Link></li>
-          <li className="mr-2 font-semibold"><Link to="/events">Events</Link></li>
-          <li className="mr-2 font-semibold"><Link to="/map">Map</Link></li> */}
+          <li className="mr-8"><Link to="/favourites">Favourites</Link></li>
+          <div>
+            <li>
+              <Link to="/profile" className="mr-8 flex items-center">
+                <FaRegUserCircle className="mr-1.5 text-xl " />
+                User
+              </Link>
+            </li>
+          </div>
         </ul>
     </nav>
 )
