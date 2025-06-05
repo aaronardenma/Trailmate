@@ -5,13 +5,6 @@ import userLogo from "../Images/user-solid (1).svg"
 
 export default function Nav() {
 
-//   const dispatch = useDispatch()
-
-//   const handleCatalogFilterReset = () => {
-//       useSelector((state) => state.login.stattus)
-
-//     }
-
     return (
         <nav>
             <ul className="flex">
@@ -26,4 +19,4 @@ export default function Nav() {
             </ul>
         </nav>
     )
-}
+};

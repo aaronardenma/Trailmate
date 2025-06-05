@@ -1,5 +1,4 @@
 import React from 'react';
-// import Profile from "../components/UserProfile/Profile.jsx";
 import profileLogo from "../Images/placeholderImage.jpg";
 import "./css/UserProfile.css"
 import users from "../Images/users.json"
