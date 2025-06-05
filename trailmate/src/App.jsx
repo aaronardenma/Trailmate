@@ -1,6 +1,7 @@
 import Home from "./pages/Home"
 import Nav from "./components/Nav"
-import { Route } from "react-router-dom"
+import { BrowserRouter, Routes, Route } from "react-router-dom"
+import Filters from "./pages/Filters"
 
 function App() {
 
@@ -10,10 +11,13 @@ function App() {
       <h1 className="text-lg font-bold">TrailMate</h1>
       <Nav />
     </div>
-    {/* <Route>
-      
-    </Route> */}
-    <Home />
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/filters" element={<Filters />} />
+      </Routes>
+    
+    </BrowserRouter>
     </>
   )
 }
