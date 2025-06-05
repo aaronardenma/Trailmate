@@ -13,11 +13,11 @@ export default function Nav() {
 return (
     <nav>
         <ul className="flex">
-          <li className="mr-2 font-semibold"><Link to="/trails">Trails</Link></li>
-          <li className="mr-2 font-semibold"><Link to="/browse">Browse</Link></li>
-          <li className="mr-2 font-semibold"><Link to="/routes">Routes</Link></li>
+          {/* <li className="mr-2 font-semibold"><Link to="/trails">Trails</Link></li> */}
+          {/* <li className="mr-2 font-semibold"><Link to="/filters">Browse</Link></li> */}
+          {/* <li className="mr-2 font-semibold"><Link to="/routes">Routes</Link></li>
           <li className="mr-2 font-semibold"><Link to="/events">Events</Link></li>
-          <li className="mr-2 font-semibold"><Link to="/map">Map</Link></li>
+          <li className="mr-2 font-semibold"><Link to="/map">Map</Link></li> */}
         </ul>
     </nav>
 )
