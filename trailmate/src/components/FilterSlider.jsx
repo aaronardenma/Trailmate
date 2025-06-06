@@ -1,17 +1,17 @@
 import { Slider } from "@/components/ui/slider"
 import {useState} from 'react'
 
-export default function FilterSlider({min, max, filterName}) {
-    const [value, setValue] = useState(0);
+export default function FilterSlider({min, max, filterName, value, onChange}) {
 
+    const percent = ((value - min) / (max - min)) * 100;
+    
     const handleChange = (val) => {
         // console.log(val)
-        setValue(val)
+        onChange(val)
     }
-        const percent = ((value - min) / (max - min)) * 100;
 
     return (
-        <div className="flex sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg m-8">
+        <div className="flex m-8">
             <h2 className="font-bold mr-2">{filterName}:</h2>
             <h2 className="font-bold mr-1">{min}</h2>
             <div className="relative flex-1">
@@ -28,6 +28,7 @@ export default function FilterSlider({min, max, filterName}) {
                     max={max} 
                     step={1} 
                     onValueChange={(val) => handleChange(val)} 
+                    className = "w-full"
                 />
             </div>
             <h2 className="font-bold ml-1">{max}</h2>

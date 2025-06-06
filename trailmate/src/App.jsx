@@ -1,8 +1,7 @@
-import {Route, Routes} from "react-router-dom"
 import Home from "./pages/Home"
 import Map from "./pages/Map.jsx"
 import Nav from "./components/Nav"
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom"
+import { Routes, Route, Link } from "react-router-dom"
 import Filters from "./pages/Filters"
 import Favourites from "./pages/Favourites"
 import UserProfile from "./pages/UserProfile"
@@ -18,13 +17,13 @@ function App() {
       <Nav className="p-2" />
     </div>
       <Routes>
-     <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/map" element={<Map />} />
         <Route path="/filters" element={<Filters />} />
         <Route path="/favourites" element={<Favourites />} />
         <Route path="/profile" element={<UserProfile />} />
       </Routes>
-        </>
+      </>
   )
 }
 

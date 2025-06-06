@@ -24,5 +24,5 @@ const trailFilters = createSlice({
     }
 })
 
-export const {updateElevation, clearFilter } = trailFilters.actions
+export const {updateElevation, updateDistance, resetElevationFilter, resetDistanceFilter } = trailFilters.actions
 export default trailFilters.reducer;
