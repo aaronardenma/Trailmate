@@ -11,7 +11,10 @@ export default function TrailCard({ trail }) {
                 alt={trail.name}
                 className="rounded-2xl p-2 self-center w-full h-48 object-cover"
             />
-            <h2 className="text-left pl-4 font-semibold">{trail.name}</h2>
+            <div className="pl-4">
+                <h2 className="font-semibold text-lg">{trail.name}</h2>
+                <p className="text-sm text-gray-500">{trail.location}</p>
+            </div>
         </Link>
     );
 }
