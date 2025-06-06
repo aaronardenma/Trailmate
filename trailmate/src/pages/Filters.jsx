@@ -37,10 +37,10 @@ export default function Filters() {
 
     return (
         <>
-        <div className="flex flex-col max-w-1/2 bg-[#A3B18A]">
+        <div className="flex flex-col bg-[#A3B18A]">
             <form action="/" onSubmit={handleSubmit} >
-                <FilterSlider min={minElevation} max={maxElevation} filterName={"Elevation"} value={elevation} onChange={setElevation} />
-                <FilterSlider min={minDistance} max={maxDistance} filterName={"Distance"} value={distance} onChange={setDistance} />
+                <FilterSlider min={minElevation} max={maxElevation} filterName={"Elevation (m)"} value={elevation} onChange={setElevation} />
+                <FilterSlider min={minDistance} max={maxDistance} filterName={"Distance (km)"} value={distance} onChange={setDistance} />
                 <div className="flex m-4 justify-between">
                     <button type="submit" name="reset" className="outline-1 outline-black rounded cursor-pointer px-2 py-1">Reset</button>
                     <button type="submit" name="apply" className="outline-1 outline-black rounded cursor-pointer px-2 py-1" >Apply</button>

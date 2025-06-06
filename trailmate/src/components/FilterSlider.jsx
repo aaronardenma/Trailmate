@@ -12,8 +12,8 @@ export default function FilterSlider({min, max, filterName, value, onChange, def
 
     return (
         <div className="flex m-8">
-            <h2 className="font-bold mr-2">{filterName}:</h2>
-            <h2 className="font-bold mr-1">{min}</h2>
+            <h2 className="font-semibold mr-2">{filterName}:</h2>
+            <h2 className="font-semibold mr-1">{min}</h2>
             <div className="relative flex-1">
                 <div 
                     className="absolute -top-8 bg-gray-800 text-white px-2 py-1 rounded text-sm font-medium transform -translate-x-1/2 transition-all duration-200 ease-out"
@@ -32,7 +32,7 @@ export default function FilterSlider({min, max, filterName, value, onChange, def
                     className = "w-full"
                 />
             </div>
-            <h2 className="font-bold ml-1">{max}</h2>
+            <h2 className="font-semibold ml-1">{max}</h2>
         </div>
 
     )
