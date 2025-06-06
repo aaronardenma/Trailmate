@@ -1,15 +1,20 @@
-# Hikers and Compilers
-## Team Members
-- Aaron Ma
-- Laura Qiu
-- Pranjali Das
-- Charvi Gulati
-  
-##  Description
-TrailMate is a web app designed to support both novice hikers and experienced backpackers in planning safe, well-prepared outdoor adventures, particularly on trails in regions such as British Columbia. The app emphasizes safety and preparation by helping users discover trails, assess difficulty and conditions, and receive personalized gear recommendations based on the trail, season, and weather. 
+# Trailmate
 
-## Milestone 1 Details
-- Created a detailed wireframe in Figma covering most of the app’s screens
-- Built the non-functional frontend for several pages, including the Home, Trail Info, and User Profile pages
-- Set up page routing across the app
-- Developed several reusable components for the web app
+
+### Build the Docker image
+```
+docker build -t trailmate .
+```
+
+### Start a Docker container
+```
+docker run -d --name trailmate -p 3000:3000 trailmate
+```
+
+
+sources for docker:
+* https://www.docker.com/blog/how-to-dockerize-react-app/
+* https://dev.to/nandhakumar/step-by-step-guide-to-dockerize-react-app-created-using-vite-2jg3
+* https://thedkpatel.medium.com/dockerizing-react-application-built-with-vite-a-simple-guide-4c41eb09defa
+
+
