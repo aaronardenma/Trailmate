@@ -10,8 +10,6 @@ export default function TrailCard(props) {
             <h2 className="text-left pl-4">{props.name}</h2>
             {/* <h2 className="text-left pl-4">{props.distance}</h2> */}
             {/* </Link> */}
-        
         </div>
-
     )
-}
+};
