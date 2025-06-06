@@ -1,0 +1,31 @@
+[
+  {
+    "id": 1,
+    "name": "Laura",
+    "expertise": "Advanced",
+    "favourite_trails": "Seymour",
+    "gear_list": "socks, gloves, keys"
+  },
+  {
+    "id": 2,
+    "name": "Aaron",
+    "expertise": "Intermediate",
+    "favourite_trails": "Deer Lake",
+    "gear_list": "shoes, goggles, tent"
+  },
+  {
+    "id": 3,
+    "name": "Pranjali",
+    "expertise": "Intermediate",
+    "favourite_trails": "Grouse Grind",
+    "gear_list": "raincoat, water, snacks"
+  },
+  {
+    "id": 4,
+    "name": "Charvi",
+    "expertise": "Beginner",
+    "favourite_trails": "Seawall",
+    "gear_list": "socks, gloves, keys"
+  }
+]
+

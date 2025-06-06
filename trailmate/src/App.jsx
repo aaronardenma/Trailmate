@@ -1,28 +1,27 @@
-import {Route, Routes} from "react-router-dom"
 import Home from "./pages/Home"
 import Map from "./pages/Map.jsx"
 import Nav from "./components/Nav"
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 import Filters from "./pages/Filters"
+
+import Favourites from "./pages/Favourites"
+import UserProfile from "./pages/UserProfile"
 
 function App() {
 
   return (
     <>
-    <div className="flex justify-between">
-      <h1 className="text-lg font-bold">TrailMate</h1>
-      <Nav />
-    </div>
-    <BrowserRouter>
+    <div className="font-display">
+      <Nav className="p-2" />
       <Routes>
-     <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/map" element={<Map />} />
         <Route path="/filters" element={<Filters />} />
+        <Route path="/favourites" element={<Favourites />} />
+        <Route path="/profile" element={<UserProfile />} />
       </Routes>
-    
-    </BrowserRouter>       
-
-    </>
+    </div>
+      </>
   )
 }
 

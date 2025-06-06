@@ -1,24 +1,40 @@
-import {Link} from "react-router"
+import {Link} from "react-router-dom"
 import { useDispatch, useSelector} from "react-redux"
+import { FaRegUserCircle } from "react-icons/fa";
+import { FaRegStar } from "react-icons/fa";
+import { resetDistanceFilter, resetElevationFilter } from "../store/trailFiltersSlice";
 
 export default function Nav() {
+  const dispatch = useDispatch()
 
-//   const dispatch = useDispatch()
-  
-//   const handleCatalogFilterReset = () => {
-//       useSelector((state) => state.login.stattus)
-      
-//     }
+  const resetFilters = () => {
+    dispatch(resetDistanceFilter())
+    dispatch(resetElevationFilter())
+  }
 
-return (
-    <nav>
-        <ul className="flex">
-          {/* <li className="mr-2 font-semibold"><Link to="/trails">Trails</Link></li> */}
-          {/* <li className="mr-2 font-semibold"><Link to="/filters">Browse</Link></li> */}
-          {/* <li className="mr-2 font-semibold"><Link to="/routes">Routes</Link></li>
-          <li className="mr-2 font-semibold"><Link to="/events">Events</Link></li>
-          <li className="mr-2 font-semibold"><Link to="/map">Map</Link></li> */}
-        </ul>
-    </nav>
-)
+  return (
+      <nav className="flex justify-between items-center bg-[#DAD7CD]">
+        <Link to="/" className="text-2xl text-[#588157] font-bold p-4" onClick={resetFilters}>
+          TrailMate
+        </Link>
+          <ul className="flex">
+            <li>
+              <Link to="/favourites" className="mr-8 flex items-center" >
+                <FaRegStar className="mr-1.5 text-xl" />
+                <span className="font-semibold">Favourites</span>
+              </Link>
+            </li>
+            <div>
+              <li>
+                <Link to="/profile" className="mr-8 flex items-center">
+                  <FaRegUserCircle className="mr-1.5 text-xl " />
+                  <span className="font-semibold">
+                    User
+                    </span>
+                </Link>
+              </li>
+            </div>
+          </ul>
+      </nav>
+  )
 }
