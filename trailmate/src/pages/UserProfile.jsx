@@ -73,7 +73,7 @@ export default function UserProfile() {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
-                                            <SelectLabel>Fruits</SelectLabel>
+                                            <SelectLabel>Language</SelectLabel>
                                             <SelectItem value="english">English</SelectItem>
                                             <SelectItem value="french">French</SelectItem>
                                             <SelectItem value="chinese">Chinese</SelectItem>
@@ -109,7 +109,7 @@ export default function UserProfile() {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
-                                            <SelectLabel>Fruits</SelectLabel>
+                                            <SelectLabel>Timezone</SelectLabel>
                                             <SelectItem value="pst">Pacific Time</SelectItem>
                                             <SelectItem value="mst">Mountain Time</SelectItem>
                                             <SelectItem value="cst">Central Time</SelectItem>
