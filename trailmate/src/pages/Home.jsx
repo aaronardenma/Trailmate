@@ -29,7 +29,8 @@ export default function Home() {
         const filteredTrails = filterTrails(searchedTrails)
         console.log(filteredTrails.length)
         return filteredTrails.map((trail) => (
-            <TrailCard name={trail.name} key={trail.name.toLowerCase()} img={trail.photoUrl} distance={`Distance (km): ${trail.distanceKm}`} />
+            <TrailCard trail ={trail}/>
+            // <TrailCard name={trail.name} key={trail.name.toLowerCase()} img={trail.photoUrl} distance={`Distance (km): ${trail.distanceKm}` id = {trail.id}} />
         ));
     }
 
