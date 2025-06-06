@@ -2,6 +2,7 @@ import TrailCard from "../components/TrailCard"
 import {useState} from 'react'
 import trailData from "../data.json"
 import Search from "../components/Search"
+import { useSelector } from "react-redux"
 
 export default function Home() {
     let [searchKey, setSearchKey] = useState("")
@@ -12,25 +13,43 @@ export default function Home() {
     
     const searchTrails = () => {
         let searchedTrails = []
-            if (searchKey === "") {
-            return (
-                trailData.map((trail) => (
-        <TrailCard name={trail.name} key={trail.name.toLowerCase()} img={trail.photoUrl} />
-        ))
-            )
-
+        let trails = trailData
+        console.log(`trails length: ${trails.length}`)
+        if (searchKey === "") {
+            searchedTrails = trails
+        } else {
+            for (let i = 0; i < trails.length; i++) {
+                if (trails[i].name.toLowerCase().includes(searchKey.toLowerCase())) {
+                    searchedTrails.push(trails[i])
+                } else {
+                    continue;
+                }
             }
-            for (let i = 0; i < trailData.length; i++) {
-            if (trailData[i].name.toLowerCase().includes(searchKey.toLowerCase())) {
-                searchedTrails.push(trailData[i])
+        }
+        const filteredTrails = filterTrails(searchedTrails)
+        console.log(filteredTrails.length)
+        return filteredTrails.map((trail) => (
+            <TrailCard name={trail.name} key={trail.name.toLowerCase()} img={trail.photoUrl} distance={`Distance (km): ${trail.distanceKm}`} />
+        ));
+    }
+
+    const filterTrails = (arr) => {
+        const elevationFilter = useSelector(state => state.filters.elevation)
+        const distanceFilter = useSelector(state => state.filters.distance)
+        console.log(`elevation filter: ${elevationFilter}`)
+        console.log(`distance filter: ${distanceFilter}`)
+        console.log(`filtered input arr legnth: ${arr.length}`)
+
+        let filteredTrails = []
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i].avgElevationM < elevationFilter && arr[i].distanceKm < distanceFilter) {
+                filteredTrails.push(arr[i])
             } else {
                 continue;
             }
         }
-    
-        return searchedTrails.map((trail) => (
-        <TrailCard name={trail.name} key={trail.name.toLowerCase()} img={trail.photoUrl} />
-        ));
+
+        return filteredTrails
     }
 
     const results = searchTrails()

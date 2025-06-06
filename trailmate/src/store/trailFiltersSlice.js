@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    elevation: 0,
-    distance: 0
+    elevation: 1000000,
+    distance: 1000000
 }
 
 const trailFilters = createSlice({
@@ -16,10 +16,10 @@ const trailFilters = createSlice({
             state.distance = action.payload
         },
         resetElevationFilter: (state) => {
-            state.elevation = 0
+            state.elevation = 1000000
         },
         resetDistanceFilter: (state) => {
-            state.distance = 0
+            state.distance = 1000000
         }
     }
 })

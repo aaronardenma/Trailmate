@@ -1,7 +1,7 @@
 import { Slider } from "@/components/ui/slider"
 import {useState} from 'react'
 
-export default function FilterSlider({min, max, filterName, value, onChange}) {
+export default function FilterSlider({min, max, filterName, value, onChange, defaultValue}) {
 
     const percent = ((value - min) / (max - min)) * 100;
     
@@ -26,6 +26,7 @@ export default function FilterSlider({min, max, filterName, value, onChange}) {
                     value={[value]} 
                     min={min} 
                     max={max} 
+                    
                     step={1} 
                     onValueChange={(val) => handleChange(val)} 
                     className = "w-full"

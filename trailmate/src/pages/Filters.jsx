@@ -8,8 +8,14 @@ export default function Filters() {
     const dispatch = useDispatch()
     const nav = useNavigate()
 
-    let [elevation, setElevation] = useState(0)
-    let [distance, setDistance] = useState(0)
+    const minElevation = 0
+    const minDistance = 0
+    const maxDistance = 20
+    const maxElevation = 1500
+    
+    let [elevation, setElevation] = useState(maxElevation/2)
+    let [distance, setDistance] = useState(maxDistance/2)
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -31,13 +37,13 @@ export default function Filters() {
 
     return (
         <>
-        <div className="flex flex-col max-w-1/2">
+        <div className="flex flex-col max-w-1/2 bg-[#A3B18A]">
             <form action="/" onSubmit={handleSubmit} >
-                <FilterSlider min={0} max={100} filterName={"Elevation"} value={elevation} onChange={setElevation} />
-                <FilterSlider min={0} max={250} filterName={"Distance"} value={distance} onChange={setDistance} />
-                <div>
-                    <button type="submit" name="reset" className="outline rounded cursor-pointer px-2 py-1 self-center">Reset</button>
-                    <button type="submit" name="apply" className="outline rounded cursor-pointer px-2 py-1 self-center" >Apply</button>
+                <FilterSlider min={minElevation} max={maxElevation} filterName={"Elevation"} value={elevation} onChange={setElevation} />
+                <FilterSlider min={minDistance} max={maxDistance} filterName={"Distance"} value={distance} onChange={setDistance} />
+                <div className="flex m-4 justify-between">
+                    <button type="submit" name="reset" className="outline-1 outline-black rounded cursor-pointer px-2 py-1">Reset</button>
+                    <button type="submit" name="apply" className="outline-1 outline-black rounded cursor-pointer px-2 py-1" >Apply</button>
                 </div>
             </form>
         </div>
@@ -45,3 +51,5 @@ export default function Filters() {
     )
 
 }
+
+

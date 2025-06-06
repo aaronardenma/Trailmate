@@ -8,6 +8,7 @@ export default function TrailCard(props) {
             {/* <Link to={`/`}> */}
             <img src={props.img} alt="" className="rounded-2xl p-2 self-center w-full h-48 object-cover" />
             <h2 className="text-left pl-4">{props.name}</h2>
+            {/* <h2 className="text-left pl-4">{props.distance}</h2> */}
             {/* </Link> */}
         
         </div>

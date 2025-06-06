@@ -10,12 +10,8 @@ function App() {
 
   return (
     <>
-    <div className="flex justify-between items-center">
-      <Link to="/" className="text-2xl text-[#588157] font-bold p-4">
-        TrailMate
-      </Link>
+    <div className="font-display">
       <Nav className="p-2" />
-    </div>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/map" element={<Map />} />
@@ -23,6 +19,7 @@ function App() {
         <Route path="/favourites" element={<Favourites />} />
         <Route path="/profile" element={<UserProfile />} />
       </Routes>
+    </div>
       </>
   )
 }
