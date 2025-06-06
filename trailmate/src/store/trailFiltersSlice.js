@@ -1,8 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    elevation: 0,
-    distance: 0,
+    elevation: 1000000,
+    distance: 1000000,
     users: [],
 }
 
@@ -17,10 +17,10 @@ const trailFilters = createSlice({
             state.distance = action.payload
         },
         resetElevationFilter: (state) => {
-            state.elevation = 0
+            state.elevation = 1000000
         },
         resetDistanceFilter: (state) => {
-            state.distance = 0
+            state.distance = 1000000
         },
         addUser: (state, action) => {
             const addedUser = state.users.find((singleUser) => singleUser.id === action.payload.id);
@@ -37,5 +37,5 @@ const trailFilters = createSlice({
     }
 })
 
-export const {updateElevation, clearFilter, addUser, removeUser } = trailFilters.actions
+export const {updateElevation, updateDistance, resetElevationFilter, resetDistanceFilter, addUser, removeUser } = trailFilters.actions
 export default trailFilters.reducer;

@@ -20,10 +20,11 @@ import {
 
 
 
-const UserProfile = () => {
+export default function UserProfile() {
     return (
+        // className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-8"
         <div>
-            <div className="profile-page">
+            <div className="profile-page ">
                 <div className="profile-info">
                     <div className="flex flex-row flex-wrap items-center gap-12">
                         <Avatar className="w-[200px] h-[200px] self-start">
@@ -63,7 +64,7 @@ const UserProfile = () => {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
-                                            <SelectLabel>Fruits</SelectLabel>
+                                            <SelectLabel>Language</SelectLabel>
                                             <SelectItem value="english">English</SelectItem>
                                             <SelectItem value="french">French</SelectItem>
                                             <SelectItem value="chinese">Chinese</SelectItem>
@@ -99,7 +100,7 @@ const UserProfile = () => {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
-                                            <SelectLabel>Fruits</SelectLabel>
+                                            <SelectLabel>Timezone</SelectLabel>
                                             <SelectItem value="pst">Pacific Time</SelectItem>
                                             <SelectItem value="mst">Mountain Time</SelectItem>
                                             <SelectItem value="cst">Central Time</SelectItem>
@@ -116,5 +117,3 @@ const UserProfile = () => {
         </div>
     );
 };
-
-export default UserProfile;
