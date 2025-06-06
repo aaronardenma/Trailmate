@@ -2,6 +2,11 @@
   {
     "id": 1,
     "name": "Laura",
+    "nick_name": "L",
+    "gender": "Female",
+    "country": "Canada",
+    "language": "English",
+    "time_zone": "PST",
     "expertise": "Advanced",
     "favourite_trails": "Seymour",
     "gear_list": "socks, gloves, keys"
@@ -9,6 +14,11 @@
   {
     "id": 2,
     "name": "Aaron",
+    "nick_name": "L",
+    "gender": "Male",
+    "country": "Ireland",
+    "language": "English",
+    "time_zone": "GMT",
     "expertise": "Intermediate",
     "favourite_trails": "Deer Lake",
     "gear_list": "shoes, goggles, tent"
@@ -16,6 +26,11 @@
   {
     "id": 3,
     "name": "Pranjali",
+    "nick_name": "L",
+    "gender": "Female",
+    "country": "England",
+    "language": "English",
+    "time_zone": "GMT",
     "expertise": "Intermediate",
     "favourite_trails": "Grouse Grind",
     "gear_list": "raincoat, water, snacks"
@@ -23,6 +38,11 @@
   {
     "id": 4,
     "name": "Charvi",
+    "nick_name": "L",
+    "gender": "Female",
+    "country": "Scotland",
+    "language": "English",
+    "time_zone": "PST",
     "expertise": "Beginner",
     "favourite_trails": "Seawall",
     "gear_list": "socks, gloves, keys"

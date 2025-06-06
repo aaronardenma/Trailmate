@@ -21,20 +21,10 @@ import {
 
 
 const UserProfile = () => {
-    // // const { id } = useParams();
-    // // const user = users[id + 1]
-    // //
-    // // console.log(JSON.stringify(user))
-    //
-    // const user = useSelector((state) => state.user)
-    // console.log(user);
-    //
-    // const dispatch = useDispatch();
     return (
         <div>
             <div className="profile-page">
                 <div className="profile-info">
-                    {/*<img src={profileLogo} alt=""/>*/}
                     <div className="flex flex-row flex-wrap items-center gap-12">
                         <Avatar className="w-[200px] h-[200px] self-start">
                             <AvatarImage src="profileLogo" alt="@shadcn"/>
