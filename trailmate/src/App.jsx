@@ -6,6 +6,7 @@ import Filters from "./pages/Filters"
 
 import Favourites from "./pages/Favourites"
 import UserProfile from "./pages/UserProfile"
+import TrailPage from "@/pages/TrailPage.jsx";
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/map" element={<Map />} />
+        <Route path="/trail/:id" element={<TrailPage />} />
         <Route path="/filters" element={<Filters />} />
         <Route path="/favourites" element={<Favourites />} />
         <Route path="/profile" element={<UserProfile />} />
