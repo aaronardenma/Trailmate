@@ -20,10 +20,11 @@ The app emphasizes safety and preparation by helping users:
 
 ## Milestone 1 — Progress Summary
 - Created a detailed wireframe in Figma covering most app screens  
-- Built non-functional frontend for multiple pages: Home, Trail Info, and User Profile  
+- Built non-functional frontend for multiple pages: Home, Trail Cards, Nav Bar, RouteMaps, Trail Description, Search bar, Filters, and User Profile  
 - Set up page routing throughout the app  
-- Developed several reusable web components  
-
+- Developed several reusable web components 
+- Utilized Redux to manage app states for filters
+- Implemented consistent and responsive styling to all components
 ---
 
 ## Docker Setup
