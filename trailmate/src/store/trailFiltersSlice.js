@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     elevation: 1000000,
-    distance: 1000000
+    distance: 1000000,
     users: [],
 }
 

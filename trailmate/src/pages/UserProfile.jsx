@@ -20,7 +20,7 @@ import {
 
 
 
-const UserProfile = () => {
+export default function UserProfile() {
     // // const { id } = useParams();
     // // const user = users[id + 1]
     // //
