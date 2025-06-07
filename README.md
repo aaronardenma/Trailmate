@@ -19,12 +19,15 @@ The app emphasizes safety and preparation by helping users:
 ---
 
 ## Milestone 1 — Progress Summary
-- Created a detailed wireframe in Figma covering most app screens  
-- Built non-functional frontend for multiple pages: Home, Trail Cards, Nav Bar, RouteMaps, Trail Description, Search bar, Filters, and User Profile  
-- Set up page routing throughout the app  
-- Developed several reusable web components 
-- Utilized Redux to manage app states for filters
-- Implemented consistent and responsive styling to all components
+- **Frontend Pages**:
+  - **Home Page**: Displays an introduction to the app and featured trails.
+  - **Trail Cards**: Showcases individual trail previews with essential details such as difficulty, distance, and rating.
+  - **Nav Bar**: A responsive navigation bar for easy access to various parts of the app.
+  - **Route Maps**: A placeholder page for visualizing trail routes (non-functional for now).
+  - **Trail Description**: Each trail has a detailed description page, including trail features, tips, and an interactive map (still in progress).
+  - **Search Bar**: Allows users to search for trails based on criteria like name, location, or difficulty.
+  - **Filters**: Implemented filters for narrowing down trail search results based on specific parameters.
+  - **User Profile**: Non-functional profile page where users can view their saved trails and activity.
 
 ---
 
