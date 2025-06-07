@@ -28,7 +28,17 @@ The app emphasizes safety and preparation by helping users:
   - **Search Bar**: Allows users to search for trails based on criteria like name, location, or difficulty.
   - **Filters**: Implemented filters for narrowing down trail search results based on specific parameters.
   - **User Profile**: Non-functional profile page where users can view their saved trails and activity.
+- **Page Routing**:  
+  Set up routing throughout the app using React Router, enabling smooth navigation between pages.
 
+- **Reusable Web Components**:  
+  Developed reusable components such as buttons, input fields, and card layouts for easy reuse across different pages.
+
+- **Redux for State Management**:  
+  Integrated Redux to manage the state of the app, specifically for managing filters and search parameters.
+
+- **Responsive Styling**:  
+  Applied consistent and responsive design across all components using CSS and Flexbox to ensure compatibility with mobile and desktop devices.
 ---
 
 ## Docker Setup
