@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Trail = require('../models/Trails');
+const Trail = require('../models/trails');
 
 router.get('/getTrails', async (req, res) => {
     try {

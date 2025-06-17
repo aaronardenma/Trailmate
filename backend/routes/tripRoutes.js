@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Trip = require('../models/Trips');
+const Trip = require('../models/trips');
 const mongoose = require('mongoose');
 
 router.get('/getTripsForUser/:userId', async (req, res) => {
