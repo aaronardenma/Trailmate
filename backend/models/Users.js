@@ -3,7 +3,6 @@ const {UUID} = require("mongodb");
 const Schema = mongoose.Schema;
 
 const usersSchema = new Schema({
-    id: UUID,
     firstName: String,
     lastName: String,
     email: String,
