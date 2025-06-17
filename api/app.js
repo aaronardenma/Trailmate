@@ -1,24 +1,24 @@
 const express = require('express')
 const cors = require('cors');
 const app = express()
+const { getAllTrails } = require('./service/trails');
 const PORT = 8080
 
 let postRoutes = express.Router();
 
-// setting up server
 
 app.use(cors());
-app.use(express.json()); // parse all requests in JSON
+app.use(express.json());
 
 app.listen(PORT, () => {
     console.log(`Example app listening on port ${PORT}`)
 })
 
+
 app.get('/ping', (req, res) => {
     res.send('pong')
 })
 
-// Setting up DB
 const mongoose = require("mongoose");
 
 const dbURI = 'mongodb://localhost/Trailmate';
@@ -40,6 +40,16 @@ mongoose.connection.on('error', (err) => {
     console.error('Mongoose connection error: ' + err);
 });
 
+app.get('/trails', async (req, res) => {
+
+    try {
+        const trails = await getAllTails();
+        return res.status(200).json({ message: "Trail found successfully", trails });
+    } catch (error) {
+        return res.status(500).json({ message: "Error fetching trails ", error: error.message });
+    }
+});
+
 
 // setting up routes
 
@@ -55,8 +65,10 @@ mongoose.connection.on('error', (err) => {
  *
  *
  */
+// app.use(postRoutes);
 
-postRoutes.route("/api/trails").get((req, res) => {
-    // get all trails from db
-})
+//
+// postRoutes.route("/api/trails").get((req, res) => {
+//     // get all trails from db
+// })
 

@@ -9,7 +9,7 @@ services:
       - mongo-data:/data/db
   api:
     build:
-      context: API
+      context: api
       dockerfile: ../Dockerfile.api
     ports:
       - "8080:8080"
@@ -17,7 +17,7 @@ services:
       - ./API:/app
   ui:
     build:
-      context: UI
+      context: ui
       dockerfile: ../Dockerfile.ui
     ports:
       - "3000:3000"
