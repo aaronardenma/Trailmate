@@ -1,4 +1,4 @@
-const Trail = require('../model/Trails.js');
+const Trail = require('../../api/model/Trails.js');
 export async function getAllTrails() {
     try {
         const trails = await Trail.find();
