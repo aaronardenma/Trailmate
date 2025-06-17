@@ -5,6 +5,8 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const trailRoutes = require('./routes/trailRoutes');
 const userRoutes = require('./routes/userRoutes');
+const tripRoutes = require('./routes/tripRoutes');
+
 
 
 
@@ -17,6 +19,8 @@ app.use(express.json());
 
 app.use('/api/trails', trailRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/trips', tripRoutes);
+
 
 
 mongoose.connect(process.env.MONGO_URI, {

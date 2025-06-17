@@ -3,9 +3,8 @@ const {UUID} = require("mongodb");
 const Schema = mongoose.Schema;
 
 const tripsSchema = new Schema({
-    id: UUID,
-    userId: UUID,
-    trailsID: UUID,
+    userId: String,
+    trailID: String,
     dateOfTrip: Date,
     userRating: Number,
     userComments: String,
