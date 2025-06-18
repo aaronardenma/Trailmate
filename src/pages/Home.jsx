@@ -3,6 +3,8 @@ import {useState} from 'react'
 import trailData from "../data.json"
 import Search from "../components/Search"
 import { useSelector } from "react-redux"
+import PlanInputs from "../components/PlanInputs"
+import PopoverCalendar from "../components/PopoverCalendar"
 
 export default function Home() {
     let [searchKey, setSearchKey] = useState("")
@@ -58,7 +60,6 @@ export default function Home() {
     return (
         <div className="flex flex-col text-center bg-[#A3B18A]">
             <Search handleSearch={handleSearch} />
-            
             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-8">
                 {results.length > 0 ? results : (<span className="p-4 font-semibold text-lg">No trails found for "{searchKey}"</span>)}
             </div>

@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import trailData from "../data.json";
 import LocationMap from "../components/LocationMap.jsx";
+import PlanInputs from "../components/PlanInputs.jsx";
 
 export default function TrailPage() {
     const { id } = useParams();
@@ -45,6 +46,11 @@ export default function TrailPage() {
                     <p><strong className="text-gray-800">Coordinates:</strong> <span className="text-gray-600">{trail.latitude.toFixed(5)}, {trail.longitude.toFixed(5)}</span></p>
                 </div>
 
+            </div>
+            <div className="max-w-2xl mx-auto flex flex-col items-center justify-center mt-4">
+                <h1 className="mb-2 text-2xl font-bold">Plan your trip!</h1>
+                <PlanInputs></PlanInputs>
+                
             </div>
         </div>
     );
