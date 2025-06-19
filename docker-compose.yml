@@ -1,0 +1,27 @@
+version: "3.8"
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+  api:
+    build:
+      context: api
+      dockerfile: ../Dockerfile.api
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./API:/app
+  ui:
+    build:
+      context: ui
+      dockerfile: ../Dockerfile.ui
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./UI:/app
+volumes:
+  mongo-data:
