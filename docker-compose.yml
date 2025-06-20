@@ -21,7 +21,7 @@ services:
       dockerfile: ../Dockerfile.ui
     ports:
       - "3000:3000"
-    volumes:
-      - ./UI:/app
+#    volumes:
+#      - ./UI:/app
 volumes:
   mongo-data:
