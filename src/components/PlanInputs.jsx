@@ -22,12 +22,19 @@ export default function PlanInputs() {
     }
 
     return (<>
-        <form className="flex" onSubmit={(e) => handleSubmit(e)} >            
-            <div className="max-w-md mr-4">
-                <PopoverCalendar />
+        <form className="flex items-center" onSubmit={(e) => handleSubmit(e)} >            
+            <div className="flex flex-col text-right items-end max-w-md mr-4">
+                <p className="mr-4 mb-4 whitespace-nowrap">I want to hike this trail on</p>
+                <p className="mr-4 whitespace-nowrap">starting around</p>
             </div>
-            <input className="outline mr-4" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
-            <button className="cursor-pointer outline rounded p-1 font-bold text-[#fff] bg-[#588157]" type="submit">Plan it!</button>
+            <div className="flex flex-col items-left">
+                
+                <PopoverCalendar />
+                <input className="outline mr-4" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
+            </div>
+            <div>
+                <button className="ml-8 cursor-pointer outline rounded p-3 font-bold text-[#fff] bg-[#588157]" type="submit">GO</button>
+            </div>
         </form>
     </>
     )
