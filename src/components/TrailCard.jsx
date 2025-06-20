@@ -13,7 +13,7 @@ export default function TrailCard({ trail }) {
             />
             <div className="pl-4">
                 <h2 className="font-semibold text-lg">{trail.name}</h2>
-                <p className="text-sm text-gray-500">{trail.location}</p>
+                <p className="text-sm" style={{ color: '#344E41' }}>{trail.location}</p>
             </div>
         </Link>
     );

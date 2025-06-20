@@ -1,19 +1,23 @@
 import Home from "./pages/Home"
 import Map from "./pages/Map.jsx"
 import Nav from "./components/Nav"
-import { Routes, Route } from "react-router-dom"
+import { Routes, Route, useLocation } from "react-router-dom"
 import Filters from "./pages/Filters"
 import Landing from "./pages/Landing.jsx"
 import Favourites from "./pages/Favourites"
 import UserProfile from "./pages/UserProfile"
 import TrailPage from "@/pages/TrailPage.jsx";
+import Register from './pages/Register.jsx';
 
 function App() {
+  const location = useLocation()
+  const noNavPaths = ["/login", "/register", "/landing"]
+  const showNav = !noNavPaths.includes(location.pathname)
 
   return (
     <>
     <div className="font-display">
-      <Nav className="p-2" />
+      {showNav && <Nav className="p-2" />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/landing" element={<Landing />} />
@@ -22,6 +26,7 @@ function App() {
         <Route path="/filters" element={<Filters />} />
         <Route path="/favourites" element={<Favourites />} />
         <Route path="/profile" element={<UserProfile />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </div>
       </>

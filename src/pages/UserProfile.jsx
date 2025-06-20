@@ -1,225 +1,220 @@
-import React, {useContext} from 'react';
-import "./css/UserProfile.css"
-import {Input} from "@/components/ui/input"
-import {Badge} from "@/components/ui/badge"
-
+import React, { useEffect, useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
-    Avatar,
-    AvatarFallback,
-    AvatarImage,
-} from "@/components/ui/avatar"
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar";
+import { gearCategories } from "@/utils/gearData";
 
-// export default function UserProfile() {
-//     // // const { id } = useParams();
-//     // // const user = users[id + 1]
-//     // //
-//     // // console.log(JSON.stringify(user))
-//     //
-//     // const user = useSelector((state) => state.user)
-//     // console.log(user);
-//     //
-//     // const dispatch = useDispatch();
-//     return (
-//         <div>
-//             <div className="profile-page">
-//                 <div className="profile-info">
-//                     {/*<img src={profileLogo} alt=""/>*/}
-//                     <div className="flex flex-row flex-wrap items-center gap-12">
-//                         <Avatar className="w-[200px] h-[200px] self-start">
-//                             <AvatarImage src="profileLogo" alt="@shadcn"/>
-//                             <AvatarFallback>Picture Here</AvatarFallback>
-//                         </Avatar>
-//                     </div>
-//                 </div>
-//                 <div className="flex flex-col items-center gap-5">
-//                     <div className="flex w-full flex-wrap gap-5 mt-5">
-//                         <Badge variant="secondary" className="bg:grey-300 text-[#A3B18A] border-3 border-[#A3B18A]">
-//                             Beginner</Badge>
-//                     </div>
-//                 </div>
-//                 <div className="left-right-panes">
-//                     <div className="left-pane">
-//                         <div>
-//                             <h1>Full Name</h1>
-//                             <p>
-//                                 <Input className="w-[380px]" type="name" placeholder="Full Name"/>
-//                             </p>
-//                         </div>
-
-//                         <div>
-//                             <h1>Gender</h1>
-//                             <p>
-//                                 <Input className="w-[380px]" type="gender" placeholder="Gender"/>
-//                             </p>
-//                         </div>
-
-//                         <div>
-//                             <h1>Language</h1>
-//                             <p>
-//                                 <Select>
-//                                     <SelectTrigger className="w-[380px]">
-//                                         <SelectValue placeholder="Select a Language"/>
-//                                     </SelectTrigger>
-//                                     <SelectContent>
-//                                         <SelectGroup>
-//                                             <SelectLabel>Language</SelectLabel>
-//                                             <SelectItem value="english">English</SelectItem>
-//                                             <SelectItem value="french">French</SelectItem>
-//                                             <SelectItem value="chinese">Chinese</SelectItem>
-//                                             <SelectItem value="spanish">Spanish</SelectItem>
-//                                             <SelectItem value="korean">Korean</SelectItem>
-//                                         </SelectGroup>
-//                                     </SelectContent>
-//                                 </Select>
-//                             </p>
-//                         </div>
-//                     </div>
-
-//                     <div className="right-pane">
-//                         <div>
-//                             <h1>Nick Name</h1>
-//                             <p>
-//                                 <Input className="w-[380px]" type="nick_name" placeholder="Nick Name"/>
-//                             </p>
-//                         </div>
-
-//                         <div>
-//                             <h1>Country</h1>
-//                             <p>
-//                                 <Input className="w-[380px]" type="country" placeholder="Country"/>
-//                             </p>
-//                         </div>
-//                         <div>
-//                             <h1>Time Zone</h1>
-//                             <p>
-//                                 <Select>
-//                                     <SelectTrigger className="w-[380px]">
-//                                         <SelectValue placeholder="Select Timezone"/>
-//                                     </SelectTrigger>
-//                                     <SelectContent>
-//                                         <SelectGroup>
-//                                             <SelectLabel>Timezone</SelectLabel>
-//                                             <SelectItem value="pst">Pacific Time</SelectItem>
-//                                             <SelectItem value="mst">Mountain Time</SelectItem>
-//                                             <SelectItem value="cst">Central Time</SelectItem>
-//                                             <SelectItem value="est">Easter Time</SelectItem>
-//                                             <SelectItem value="utc">Universal Time Coordinated</SelectItem>
-//                                         </SelectGroup>
-//                                     </SelectContent>
-//                                 </Select>
-//                             </p>
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
-//         </div>
-//     );
-// };
-
+const PROFILE_STORAGE_KEY = "userProfile";
+const GEAR_STORAGE_KEY = "ownedGear";
 
 export default function UserProfile() {
-    return (
-        <div className='flex flex-col items-center'>
-            <div className="flex flex-col items-center">
-                <div className="">
-                    <div className="p-4 outline-2 outline-black rounded-4xl mt-4">
-                        <Avatar className="w-[200px] h-[200px] self-start">
-                            <AvatarImage src="profileLogo" alt="@shadcn"/>
-                            <AvatarFallback>Picture Here</AvatarFallback>
-                        </Avatar>
-                    </div>
-                </div>
-                <div className="flex flex-col items-center gap-5">
-                    <div className="flex w-full flex-wrap gap-5 mt-5">
-                        <Badge variant="secondary" className="bg:grey-300 text-[#A3B18A] border-3 border-[#A3B18A]">
-                            Beginner</Badge>
-                    </div>
-                </div>
+  const [profile, setProfile] = useState({
+    fullName: "",
+    nickname: "",
+    gender: "",
+    country: "",
+    language: "",
+    timeZone: "",
+  });
+
+  const [ownedGear, setOwnedGear] = useState({});
+  const [isSaved, setIsSaved] = useState(true);
+
+  useEffect(() => {
+    const savedProfile = JSON.parse(localStorage.getItem(PROFILE_STORAGE_KEY));
+    const savedGear = JSON.parse(localStorage.getItem(GEAR_STORAGE_KEY));
+
+    if (savedProfile) setProfile(savedProfile);
+    if (savedGear) setOwnedGear(savedGear);
+    else {
+      // default owned gear - later load from registration page
+      setOwnedGear({
+        Clothing: {
+          "Moisture-wicking T-shirts (short sleeve)": true,
+          "Waterproof breathable rain jacket": true,
+        },
+        Footwear: {
+          "Hiking boots (waterproof)": true,
+        },
+      });
+    }
+  }, []);
+
+  const handleProfileChange = (field, value) => {
+    setProfile((prev) => ({ ...prev, [field]: value }));
+    setIsSaved(false);
+  };
+
+  const toggleGearItem = (category, item) => {
+    setOwnedGear((prev) => {
+      const updated = {
+        ...prev,
+        [category]: {
+          ...(prev[category] || {}),
+          [item]: !prev[category]?.[item],
+        },
+      };
+      setIsSaved(false);
+      return updated;
+    });
+  };
+
+  const handleSave = () => {
+    localStorage.setItem(PROFILE_STORAGE_KEY, JSON.stringify(profile));
+    localStorage.setItem(GEAR_STORAGE_KEY, JSON.stringify(ownedGear));
+    setIsSaved(true);
+  };
+
+  return (
+    <div className="flex flex-col items-center p-6 max-w-7xl mx-auto">
+      <div className="flex flex-col items-center mb-10">
+        <div className="p-4 border-2 border-black rounded-2xl mt-4">
+          <Avatar className="w-[200px] h-[200px]">
+            <AvatarImage src="profileLogo" alt="User Avatar" />
+            <AvatarFallback>Picture Here</AvatarFallback>
+          </Avatar>
+        </div>
+        <div className="mt-5">
+          <Badge variant="secondary" className="text-[#A3B18A] border border-[#A3B18A]">
+            Beginner
+          </Badge>
+        </div>
+      </div>
+
+      <div className="grid sm:grid-cols-1 lg:grid-cols-2 gap-x-20 gap-y-6 mb-12">
+        <div>
+          <div className="mb-4">
+            <h1 className="font-semibold mb-1">Full Name</h1>
+            <Input
+              className="w-[380px]"
+              type="text"
+              value={profile.fullName}
+              onChange={(e) => handleProfileChange("fullName", e.target.value)}
+              placeholder="Full Name"
+            />
+          </div>
+
+          <div className="mb-4">
+            <h1 className="font-semibold mb-1">Gender</h1>
+            <Input
+              className="w-[380px]"
+              type="text"
+              value={profile.gender}
+              onChange={(e) => handleProfileChange("gender", e.target.value)}
+              placeholder="Gender"
+            />
+          </div>
+
+          <div>
+            <h1 className="font-semibold mb-1">Language</h1>
+            <Select onValueChange={(val) => handleProfileChange("language", val)} value={profile.language}>
+              <SelectTrigger className="w-[380px]">
+                <SelectValue placeholder="Select a Language" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Language</SelectLabel>
+                  <SelectItem value="english">English</SelectItem>
+                  <SelectItem value="french">French</SelectItem>
+                  <SelectItem value="chinese">Chinese</SelectItem>
+                  <SelectItem value="spanish">Spanish</SelectItem>
+                  <SelectItem value="korean">Korean</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div>
+          <div className="mb-4">
+            <h1 className="font-semibold mb-1">Nick Name</h1>
+            <Input
+              className="w-[380px]"
+              type="text"
+              value={profile.nickname}
+              onChange={(e) => handleProfileChange("nickname", e.target.value)}
+              placeholder="Nick Name"
+            />
+          </div>
+
+          <div className="mb-4">
+            <h1 className="font-semibold mb-1">Country</h1>
+            <Input
+              className="w-[380px]"
+              type="text"
+              value={profile.country}
+              onChange={(e) => handleProfileChange("country", e.target.value)}
+              placeholder="Country"
+            />
+          </div>
+
+          <div className="mb-4">
+            <h1 className="font-semibold mb-1">Time Zone</h1>
+            <Select onValueChange={(val) => handleProfileChange("timeZone", val)} value={profile.timeZone}>
+              <SelectTrigger className="w-[380px]">
+                <SelectValue placeholder="Select Timezone" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Timezone</SelectLabel>
+                  <SelectItem value="pst">Pacific Time</SelectItem>
+                  <SelectItem value="mst">Mountain Time</SelectItem>
+                  <SelectItem value="cst">Central Time</SelectItem>
+                  <SelectItem value="est">Eastern Time</SelectItem>
+                  <SelectItem value="utc">UTC</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </div>
+
+      <div className="w-full">
+        <h2 className="text-xl font-semibold mb-4">My Gear</h2>
+        {Object.entries(gearCategories).map(([category, items]) => (
+          <div key={category} className="mb-6">
+            <h3 className="text-lg font-bold text-[#588157] mb-2">
+              {category.replace(/_/g, " ")}
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              {items.map((item) => (
+                <label key={item} className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={!!ownedGear?.[category]?.[item]}
+                    onChange={() => toggleGearItem(category, item)}
+                  />
+                  <span>{item}</span>
+                </label>
+              ))}
             </div>
+          </div>
+        ))}
+      </div>
 
-            <div className='grid sm:grid-cols-1 lg:grid-cols-2 gap-x-30 gap-y-4'>
-                <div className="">
-                    <div className='mb-4'>
-                        <h1>Full Name</h1>
-                        <p>
-                            <Input className="w-[380px]" type="name" placeholder="Full Name"/>
-                        </p>
-                    </div>
-
-                    <div className='mb-4'>
-                        <h1>Gender</h1>
-                        <p>
-                            <Input className="w-[380px]" type="gender" placeholder="Gender"/>
-                        </p>
-                    </div>
-
-                    <div>
-                        <h1>Language</h1>
-                        <p>
-                            <Select>
-                                <SelectTrigger className="w-[380px]">
-                                    <SelectValue placeholder="Select a Language"/>
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        <SelectLabel>Language</SelectLabel>
-                                        <SelectItem value="english">English</SelectItem>
-                                        <SelectItem value="french">French</SelectItem>
-                                        <SelectItem value="chinese">Chinese</SelectItem>
-                                        <SelectItem value="spanish">Spanish</SelectItem>
-                                        <SelectItem value="korean">Korean</SelectItem>
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                        </p>
-                    </div>
-                </div>
-
-                    <div className="">
-                        <div className='mb-4'>
-                            <h1>Nick Name</h1>
-                            <p>
-                                <Input className="w-[380px]" type="nick_name" placeholder="Nick Name"/>
-                            </p>
-                        </div>
-
-                        <div className='mb-4'>
-                            <h1>Country</h1>
-                            <p>
-                                <Input className="w-[380px]" type="country" placeholder="Country"/>
-                            </p>
-                        </div>
-                        <div className='mb-4'>
-                            <h1>Time Zone</h1>
-                            <p>
-                                <Select>
-                                    <SelectTrigger className="w-[380px]">
-                                        <SelectValue placeholder="Select Timezone"/>
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            <SelectLabel>Timezone</SelectLabel>
-                                            <SelectItem value="pst">Pacific Time</SelectItem>
-                                            <SelectItem value="mst">Mountain Time</SelectItem>
-                                            <SelectItem value="cst">Central Time</SelectItem>
-                                            <SelectItem value="est">Easter Time</SelectItem>
-                                            <SelectItem value="utc">Universal Time Coordinated</SelectItem>
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    );
-};
+      <div className="mt-6">
+        <button
+          className="bg-[#588157] hover:bg-[#476246] text-white font-semibold px-6 py-2 rounded-lg transition"
+          onClick={handleSave}
+        >
+          Save Changes
+        </button>
+        {!isSaved && <p className="mt-2 text-sm text-gray-500">You have unsaved changes.</p>}
+        {isSaved && <p className="mt-2 text-sm text-green-600">Changes saved!</p>}
+      </div>
+    </div>
+  );
+}
