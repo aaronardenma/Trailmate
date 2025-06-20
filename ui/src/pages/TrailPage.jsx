@@ -91,22 +91,21 @@ export default function TrailPage() {
         );
     }
 
-    return (
-        <div className="min-h-screen bg-[#DAD7CD] py-8 px-4">
-            <div className="max-w-4xl mx-auto flex flex-col gap-8">
-                <div className="relative text-center">
-                    <h1 className="text-4xl font-extrabold text-[#2F4F4F]">
-                        {trail.name}
-                    </h1>
+    return (<div className="min-h-screen bg-gradient-to-b from-[#DAD7CD] to-[#f0eee7] py-10 px-4">
+            <div className="max-w-5xl mx-auto flex flex-col gap-10">
+
+                {/* Header with Favorite Star */}
+                <div className="relative bg-white shadow-lg rounded-lg px-6 py-4">
+                    <h1 className="text-4xl font-bold text-[#2F4F4F] text-center">{trail.name}</h1>
+
                     <button
                         onClick={handleFavorite}
                         aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
-                        className="absolute top-0 right-0 p-2 focus:outline-none"
+                        className="absolute top-4 right-4 rounded-full p-2 bg-gray-100 hover:bg-gray-200 transition"
                     >
-
-                    <svg
+                        <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className={`h-8 w-8 transition-colors duration-300 ${
+                            className={`h-7 w-7 transition-colors duration-300 ${
                                 favorite ? "text-yellow-400" : "text-gray-400"
                             }`}
                             fill={favorite ? "currentColor" : "none"}
@@ -123,46 +122,33 @@ export default function TrailPage() {
                     </button>
                 </div>
 
+                {/* Image and Map */}
                 <div className="flex flex-col lg:flex-row gap-6">
                     <img
                         src={trail.photoUrl}
                         alt={trail.name}
-                        className="lg:w-1/2 w-full rounded-lg shadow-lg object-cover max-h-[400px]"
+                        className="lg:w-1/2 w-full rounded-lg shadow-lg object-cover max-h-[400px] border border-gray-200"
                     />
-
-                    <div className="lg:w-1/2 h-[400px] rounded-lg shadow-lg overflow-hidden">
+                    <div className="lg:w-1/2 h-[400px] rounded-lg shadow-lg overflow-hidden border border-gray-200">
                         <LocationMap
                             location={{ lat: trail.latitude, lng: trail.longitude }}
                             name={trail.name}
                         />
                     </div>
                 </div>
+
+                {/* Trail Details */}
                 <div className="bg-white rounded-lg shadow-md p-6 space-y-4 border border-gray-200">
                     <p className="text-gray-700 leading-relaxed text-lg">{trail.description}</p>
-                    <p>
-                        <strong className="text-gray-800">Distance:</strong>{" "}
-                        <span className="text-gray-600">{trail.distance} miles</span>
-                    </p>
-                    <p>
-                        <strong className="text-gray-800">Elevation:</strong>{" "}
-                        <span className="text-gray-600">{trail.elevation}</span>
-                    </p>
-                    <p>
-                        <strong className="text-gray-800">Estimated Time:</strong>{" "}
-                        <span className="text-gray-600">{trail.time} minutes</span>
-                    </p>
-                    <p>
-                        <strong className="text-gray-800">Location:</strong>{" "}
-                        <span className="text-gray-600">{trail.city}</span>
-                    </p>
-                    <p>
-                        <strong className="text-gray-800">Coordinates:</strong>{" "}
-                        <span className="text-gray-600">
-              {trail.latitude.toFixed(5)}, {trail.longitude.toFixed(5)}
-            </span>
-                    </p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <p><strong className="text-gray-800">Distance:</strong> <span className="text-gray-600">{trail.distance} miles</span></p>
+                        <p><strong className="text-gray-800">Elevation:</strong> <span className="text-gray-600">{trail.elevation}</span></p>
+                        <p><strong className="text-gray-800">Estimated Time:</strong> <span className="text-gray-600">{trail.time} minutes</span></p>
+                        <p><strong className="text-gray-800">Location:</strong> <span className="text-gray-600">{trail.city}</span></p>
+                        <p className="sm:col-span-2"><strong className="text-gray-800">Coordinates:</strong> <span className="text-gray-600">{trail.latitude.toFixed(5)}, {trail.longitude.toFixed(5)}</span></p>
+                    </div>
                 </div>
             </div>
         </div>
-    );
+    )
 }

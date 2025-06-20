@@ -82,7 +82,7 @@ export default function Home() {
 
             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-8">
                 {trailData.length > 0 ? (
-                    trailData.map((trail) => <TrailCard key={trail.id} trail={trail} />)
+                    trailData.map((trail) => <TrailCard key={trail._id} trail_id={trail._id} />)
                 )
                     : (
                     <span className="p-4 font-semibold text-lg">

@@ -34,7 +34,8 @@ router.put('/updateUser/:id', async (req, res) => {
         gender,
         language,
         nickname,
-        country
+        country,
+        photoUrl
     } = req.body;
 
     try {
@@ -48,7 +49,8 @@ router.put('/updateUser/:id', async (req, res) => {
                 gender,
                 language,
                 nickname,
-                country
+                country,
+                photoUrl
             },
             { new: true, runValidators: true }
         );
