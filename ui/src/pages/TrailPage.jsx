@@ -23,7 +23,7 @@ export default function TrailPage() {
                     const favRes = await fetch(`http://localhost:5001/api/favorite/isFavorite`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ user_id, trail_id: _id }),
+                        body: JSON.stringify({ userId:user_id, trailID: _id }),
                     });
                     if (favRes.status === 404){
                         setFavorite(false)

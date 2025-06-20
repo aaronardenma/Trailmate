@@ -4,21 +4,26 @@ const Favorite = require('../models/Favorite');
 
 router.get('/getFavoriteTrails/:userId', async (req, res) => {
     try {
-        const trips = await Favorite.find({ userId: req.params.userId });
-        res.status(200).json(trips);
+        const trails = await Favorite.find({ userId: req.params.userId });
+        res.status(200).json(trails);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
-router.get('/isFavorite', async (req, res) => {
-    const { userId, trailID } = req.body;
-    try {
-        const favorite = await Favorite.findOne({
-            userId: userId,
-            trailId: trailID
-        });
+router.post('/isFavorite', async (req, res) => {
 
-        res.status(200).json({ isFavorite: !!favorite });
+    const { userId, trailID } = req.body;
+    console.log(trailID)
+    try {
+        const trails = await Favorite.find({ userId: userId });
+        let isFavorite = false;
+        for (let t of trails){
+            const t_id = t.trailID
+            if (t_id === trailID){
+                isFavorite = true
+            }
+        }
+        res.status(200).json({ isFavorite: isFavorite });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
