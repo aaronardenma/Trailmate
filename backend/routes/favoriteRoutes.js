@@ -2,6 +2,28 @@ const express = require('express');
 const router = express.Router();
 const Favorite = require('../models/Favorite');
 
+router.get('/getFavoriteTrails/:userId', async (req, res) => {
+    try {
+        const trips = await Favorite.find({ userId: req.params.userId });
+        res.status(200).json(trips);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+router.get('/isFavorite', async (req, res) => {
+    const { userId, trailID } = req.body;
+    try {
+        const favorite = await Favorite.findOne({
+            userId: userId,
+            trailId: trailID
+        });
+
+        res.status(200).json({ isFavorite: !!favorite });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 router.post('/addFavorite', async (req, res) => {
     const { userId, trailID } = req.body;
 

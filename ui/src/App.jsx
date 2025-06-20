@@ -20,8 +20,8 @@ function App() {
         <Route path="/map" element={<Map />} />
         <Route path="/trail/:_id" element={<TrailPage />} />
         <Route path="/filters" element={<Filters />} />
-        <Route path="/favourites" element={<Favourites />} />
-        <Route path="/profile" element={<UserProfile />} />
+        <Route path="/favourites/:_id" element={<Favourites />} />
+        <Route path="/profile/:_id" element={<UserProfile />} />
       </Routes>
     </div>
       </>

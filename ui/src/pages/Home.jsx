@@ -10,6 +10,7 @@ export default function Home() {
 
     const elevationFilter = useSelector((state) => state.filters.elevation);
     const distanceFilter = useSelector((state) => state.filters.distance);
+    localStorage.setItem('user_id', '68551e80e12a0479b20847ef');
     useEffect(() => {
         fetch("http://localhost:5001/api/trails/getTrails")
             .then((res) => {
