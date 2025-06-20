@@ -52,7 +52,10 @@ router.post('/addFavorite', async (req, res) => {
 });
 
 router.delete('/deleteFavorite', async (req, res) => {
+
     const { userId, trailID } = req.body;
+    console.log(userId)
+    console.log(trailID)
 
     if (!userId || !trailID) {
         return res.status(400).json({ error: 'userId and trailID are required' });
@@ -60,6 +63,7 @@ router.delete('/deleteFavorite', async (req, res) => {
 
     try {
         const deleted = await Favorite.findOneAndDelete({ userId, trailID });
+        console.log(deleted)
 
         if (!deleted) {
             return res.status(404).json({ message: 'Favorite not found' });

@@ -52,7 +52,7 @@ export default function TrailPage() {
             setFavorite(false)
             try {
                 const res = await fetch("http://localhost:5001/api/favorite/deleteFavorite", {
-                    method: "POST",
+                    method: "DELETE",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ userId:user_id, trailID: _id }),
                 });
@@ -94,7 +94,6 @@ export default function TrailPage() {
     return (<div className="min-h-screen bg-gradient-to-b from-[#DAD7CD] to-[#f0eee7] py-10 px-4">
             <div className="max-w-5xl mx-auto flex flex-col gap-10">
 
-                {/* Header with Favorite Star */}
                 <div className="relative bg-white shadow-lg rounded-lg px-6 py-4">
                     <h1 className="text-4xl font-bold text-[#2F4F4F] text-center">{trail.name}</h1>
 
@@ -122,7 +121,6 @@ export default function TrailPage() {
                     </button>
                 </div>
 
-                {/* Image and Map */}
                 <div className="flex flex-col lg:flex-row gap-6">
                     <img
                         src={trail.photoUrl}
@@ -137,7 +135,6 @@ export default function TrailPage() {
                     </div>
                 </div>
 
-                {/* Trail Details */}
                 <div className="bg-white rounded-lg shadow-md p-6 space-y-4 border border-gray-200">
                     <p className="text-gray-700 leading-relaxed text-lg">{trail.description}</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

@@ -39,14 +39,15 @@ export default function TrailCard({ trail_id }) {
         e.preventDefault();
         if (isFavorite) {
             setIsFavorite(false);
+            console.log("delete")
             try {
                 await fetch("http://localhost:5001/api/favorite/deleteFavorite", {
-                    method: "POST",
+                    method: "DELETE",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ userId: user_id, trailID: trail_id }),
                 });
             } catch (err) {
-                setIsFavorite(true);
+                // setIsFavorite(true);
             }
         } else {
             setIsFavorite(true);
@@ -57,7 +58,7 @@ export default function TrailCard({ trail_id }) {
                     body: JSON.stringify({ userId: user_id, trailID: trail_id }),
                 });
             } catch (err) {
-                setIsFavorite(false);
+                // setIsFavorite(false);
             }
         }
     };
