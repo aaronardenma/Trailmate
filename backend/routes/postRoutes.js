@@ -12,7 +12,7 @@ router.get('/getPosts', async (req, res) => {
 });
 
 router.post('/addPost', async (req, res) => {
-    const { userId, title, description, dateOfPost, photoUrl } = req.body;
+    const { userId, title, description, photoUrl } = req.body;
 
     if (!userId || !title || !description) {
         return res.status(400).json({ error: 'userId, title, and description are required' });
@@ -22,9 +22,10 @@ router.post('/addPost', async (req, res) => {
         userId,
         title,
         description,
-        dateOfPost,
+        dateOfPost: new Date(),
         photoUrl: photoUrl || '',
     });
+    console.log(newPost)
 
     try {
         await newPost.save();
