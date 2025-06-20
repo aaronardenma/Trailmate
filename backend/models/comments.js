@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const commentSchema = new Schema({
-    userId: { type: Schema.Types.ObjectId, ref: 'User' },
+    userID: { type: Schema.Types.ObjectId, ref: 'User' },
+    postID:String,
     comment: String,
     date: { type: Date, default: Date.now }
 });
