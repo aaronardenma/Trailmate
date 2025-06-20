@@ -26,8 +26,8 @@ export default function PlanInputs() {
             <div className="max-w-md mr-4">
                 <PopoverCalendar />
             </div>
-            <input className="mr-4" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
-            <button className="cursor-pointer outline rounded p-1 font-bold bg-[#588157]" type="submit">Plan it!</button>
+            <input className="outline mr-4" type="time" value={time} onChange={(e) => setTime(e.target.value)} />
+            <button className="cursor-pointer outline rounded p-1 font-bold text-[#fff] bg-[#588157]" type="submit">Plan it!</button>
         </form>
     </>
     )
