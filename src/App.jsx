@@ -8,6 +8,7 @@ import Favourites from "./pages/Favourites"
 import UserProfile from "./pages/UserProfile"
 import TrailPage from "@/pages/TrailPage.jsx";
 import GearPlanner from "./pages/GearPlanner.jsx"; 
+import Register from './pages/Register.jsx';
 
 function App() {
   const location = useLocation()
@@ -27,6 +28,7 @@ function App() {
         <Route path="/favourites" element={<Favourites />} />
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/gear-planner" element={<GearPlanner />} /> 
+        <Route path="/register" element={<Register />} />
       </Routes>
     </div>
       </>
