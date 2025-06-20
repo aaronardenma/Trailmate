@@ -11,6 +11,7 @@ const usersSchema = new Schema({
     language: String,
     nickname: String,
     country: String,
+    photoUrl:String
 });
 
 const User = mongoose.model('User', usersSchema);

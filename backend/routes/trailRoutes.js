@@ -49,7 +49,8 @@ router.post('/addTrail', async (req, res) => {
         weather,
         tags,
         difficulty,
-        distance
+        distance,
+        photoUrl
     } = req.body;
 
     const newTrail = new Trail({
@@ -62,7 +63,8 @@ router.post('/addTrail', async (req, res) => {
         weather,
         tags,
         difficulty,
-        distance
+        distance,
+        photoUrl
     });
 
     try {
