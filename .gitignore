@@ -25,3 +25,6 @@ dist-ssr
 *.sw?
 
 backend/.env
+trailmate/node_modules
+node_modules
+trailmate
