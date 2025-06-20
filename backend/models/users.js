@@ -26,13 +26,11 @@ const usersSchema = new Schema({
     badge: String,
     gender: String,
     nickname: String,
-    country: {
-        type: String
-    },
-    // preferences: ,
-}, {
-    timestamps: true
+    country: String,
+    photoUrl:String
 });
+
+const User = mongoose.model('User', usersSchema);
 
 usersSchema.pre('save', async function(next) {
     if (!this.isModified('password')) return next();

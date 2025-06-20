@@ -2,6 +2,33 @@ const express = require('express');
 const router = express.Router();
 const Favorite = require('../models/Favorite');
 
+router.get('/getFavoriteTrails/:userId', async (req, res) => {
+    try {
+        const trails = await Favorite.find({ userId: req.params.userId });
+        res.status(200).json(trails);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+router.post('/isFavorite', async (req, res) => {
+
+    const { userId, trailID } = req.body;
+    console.log(trailID)
+    try {
+        const trails = await Favorite.find({ userId: userId });
+        let isFavorite = false;
+        for (let t of trails){
+            const t_id = t.trailID
+            if (t_id === trailID){
+                isFavorite = true
+            }
+        }
+        res.status(200).json({ isFavorite: isFavorite });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 router.post('/addFavorite', async (req, res) => {
     const { userId, trailID } = req.body;
 
@@ -25,7 +52,10 @@ router.post('/addFavorite', async (req, res) => {
 });
 
 router.delete('/deleteFavorite', async (req, res) => {
+
     const { userId, trailID } = req.body;
+    console.log(userId)
+    console.log(trailID)
 
     if (!userId || !trailID) {
         return res.status(400).json({ error: 'userId and trailID are required' });
@@ -33,6 +63,7 @@ router.delete('/deleteFavorite', async (req, res) => {
 
     try {
         const deleted = await Favorite.findOneAndDelete({ userId, trailID });
+        console.log(deleted)
 
         if (!deleted) {
             return res.status(404).json({ message: 'Favorite not found' });

@@ -36,22 +36,26 @@ router.put('/updateUser/:id', async (req, res) => {
         gender,
         language,
         nickname,
-        country
+        country,
+        photoUrl
     } = req.body;
 
     try {
-        const updateData = {
-            firstName,
-            lastName,
-            email,
-            badge,
-            gender,
-            language,
-            nickname,
-            country
-        };
-
-        const updatedUser = await userService.updateUser(req.params.id, updateData);
+        const updatedUser = await User.findByIdAndUpdate(
+            req.params.id,
+            {
+                firstName,
+                lastName,
+                email,
+                badge,
+                gender,
+                language,
+                nickname,
+                country,
+                photoUrl
+            },
+            { new: true, runValidators: true }
+        );
 
         if (!updatedUser) {
             return res.status(404).json({ message: 'User not found' });

@@ -4,8 +4,14 @@ const Trip = require('../models/trips');
 const mongoose = require('mongoose');
 
 router.get('/getTripsForUser/:userId', async (req, res) => {
+    console.log("jere")
+    const userID = req.params.userId
     try {
-        const trips = await Trip.find({ userId: req.params.userId });
+        console.log("ojeay")
+        console.log(userID)
+        const trips = await Trip.find({ userId: userID });
+        console.log(trips)
+        console.log("jwoefjwe")
         res.status(200).json(trips);
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -66,12 +72,13 @@ router.get('/getTripsBetweenDates', async (req, res) => {
 });
 
 router.post('/addTrip', async (req, res) => {
-    const { userId, trailID, dateOfTrip, userRating, userComments } = req.body;
+    const { userId, trailID, dateOfTrip, status,userRating, userComments } = req.body;
 
     const newTrip = new Trip({
         userId,
         trailID,
         dateOfTrip,
+        status,
         userRating,
         userComments
     });
