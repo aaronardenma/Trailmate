@@ -41,7 +41,7 @@ export default function TripPage() {
                 body: JSON.stringify({
                     userId: user_id,
                     trailID: _id,
-                    date,
+                    dateOfTrip:Date(date),
                     status: "finished",
                     userRating,
                     userComments,
