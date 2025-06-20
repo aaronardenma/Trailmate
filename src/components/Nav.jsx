@@ -2,7 +2,6 @@ import {Link} from "react-router-dom"
 import { useDispatch, useSelector} from "react-redux"
 import { FaRegUserCircle } from "react-icons/fa";
 import { FaRegStar } from "react-icons/fa";
-import { GiBackpack } from "react-icons/gi";
 import { resetDistanceFilter, resetElevationFilter } from "../store/trailFiltersSlice";
 
 export default function Nav() {
@@ -23,12 +22,6 @@ export default function Nav() {
               <Link to="/favourites" className="mr-8 flex items-center" >
                 <FaRegStar className="text-[#588157] mr-1.5 text-xl" />
                 <span className="font-semibold">Favourites</span>
-              </Link>
-            </li>
-            <li>
-              <Link to="/gear-planner" className="mr-8 flex items-center">
-                <GiBackpack className="text-[#588157] mr-1.5 text-xl" />
-                <span className="font-semibold">Gear Planner</span>
               </Link>
             </li>
             <div>

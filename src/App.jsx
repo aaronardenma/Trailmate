@@ -7,7 +7,6 @@ import Landing from "./pages/Landing.jsx"
 import Favourites from "./pages/Favourites"
 import UserProfile from "./pages/UserProfile"
 import TrailPage from "@/pages/TrailPage.jsx";
-import GearPlanner from "./pages/GearPlanner.jsx"; 
 import Register from './pages/Register.jsx';
 
 function App() {
@@ -27,7 +26,6 @@ function App() {
         <Route path="/filters" element={<Filters />} />
         <Route path="/favourites" element={<Favourites />} />
         <Route path="/profile" element={<UserProfile />} />
-        <Route path="/gear-planner" element={<GearPlanner />} /> 
         <Route path="/register" element={<Register />} />
       </Routes>
     </div>
