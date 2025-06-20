@@ -5,7 +5,7 @@ export default function CommunityPage() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-
+//
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
