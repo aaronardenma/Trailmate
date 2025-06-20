@@ -23,6 +23,13 @@ export default function FilterSlider({min, max, filterName, value, onChange, def
                     <div
                         className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-4 border-transparent border-t-gray-800"></div>
                 </div>
+                <Slider>
+                    value={[value]}
+                    min={min}
+                    max={max}
+                    step={1}
+                    onValueChange={(val) => handleChange(val)}
+                </Slider>
 
                 <Slider
                     value={[value]}

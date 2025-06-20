@@ -1,0 +1,36 @@
+.profile-page {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 2px solid black;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+.profile-info img {
+    align-items: center;
+    width: 250px;
+    height: 200px;
+}
+
+.left-right-panes{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+}
+
+.left-pane,
+.right-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 100px;
+}
+
