@@ -1,25 +1,19 @@
-// services/userService.js
 const User = require('../models/users');
 
-// STEP 1: Email and Password Registration
 async function registerStep1(email, password) {
     try {
-        // Validate password criteria
         if (!validatePassword(password)) {
             throw new Error('Password does not meet criteria');
         }
 
-        // Check if email already exists
         const existingUser = await User.findOne({ email: email.toLowerCase() });
         if (existingUser) {
             throw new Error('Email already registered');
         }
 
-        // Create user with just email and password (other fields will be null/undefined initially)
         const newUser = new User({
             email: email.toLowerCase(),
             password: password,
-            // Leave required fields empty for now - we'll update in step 2
         });
 
         const savedUser = await newUser.save();
@@ -32,7 +26,6 @@ async function registerStep1(email, password) {
 
     } catch (error) {
         if (error.code === 11000) {
-            // MongoDB duplicate key error
             return {
                 success: false,
                 message: 'Email already registered'
@@ -46,17 +39,14 @@ async function registerStep1(email, password) {
     }
 }
 
-// STEP 2: Complete Profile Information
 async function registerStep2(userId, profileData) {
     try {
         const { firstName, lastName, badge, gender, language, nickname, country } = profileData;
         
-        // Validate required fields
         if (!firstName || !lastName || !country) {
             throw new Error('First name, last name, and country are required');
         }
         
-        // Find the user and update with profile information
         const updatedUser = await User.findByIdAndUpdate(
             userId,
             {
@@ -69,8 +59,8 @@ async function registerStep2(userId, profileData) {
                 country
             },
             { 
-                new: true, // Return updated document
-                runValidators: true // Run schema validators
+                new: true,
+                runValidators: true 
             }
         );
 
@@ -92,9 +82,7 @@ async function registerStep2(userId, profileData) {
     }
 }
 
-// Password validation function
 function validatePassword(password) {
-    // Example criteria - adjust as needed
     const minLength = 8;
     const hasUpperCase = /[A-Z]/.test(password);
     const hasLowerCase = /[a-z]/.test(password);
@@ -120,7 +108,6 @@ function validatePassword(password) {
     return true;
 }
 
-// Check if email is available
 async function checkEmailAvailability(email) {
     try {
         const existingUser = await User.findOne({ email: email.toLowerCase() });
@@ -136,7 +123,6 @@ async function checkEmailAvailability(email) {
     }
 }
 
-// Get user by ID
 async function getUserById(id) {
     try {
         const user = await User.findById(id);
@@ -146,7 +132,6 @@ async function getUserById(id) {
     }
 }
 
-// Update user
 async function updateUser(id, updateData) {
     try {
         const updatedUser = await User.findByIdAndUpdate(
@@ -160,7 +145,6 @@ async function updateUser(id, updateData) {
     }
 }
 
-// Delete user
 async function deleteUser(id) {
     try {
         const deletedUser = await User.findByIdAndDelete(id);

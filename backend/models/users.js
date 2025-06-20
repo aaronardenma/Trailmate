@@ -34,13 +34,10 @@ const usersSchema = new Schema({
     timestamps: true
 });
 
-// Hash password before saving
 usersSchema.pre('save', async function(next) {
-    // Only hash the password if it has been modified (or is new)
     if (!this.isModified('password')) return next();
     
     try {
-        // Hash password with cost of 12
         const saltRounds = 12;
         this.password = await bcrypt.hash(this.password, saltRounds);
         next();
@@ -49,7 +46,6 @@ usersSchema.pre('save', async function(next) {
     }
 });
 
-// Instance method to check password
 usersSchema.methods.comparePassword = async function(candidatePassword) {
     try {
         return await bcrypt.compare(candidatePassword, this.password);
@@ -58,7 +54,6 @@ usersSchema.methods.comparePassword = async function(candidatePassword) {
     }
 };
 
-// Remove password from JSON output
 usersSchema.methods.toJSON = function() {
     const userObject = this.toObject();
     delete userObject.password;

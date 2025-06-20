@@ -13,6 +13,7 @@ export default function Auth() {
     const nav = useNavigate()
     const dispatch = useDispatch()
     const loggedIn = useSelector(state => state.users.loggedIn)
+    const logInError = useSelector(state => state.users.logInError)
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -40,11 +41,18 @@ export default function Auth() {
             nav("/setup")
         }
     }
-        useEffect(() => {
-            if (loggedIn) {
-                nav("/")
-            }
-        }, [loggedIn, nav])
+
+    useEffect(() => {
+        if (loggedIn) {
+            nav("/")
+        }
+    }, [loggedIn, nav])
+        
+    useEffect(() => {
+        if (logInError) {
+            alert("Login details are invalid");
+        }
+    }, [logInError]);
 
     return <div className='flex'>
         <div className='max-w-3/4'>
@@ -66,7 +74,7 @@ export default function Auth() {
                 </div>
                 <button className="outline w-full text-sm rounded bg-[#588157] text-[#fff] font-semibold p-2 cursor-pointer" type="submit">{isLogin ? "Sign in" : "Create Account"}</button>
             </form>
-            <p className='text-xs'>{isLogin ? "Don't have an account? " : "Already have an account? "}<a className='text-[#0000EE] cursor-pointer' onClick={() => isLogin= !isLogin} >{isLogin ? "Sign up here" : "Log in here"}</a></p>
+            <p className='text-xs'>{isLogin ? "Don't have an account? " : "Already have an account? "}<a className='text-[#0000EE] cursor-pointer' onClick={() => nav(isLogin ? '/auth/create' : '/auth/login')} >{isLogin ? "Sign up here" : "Log in here"}</a></p>
         </div>
     </div>
 }

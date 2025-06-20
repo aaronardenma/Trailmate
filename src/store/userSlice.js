@@ -4,9 +4,9 @@ const mockFavourites = trailData.slice(0,5)
 
 const initialState = {
     users: [{email: 'aaronma113@gmail.com', password: 'abc', favourites: mockFavourites}],
-    loggedIn: true,
+    loggedIn: false,
     logInError: false,
-    currUser: {email: 'aaronma113@gmail.com', password: 'abc', favourites: mockFavourites}
+    currUser: null
 }
 
 const users = createSlice({
@@ -51,9 +51,11 @@ const users = createSlice({
             if (user && user.password === action.payload.password) {
                 state.loggedIn = true;
                 state.currUser = user
+                state.logInError = false
             } else {
                 state.loggedIn = false;
                 state.currUser = null
+                state.logInError = true
             }
 
         }

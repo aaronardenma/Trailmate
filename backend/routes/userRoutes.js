@@ -3,7 +3,6 @@ const express = require('express');
 const router = express.Router();
 const userService = require('../services/userService');
 
-// Get user by ID
 router.get('/getUserById/:id', async (req, res) => {
     try {
         const user = await userService.getUserById(req.params.id);
@@ -16,7 +15,6 @@ router.get('/getUserById/:id', async (req, res) => {
     }
 });
 
-// Delete user
 router.delete('/deleteUser/:id', async (req, res) => {
     try {
         const deletedUser = await userService.deleteUser(req.params.id);
@@ -29,7 +27,6 @@ router.delete('/deleteUser/:id', async (req, res) => {
     }
 });
 
-// Update user
 router.put('/updateUser/:id', async (req, res) => {
     const {
         firstName,
@@ -66,7 +63,6 @@ router.put('/updateUser/:id', async (req, res) => {
     }
 });
 
-// Registration Step 1: Email and Password
 router.post("/register/step1", async (req, res) => {
     const { email, password } = req.body;
 
@@ -86,7 +82,6 @@ router.post("/register/step1", async (req, res) => {
     }
 });
 
-// Registration Step 2: Complete Profile
 router.post('/register/step2', async (req, res) => {
     const { userId, firstName, lastName, badge, gender, language, nickname, country } = req.body;
     
@@ -107,7 +102,6 @@ router.post('/register/step2', async (req, res) => {
     }
 });
 
-// Check email availability
 router.get('/check-email/:email', async (req, res) => {
     const { email } = req.params;
     
