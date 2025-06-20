@@ -17,7 +17,7 @@ services:
       - ./API:/app
   ui:
     build:
-      context: ui
+      context: frontend
       dockerfile: ../Dockerfile.ui
     ports:
       - "3000:3000"
