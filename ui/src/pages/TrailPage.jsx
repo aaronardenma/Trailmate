@@ -3,8 +3,8 @@ import { useState, useEffect } from "react";
 import LocationMap from "../components/LocationMap.jsx";
 
 export default function TrailPage() {
-    // const { id } = useParams();
-    const id = '685325190e700877c9c4a244'
+    const { _id } = useParams();
+    // const id = '685325190e700877c9c4a244'
     const [trail, setTrail] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -12,11 +12,9 @@ export default function TrailPage() {
     useEffect(() => {
         const fetchTrailData = async () => {
             try {
-                const response = await fetch(`http://localhost:5001/api/trails/getTrailById/${id}`);
-                if (!response.ok) {
-                    throw new Error('Trail not found');
-                }
+                const response = await fetch(`http://localhost:5001/api/trails/getTrailById/${_id}`);
                 const data = await response.json();
+                console.log(data)
                 setTrail(data);
                 setLoading(false);
             } catch (err) {
@@ -25,7 +23,7 @@ export default function TrailPage() {
             }
         };
         fetchTrailData();
-    }, [id]);
+    }, [_id]);
 
     if (loading) {
         return <div className="p-6 text-center text-gray-600">Loading...</div>;

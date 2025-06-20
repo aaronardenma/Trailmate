@@ -1,67 +1,94 @@
-import TrailCard from "../components/TrailCard"
-import {useState} from 'react'
-import trailData from "../data.json"
-import Search from "../components/Search"
-import { useSelector } from "react-redux"
+import TrailCard from "../components/TrailCard";
+import { useState, useEffect } from "react";
+// import {trails} from "../data.js";
+import Search from "../components/Search";
+import { useSelector } from "react-redux";
 
 export default function Home() {
-    let [searchKey, setSearchKey] = useState("")
+    const [searchKey, setSearchKey] = useState("");
+    const [trailData, setTrailData] = useState([]);
 
-    const handleSearch = (e) => {
-        setSearchKey(e.target.value)
-    }
-    
-    const searchTrails = () => {
-        let searchedTrails = []
-        let trails = trailData
-        console.log(`trails length: ${trails.length}`)
-        if (searchKey === "") {
-            searchedTrails = trails
-        } else {
-            for (let i = 0; i < trails.length; i++) {
-                if (trails[i].name.toLowerCase().includes(searchKey.toLowerCase())) {
-                    searchedTrails.push(trails[i])
-                } else {
-                    continue;
-                }
-            }
-        }
-        const filteredTrails = filterTrails(searchedTrails)
-        console.log(filteredTrails.length)
-        return filteredTrails.map((trail) => (
-            <TrailCard trail ={trail}/>
-            // <TrailCard name={trail.name} key={trail.name.toLowerCase()} img={trail.photoUrl} distance={`Distance (km): ${trail.distanceKm}` id = {trail.id}} />
-        ));
-    }
+    const elevationFilter = useSelector((state) => state.filters.elevation);
+    const distanceFilter = useSelector((state) => state.filters.distance);
+    useEffect(() => {
+        fetch("http://localhost:5001/api/trails/getTrails")
+            .then((res) => {
+                if (!res.ok) throw new Error(res.statusText);
+                return res.json();
+            })
+            .then((data) => {
+                setTrailData(data);
+            })
+            .catch((err) => console.error("Error fetching trails:", err));
+    }, []);
 
-    const filterTrails = (arr) => {
-        const elevationFilter = useSelector(state => state.filters.elevation)
-        const distanceFilter = useSelector(state => state.filters.distance)
-        console.log(`elevation filter: ${elevationFilter}`)
-        console.log(`distance filter: ${distanceFilter}`)
-        console.log(`filtered input arr legnth: ${arr.length}`)
+    console.log(trailData)
+    // useEffect(() => {
+    //     const addTrail = async (trail) => {
+    //         try {
+    //             const res = await fetch("http://localhost:5001/api/trails/addTrail", {
+    //                 method: "POST",
+    //                 headers: {
+    //                     "Content-Type": "application/json",
+    //                 },
+    //                 body: JSON.stringify(trail),
+    //             });
+    //
+    //             if (!res.ok) {
+    //                 throw new Error(`Error adding trail: ${res.statusText}`);
+    //             }
+    //
+    //             const data = await res.json();
+    //             console.log(`Trail added: ${data.name}`);
+    //         } catch (error) {
+    //             console.error( error.message);
+    //         }
+    //     };
+    //
+    //     trails.forEach(addTrail);
+    //     setTrailData(trails);
+    // }, []);
 
-        let filteredTrails = []
-        for (let i = 0; i < arr.length; i++) {
-            if (arr[i].avgElevationM < elevationFilter && arr[i].distanceKm < distanceFilter) {
-                filteredTrails.push(arr[i])
-            } else {
-                continue;
-            }
-        }
+    // const handleSearch = (e) => {
+    //     setSearchKey(e.target.value);
+    // };
+    //
+    // const searchTrails = () => {
+    //     let searched = trailData;
+    //
+    //     if (searchKey !== "") {
+    //         searched = searched.filter((trail) =>
+    //             trail.name.toLowerCase().includes(searchKey.toLowerCase())
+    //         );
+    //     }
+    //
+    //     return filterTrails(searched);
+    // };
 
-        return filteredTrails
-    }
+    // const filterTrails = (arr) => {
+    //     return arr.filter(
+    //         (trail) =>
+    //             trail.avgElevationM < elevationFilter &&
+    //             trail.distanceKm < distanceFilter
+    //     );
+    // };
+    //
+    // const results = searchTrails();
 
-    const results = searchTrails()
-    
     return (
         <div className="flex flex-col text-center bg-[#A3B18A]">
-            <Search handleSearch={handleSearch} />
-            
+            {/*<Search handleSearch={handleSearch} />*/}
+
             <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mx-8">
-                {results.length > 0 ? results : (<span className="p-4 font-semibold text-lg">No trails found for "{searchKey}"</span>)}
+                {trailData.length > 0 ? (
+                    trailData.map((trail) => <TrailCard key={trail.id} trail={trail} />)
+                )
+                    : (
+                    <span className="p-4 font-semibold text-lg">
+                        No trails found for "{searchKey}"
+                    </span>
+                )}
             </div>
         </div>
-    )
-};
+    );
+}

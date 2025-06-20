@@ -15,13 +15,17 @@ const trailsSchema = new Schema({
         type: Number,
         required: true
     },
+    photoUrl: {
+        type: String,
+        required: true
+    },
     city: String,
     description: String,
     elevation: String,
     weather: String,
     tags: [String],
     difficulty: String,
-    distance: String
+    distance: String,
 }, {
     timestamps: true
 });
