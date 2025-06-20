@@ -18,7 +18,7 @@ export default function PopoverCalendar({className}) {
   })
 
   return (
-    <div className={cn("grid gap-2 cursor-pointer")}>
+    <div className={cn("grid gap-2 cursor-pointer mb-4")}>
       <Popover>
         <PopoverTrigger asChild>
           <Button

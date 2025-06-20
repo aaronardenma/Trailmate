@@ -61,7 +61,7 @@ export default function Auth() {
         <div className='flex flex-col mx-auto text-left justify-center'>
             <Link className='text-3xl font-bold mb-12' to="/">TrailMate</Link>
             <h2 className='font-semibold mb-4'>{isLogin ? "Nice to see you again" : "Create your Account"}</h2>
-            <form className='flex flex-col mb-4' id="form" onSubmit={(e) => handleSubmit(e)}>
+            <form className='flex flex-col' id="form" onSubmit={(e) => handleSubmit(e)}>
                 <div className='mb-4'>
                     <div className='mb-4'>
                         <p className='mb-2 text-xs ml-2 text-gray-500'>Login</p>
@@ -74,6 +74,7 @@ export default function Auth() {
                 </div>
                 <button className="outline w-full text-sm rounded bg-[#588157] text-[#fff] font-semibold p-2 cursor-pointer" type="submit">{isLogin ? "Sign in" : "Create Account"}</button>
             </form>
+            <hr className='my-4' />
             <p className='text-xs'>{isLogin ? "Don't have an account? " : "Already have an account? "}<a className='text-[#0000EE] cursor-pointer' onClick={() => nav(isLogin ? '/auth/create' : '/auth/login')} >{isLogin ? "Sign up here" : "Log in here"}</a></p>
         </div>
     </div>
