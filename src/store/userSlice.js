@@ -3,7 +3,7 @@ import trailData from "../data.json"
 const mockFavourites = trailData.slice(0,5)
 
 const initialState = {
-    users: [{email: 'aaronma113@gmail.com', password: 'abc', favourites: mockFavourites}],
+    users: [{email: 'aaronma113@gmail.com', password: 'abc', favourites: mockFavourites, nickname: "Aaron", firstName: "Aaron", lastName: "Ma", gender: "Male", badge:"Beginner", country: "Canada"}],
     loggedIn: false,
     logInError: false,
     currUser: null
@@ -58,9 +58,14 @@ const users = createSlice({
                 state.logInError = true
             }
 
+        },
+        logout: (state) => {
+            state.currUser = null
+            state.loggedIn = false
+
         }
     }
 })
 
-export const { addUser, deleteUser, setUpProfile, login } = users.actions
+export const { addUser, deleteUser, setUpProfile, login, logout } = users.actions
 export default users.reducer;
