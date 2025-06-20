@@ -10,6 +10,7 @@ import TrailPage from "@/pages/TrailPage.jsx";
 import PlanTripPage from "@/pages/PlanTrip.jsx";
 import TripPage from "@/pages/TripPage.jsx";
 import CommunityPage from "@/pages/CommunityPage.jsx";
+import UserPostPage from "@/pages/UserPostPage.jsx";
 
 function App() {
 
@@ -28,6 +29,7 @@ function App() {
         <Route path="/planTrip/:_id" element={<PlanTripPage />} />
         <Route path="/trip/:_id" element={<TripPage />} />
         <Route path="/community" element={<CommunityPage />} />
+        <Route path="/yourPosts" element={<UserPostPage />} />
       </Routes>
     </div>
       </>

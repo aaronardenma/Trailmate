@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from "react";
+import {useNavigate} from "react-router-dom";
 
 export default function CommunityPage() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+
 
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -25,6 +28,35 @@ export default function CommunityPage() {
                 setLoading(false);
             });
     };
+    const handleLike = async (post) => {
+        console.log("reached")
+        try {
+            const res = await fetch(`http://localhost:5001/api/posts/updatePost/${post._id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    userId: post.userId,
+                    title: post.title,
+                    description: post.description,
+                    dateOfPost: post.dateOfPost,
+                    photoUrl: post.photoUrl,
+                    likes: post.likes + 1,
+                    comments: post.comments
+                }),
+            });
+
+            if (!res.ok) throw new Error("Failed to like post");
+
+            const updatedPost = await res.json();
+
+            fetchPosts()
+        } catch (err) {
+            console.error("Error liking post:", err);
+        }
+    };
+    const handleYourPosts = () => {
+        navigate('/yourPosts')
+    }
 
     useEffect(() => {
         fetchPosts();
@@ -71,7 +103,7 @@ export default function CommunityPage() {
                 </button>
 
                 <button
-                    onClick={() => alert('Feature coming soon: Filter posts by current user!')}
+                    onClick={() =>handleYourPosts()}
                     className="bg-[#588157] text-white  px-6 py-3 rounded font-semibold hover:bg-[#E6E6E6] transition"
                 >
                     Your Posts
@@ -163,7 +195,15 @@ export default function CommunityPage() {
                                             : "Unknown User"}
                                     </span>
                                 </p>
-                                <p className="mt-1 text-gray-500 text-sm">Likes: {post.likes}</p>
+                                <p className="mt-1 text-gray-500 text-sm flex items-center gap-2">
+                                    Likes: {post.likes}
+                                    <button
+                                        onClick={() => handleLike(post)}
+                                        className="ml-2 text-sm bg-[#A3B18A] text-white px-3 py-1 rounded hover:bg-[#859966] transition"
+                                    >
+                                        Like
+                                    </button>
+                                </p>
                                 {post.comments && post.comments.length > 0 && (
                                     <div className="mt-4 p-3 bg-gray-100 rounded">
                                         <strong>First comment:</strong>{" "}
