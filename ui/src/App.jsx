@@ -7,6 +7,8 @@ import Landing from "./pages/Landing.jsx"
 import Favourites from "./pages/Favourites"
 import UserProfile from "./pages/UserProfile"
 import TrailPage from "@/pages/TrailPage.jsx";
+import PlanTripPage from "@/pages/PlanTrip.jsx";
+import TripPage from "@/pages/TripPage.jsx";
 
 function App() {
 
@@ -22,6 +24,8 @@ function App() {
         <Route path="/filters" element={<Filters />} />
         <Route path="/favourites" element={<Favourites />} />
         <Route path="/profile" element={<UserProfile />} />
+        <Route path="/planTrip/:_id" element={<PlanTripPage />} />
+        <Route path="/trip/:_id" element={<TripPage />} />
       </Routes>
     </div>
       </>

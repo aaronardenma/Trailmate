@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import { useState, useEffect } from "react";
 import LocationMap from "../components/LocationMap.jsx";
 
@@ -23,17 +23,14 @@ export default function TrailPage() {
                     const favRes = await fetch(`http://localhost:5001/api/favorite/isFavorite`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ userId:user_id, trailID: _id }),
+                        body: JSON.stringify({ userId: user_id, trailID: _id }),
                     });
-                    if (favRes.status === 404){
-                        setFavorite(false)
-                    }
-                    else{
+                    if (favRes.status === 404) {
+                        setFavorite(false);
+                    } else {
                         const favData = await favRes.json();
-                        console.log(favData)
                         setFavorite(favData.isFavorite);
                     }
-
                 }
             } catch (err) {
                 setError(err.message);
@@ -48,29 +45,26 @@ export default function TrailPage() {
             alert("You must be logged in to favorite trails.");
             return;
         }
-        if (favorite){
-            setFavorite(false)
+
+        if (favorite) {
+            setFavorite(false);
             try {
-                const res = await fetch("http://localhost:5001/api/favorite/deleteFavorite", {
+                await fetch("http://localhost:5001/api/favorite/deleteFavorite", {
                     method: "DELETE",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ userId:user_id, trailID: _id }),
+                    body: JSON.stringify({ userId: user_id, trailID: _id }),
                 });
-
             } catch (err) {
                 setFavorite((fav) => !fav);
                 alert("Error updating favorite: " + err.message);
             }
-
-        }
-        else{
-            setFavorite(true)
-            console.log("here i am")
+        } else {
+            setFavorite(true);
             try {
-                const res = await fetch("http://localhost:5001/api/favorite/addFavorite", {
+                await fetch("http://localhost:5001/api/favorite/addFavorite", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ userId:user_id, trailID: _id }),
+                    body: JSON.stringify({ userId: user_id, trailID: _id }),
                 });
             } catch (err) {
                 setFavorite((fav) => !fav);
@@ -84,23 +78,18 @@ export default function TrailPage() {
     }
 
     if (error) {
-        return (
-            <div className="p-6 text-center text-red-600 font-semibold">
-                {error}
-            </div>
-        );
+        return <div className="p-6 text-center text-red-600 font-semibold">{error}</div>;
     }
 
-    return (<div className="min-h-screen bg-gradient-to-b from-[#DAD7CD] to-[#f0eee7] py-10 px-4">
-            <div className="max-w-5xl mx-auto flex flex-col gap-10">
-
-                <div className="relative bg-white shadow-lg rounded-lg px-6 py-4">
-                    <h1 className="text-4xl font-bold text-[#2F4F4F] text-center">{trail.name}</h1>
-
+    return (
+        <div className="min-h-screen bg-gradient-to-b from-[#DAD7CD] to-[#f0eee7] py-12 px-6">
+            <div className="max-w-6xl mx-auto flex flex-col gap-10">
+                <div className="relative bg-white shadow-xl rounded-xl px-8 py-6 border border-gray-200">
+                    <h1 className="text-4xl font-extrabold text-center text-[#2F4F4F]">{trail.name}</h1>
                     <button
                         onClick={handleFavorite}
                         aria-label={favorite ? "Remove from favorites" : "Add to favorites"}
-                        className="absolute top-4 right-4 rounded-full p-2 bg-gray-100 hover:bg-gray-200 transition"
+                        className="absolute top-4 right-4 rounded-full p-2 bg-white shadow hover:bg-gray-100 transition"
                     >
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -125,9 +114,9 @@ export default function TrailPage() {
                     <img
                         src={trail.photoUrl}
                         alt={trail.name}
-                        className="lg:w-1/2 w-full rounded-lg shadow-lg object-cover max-h-[400px] border border-gray-200"
+                        className="lg:w-1/2 w-full rounded-xl shadow-lg object-cover max-h-[400px] border border-gray-300"
                     />
-                    <div className="lg:w-1/2 h-[400px] rounded-lg shadow-lg overflow-hidden border border-gray-200">
+                    <div className="lg:w-1/2 h-[400px] rounded-xl shadow-lg overflow-hidden border border-gray-300">
                         <LocationMap
                             location={{ lat: trail.latitude, lng: trail.longitude }}
                             name={trail.name}
@@ -146,6 +135,19 @@ export default function TrailPage() {
                     </div>
                 </div>
             </div>
+
+            <div className="flex justify-center mt-6">
+                <Link
+                    to={`/planTrip/${trail._id}`}
+                    className="bg-[#A3B18A] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#859966] transition flex items-center gap-2"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                    Plan Your Trip
+                </Link>
+            </div>
+
         </div>
-    )
+    );
 }

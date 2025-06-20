@@ -6,8 +6,10 @@ const tripsSchema = new Schema({
     userId: String,
     trailID: String,
     dateOfTrip: Date,
+    status:String,
     userRating: Number,
     userComments: String,
+
 });
 
 

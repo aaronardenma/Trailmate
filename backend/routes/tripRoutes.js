@@ -66,12 +66,13 @@ router.get('/getTripsBetweenDates', async (req, res) => {
 });
 
 router.post('/addTrip', async (req, res) => {
-    const { userId, trailID, dateOfTrip, userRating, userComments } = req.body;
+    const { userId, trailID, dateOfTrip, status,userRating, userComments } = req.body;
 
     const newTrip = new Trip({
         userId,
         trailID,
         dateOfTrip,
+        status,
         userRating,
         userComments
     });
