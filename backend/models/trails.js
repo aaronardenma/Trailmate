@@ -21,11 +21,11 @@ const trailsSchema = new Schema({
     },
     city: String,
     description: String,
-    elevation: String,
+    avgElevationM: Number,
     weather: String,
     tags: [String],
     difficulty: String,
-    distance: String,
+    distanceKm: Number,
 }, {
     timestamps: true
 });

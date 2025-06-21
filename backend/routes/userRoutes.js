@@ -1,7 +1,7 @@
 // routes/userRoutes.js
 const express = require('express');
 const router = express.Router();
-const userService = require('../services/userService');
+// const userService = require('../services/userService');
 
 router.get('/getUserById/:id', async (req, res) => {
     try {

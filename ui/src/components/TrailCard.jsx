@@ -66,7 +66,11 @@ export default function TrailCard({ trail_id }) {
     if (!trail) return null;
 
     return (
-        <div className="relative rounded cursor-pointer mb-2 min-w-full max-w-1/3 hover:shadow-lg transition-shadow duration-200 bg-white shadow">
+        <div className="relative rounded cursor-pointer mb-2 min-w-full max-w-1/3 hover:shadow-lg transition-shadow duration-200">
+            <Link
+                to={`/trail/${trail._id}`}
+                className="block px-4 py-3"
+            >
             <div className="relative">
                 <img
                     src={trail.photoUrl}
@@ -108,10 +112,7 @@ export default function TrailCard({ trail_id }) {
                     )}
                 </button>
             </div>
-            <Link
-                to={`/trail/${trail._id}`}
-                className="block px-4 py-3"
-            >
+            
                 <h2 className="font-semibold text-lg">{trail.name}</h2>
                 <p className="text-sm text-gray-500">{trail.city}</p>
             </Link>

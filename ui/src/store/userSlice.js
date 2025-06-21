@@ -4,9 +4,9 @@ const mockFavourites = trailData.slice(0,5)
 
 const initialState = {
     users: [{email: 'aaronma113@gmail.com', password: 'abc', favourites: mockFavourites, nickname: "Aaron", firstName: "Aaron", lastName: "Ma", gender: "Male", badge:"Beginner", country: "Canada"}],
-    loggedIn: false,
+    loggedIn: true,
     logInError: false,
-    currUser: null
+    currUser: {email: 'aaronma113@gmail.com', password: 'abc', favourites: mockFavourites, nickname: "Aaron", firstName: "Aaron", lastName: "Ma", gender: "Male", badge:"Beginner", country: "Canada"}
 }
 
 const users = createSlice({

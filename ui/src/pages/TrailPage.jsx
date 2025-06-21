@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import LocationMap from "../components/LocationMap.jsx";
 
 export default function TrailPage() {
-    const { _id } = useParams();
+    const { id } = useParams();
     const user_id = localStorage.getItem("user_id");
     const [trail, setTrail] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -13,7 +13,7 @@ export default function TrailPage() {
     useEffect(() => {
         const fetchTrailData = async () => {
             try {
-                const response = await fetch(`http://localhost:5001/api/trails/getTrailById/${_id}`);
+                const response = await fetch(`http://localhost:5001/api/trails/getTrailById/${id}`);
                 if (!response.ok) throw new Error("Failed to fetch trail data");
                 const data = await response.json();
                 setTrail(data);
@@ -23,7 +23,7 @@ export default function TrailPage() {
                     const favRes = await fetch(`http://localhost:5001/api/favorite/isFavorite`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ userId: user_id, trailID: _id }),
+                        body: JSON.stringify({ userId: user_id, trailID: id }),
                     });
                     if (favRes.status === 404) {
                         setFavorite(false);
@@ -38,7 +38,7 @@ export default function TrailPage() {
             }
         };
         fetchTrailData();
-    }, [_id, user_id]);
+    }, [id, user_id]);
 
     const handleFavorite = async () => {
         if (!user_id) {
@@ -52,7 +52,7 @@ export default function TrailPage() {
                 await fetch("http://localhost:5001/api/favorite/deleteFavorite", {
                     method: "DELETE",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ userId: user_id, trailID: _id }),
+                    body: JSON.stringify({ userId: user_id, trailID: id }),
                 });
             } catch (err) {
                 setFavorite((fav) => !fav);
@@ -64,7 +64,7 @@ export default function TrailPage() {
                 await fetch("http://localhost:5001/api/favorite/addFavorite", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ userId: user_id, trailID: _id }),
+                    body: JSON.stringify({ userId: user_id, trailID: id }),
                 });
             } catch (err) {
                 setFavorite((fav) => !fav);
@@ -127,10 +127,10 @@ export default function TrailPage() {
                 <div className="bg-white rounded-lg shadow-md p-6 space-y-4 border border-gray-200">
                     <p className="text-gray-700 leading-relaxed text-lg">{trail.description}</p>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <p><strong className="text-gray-800">Distance:</strong> <span className="text-gray-600">{trail.distance} miles</span></p>
-                        <p><strong className="text-gray-800">Elevation:</strong> <span className="text-gray-600">{trail.elevation}</span></p>
-                        <p><strong className="text-gray-800">Estimated Time:</strong> <span className="text-gray-600">{trail.time} minutes</span></p>
-                        <p><strong className="text-gray-800">Location:</strong> <span className="text-gray-600">{trail.city}</span></p>
+                        <p><strong className="text-gray-800">Distance:</strong> <span className="text-gray-600">{trail.distanceKm} km</span></p>
+                        <p><strong className="text-gray-800">Elevation:</strong> <span className="text-gray-600">{trail.avgElevationM} m</span></p>
+                        <p><strong className="text-gray-800">Estimated Time:</strong> <span className="text-gray-600">{trail.time} min</span></p>
+                        <p><strong className="text-gray-800">Location:</strong> <span className="text-gray-600">{trail.location}</span></p>
                         <p className="sm:col-span-2"><strong className="text-gray-800">Coordinates:</strong> <span className="text-gray-600">{trail.latitude.toFixed(5)}, {trail.longitude.toFixed(5)}</span></p>
                     </div>
                 </div>
@@ -138,7 +138,7 @@ export default function TrailPage() {
 
             <div className="flex justify-center mt-6">
                 <Link
-                    to={`/planTrip/${trail._id}`}
+                    to={`/planTrip/${trail.id}`}
                     className="bg-[#A3B18A] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#859966] transition flex items-center gap-2"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
