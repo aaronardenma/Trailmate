@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const {UUID} = require("mongodb");
+// const {UUID} = require("mongodb");
 const Schema = mongoose.Schema;
 
 const tripsSchema = new Schema({
@@ -9,7 +9,6 @@ const tripsSchema = new Schema({
     status:String,
     userRating: Number,
     userComments: String,
-
 });
 
 

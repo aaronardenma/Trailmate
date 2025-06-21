@@ -19,6 +19,9 @@ router.get('/getTripsForUser/:userId', async (req, res) => {
 });
 
 router.get('/getUsersForTrip/:trailId', async (req, res) => {
+    console.log("here")
+    const t = req.params.trailId
+    console.log(t)
     try {
         const trips = await Trip.find({ trailID: req.params.trailId });
         const userIds = trips.map(trip => trip.userId);
