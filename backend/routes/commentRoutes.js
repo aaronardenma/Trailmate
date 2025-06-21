@@ -20,7 +20,7 @@ router.post('/addComment', async (req, res) => {
         await newComment.save();
         res.status(201).json({ message: 'Comment added successfully', comment: newComment });
     } catch (err) {
-        res.status(500).json({ error: 'Error adding comment', details: err });
+        res.status(500).json({ error: 'Error  comment', details: err });
     }
 });
 module.exports = router;

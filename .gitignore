@@ -7,8 +7,8 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-ui/node_modules
-api/node_modules
+UI/node_modules
+API/node_modules
 dist
 dist-ssr
 *.local
@@ -49,6 +49,4 @@ dist-ssr
 *.sw?
 
 backend/.env
-trailmate/node_modules
 node_modules
-trailmate
