@@ -18,6 +18,19 @@ The app emphasizes safety and preparation by helping users:
 
 ---
 
+## Milestone 2 — Progress Summary
+- Created a proper landing page
+- Created a community page where you cna make a post looking for hiking buddies
+  - You can view all the posts made by other community members as well as yourself
+- Created a "Favourites" page where users can have easy access to their favourite trails 
+- User page
+  - Now you can update and modify user details
+  - A new feature is the "Your Past Trips" section where users can rate their trips
+  - Can add new users
+- Created a feature called "Gear list" linked to each trail
+- 
+---
+
 ## Milestone 1 — Progress Summary
 - Created a detailed wireframe in Figma covering most app screens  
 - Built non-functional frontend for multiple pages: Home, Trail Cards, Nav Bar, RouteMaps, Trail Description, Search bar, Filters, and User Profile  
@@ -31,8 +44,4 @@ The app emphasizes safety and preparation by helping users:
 
 ### Build the Docker Image
 ```bash
-docker build -t trailmate .
-
-docker run -d --name trailmate -p 3000:3000 trailmate
-
-Open http://localhost:3000 to run the app.
+docker compose up -d
