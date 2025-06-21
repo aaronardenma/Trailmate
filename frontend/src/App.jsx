@@ -1,12 +1,13 @@
-import Home from "./pages/Home"
-import Map from "./pages/Map.jsx"
-import Nav from "./components/Nav"
-import { Routes, Route } from "react-router-dom"
-import Filters from "./pages/Filters"
-import Landing from "./pages/Landing.jsx"
-import Favourites from "./pages/Favourites"
-import UserProfile from "./pages/UserProfile"
+import { Routes, Route, useLocation } from "react-router-dom";
+import Home from "./pages/Home";
+import Map from "./pages/Map.jsx";
+import Nav from "./components/Nav";
+import Filters from "./pages/Filters";
+import Landing from "./pages/Landing.jsx";
+import Favourites from "./pages/Favourites";
+import UserProfile from "./pages/UserProfile";
 import TrailPage from "@/pages/TrailPage.jsx";
+import Register from "./pages/Register.jsx";
 import PlanTripPage from "@/pages/PlanTrip.jsx";
 import TripPage from "@/pages/TripPage.jsx";
 import CommunityPage from "@/pages/CommunityPage.jsx";
@@ -19,7 +20,6 @@ function App() {
   const loggedIn = useSelector(state => state.users.loggedIn)
 
   return (
-    <>
     <div className="font-display">
       {loggedIn ? <Nav className="p-2" /> : <></>}
       <Routes>
@@ -30,6 +30,7 @@ function App() {
         <Route path="/setup" element={<SetUpAccount />} />
         <Route path="/map" element={<Map />} />
         <Route path="/trail/:id" element={<TrailPage />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/planTrip/:_id" element={<PlanTripPage />} />
         <Route path="/filters" element={<Filters />} />
         <Route path="/favourites" element={<Favourites />} />
@@ -39,8 +40,8 @@ function App() {
         <Route path="/trip/:_id" element={<TripPage />} />
       </Routes>
     </div>
-      </>
-  )
+  );
 }
+
 
 export default App
