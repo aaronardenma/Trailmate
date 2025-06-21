@@ -41,6 +41,7 @@ The app emphasizes safety and preparation by helping users:
 
 ### Gear List
 - Gear recommendations dynamically generated per trail, based on difficulty and seasonal factors
+- Users can save the gear they own and modify it the user profile page to personalize the generated recommended gear list
 
 ### Trail Search & Filtering
 - Search bar for trail discovery by name or keyword
