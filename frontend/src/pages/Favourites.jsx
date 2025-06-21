@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 export default function Favourites() {
     const [favTrails, setFavTrails] = useState([]);
     const user_id = localStorage.getItem("user_id");
+    console.log(user_id)
 
     useEffect(() => {
         fetch(`http://localhost:5001/api/favorite/getFavoriteTrails/${user_id}`)

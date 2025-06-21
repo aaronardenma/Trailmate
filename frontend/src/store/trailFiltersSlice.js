@@ -1,11 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+// import tagData from "../tags.json"
 const initialState = {
     elevation: 1000000,
     distance: 1000000,
-    users: [],
+    tags: []
 }
-
 const trailFilters = createSlice({
     name: "trailFilters",
     initialState,
@@ -22,20 +21,12 @@ const trailFilters = createSlice({
         resetDistanceFilter: (state) => {
             state.distance = 1000000
         },
-        addUser: (state, action) => {
-            const addedUser = state.users.find((singleUser) => singleUser.id === action.payload.id);
-            if (addedUser) {
-                addedUser.quantity++;
-            } else {
-                state.users.push({ ...action.payload, quantity: 1 });
-            }
+        updateTags: (state, action) => {
+            state.tags = action.payload;
         },
-        removeUser: (state, action) => {
-            const removeUser = state.users.filter((singleUser) => singleUser.id !== action.payload);
-            state.users = removeUser;
+        resetTagFilter: (state) => {
+            state.tags = [];
         },
-    }
-})
-
-export const {updateElevation, updateDistance, resetElevationFilter, resetDistanceFilter, addUser, removeUser } = trailFilters.actions
+    }})
+export const { updateElevation, updateDistance, updateTags, resetElevationFilter, resetDistanceFilter, resetTagFilter } = trailFilters.actions;
 export default trailFilters.reducer;
