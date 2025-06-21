@@ -19,8 +19,10 @@ The app emphasizes safety and preparation by helping users:
 ---
 
 ## Milestone 2 — Progress Summary
-- Created a proper landing page
-- Created a community page where you cna make a post looking for hiking buddies
+- Created a proper landing page and user authentication routes with preliminary user management system with Redux
+  - Created preliminary methods with MongoDB user schemas for updated user management system
+- Created Navigation bar conditionality based on Redux login states
+- Created a community page where you can make a post looking for hiking buddies
   - You can view all the posts made by other community members as well as yourself
 - Created a "Favourites" page where users can have easy access to their favourite trails
 - User page
@@ -28,6 +30,11 @@ The app emphasizes safety and preparation by helping users:
   - A new feature is the "Your Past Trips" section where users can rate their trips
   - Can add new users
 - Created a feature called "Gear list" linked to each trail
+- Added tag filtering for search
+- Reconfigured trail data fetching to be from MongoDB
+- Adjusted filter page to be a pop-up dialog
+- Added trip planning features on trail description pages that are sent to MongoDB
+
 -
 ---
 
