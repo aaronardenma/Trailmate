@@ -1,6 +1,6 @@
 import {useNavigate, useParams} from "react-router-dom";
 import { useState } from "react";
-
+import PlanInputs from "@/components/PlanInputs";
 
 export default function PlanTripPage() {
     const { _id } = useParams();
@@ -31,7 +31,7 @@ export default function PlanTripPage() {
         <div className="min-h-screen bg-gradient-to-b from-[#ECECEC] to-[#F5F5F5] py-12 px-6">
             <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 space-y-8 border border-gray-200">
                 <h1 className="text-3xl font-bold text-center text-[#2F4F4F]">Plan Your Trip</h1>
-
+                {/* <PlanInputs className="flex items-center" ></PlanInputs> */}
                 <div className="flex flex-col gap-4 items-center">
                     <label className="text-lg font-semibold text-gray-700">Select your trip date:</label>
                     <input
