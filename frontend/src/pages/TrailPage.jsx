@@ -138,7 +138,7 @@ export default function TrailPage() {
 
             <div className="flex justify-center mt-6">
                 <Link
-                    to={`/planTrip/${trail.id}`}
+                    to={`/planTrip/${trail._id}`}
                     className="bg-[#A3B18A] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#859966] transition flex items-center gap-2"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

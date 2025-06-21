@@ -1,4 +1,4 @@
-import axios from 'axios'
+// import axios from 'axios'
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Input } from '../components/ui/input';
@@ -8,7 +8,7 @@ import { addUser, login } from '../store/userSlice';
 
 export default function Auth() {
     const { type } = useParams(); // <-- get 'login' or 'create'
-    const isLogin = type === 'login'; // <-- derive it from URL param
+    const isLogin = type === 'login';
 
     const nav = useNavigate()
     const dispatch = useDispatch()
