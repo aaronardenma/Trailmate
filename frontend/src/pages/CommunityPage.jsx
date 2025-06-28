@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import {useNavigate} from "react-router-dom";
 
 export default function CommunityPage() {
+    let user_id = window.localStorage.getItem("user_id")
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-
-
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [photoUrl, setPhotoUrl] = useState("");
@@ -16,6 +15,8 @@ export default function CommunityPage() {
     const [showModal, setShowModal] = useState(false);
 
     const fetchPosts = () => {
+        console.log("user_id " + user_id)
+
         setLoading(true);
         fetch("http://localhost:5001/api/posts/getPosts")
             .then((res) => res.json())
@@ -29,26 +30,20 @@ export default function CommunityPage() {
             });
     };
     const handleLike = async (post) => {
-        console.log("reached")
         try {
             const res = await fetch(`http://localhost:5001/api/posts/updatePost/${post._id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    userId: post.userId,
-                    title: post.title,
-                    description: post.description,
-                    dateOfPost: post.dateOfPost,
-                    photoUrl: post.photoUrl,
-                    likes: post.likes + 1,
-                    comments: post.comments
+                    // likes: post.likes,
+                    comments: post.comments,
+                    user_id: user_id
                 }),
             });
 
             if (!res.ok) throw new Error("Failed to like post");
 
             const updatedPost = await res.json();
-
             fetchPosts()
         } catch (err) {
             console.error("Error liking post:", err);
@@ -92,7 +87,7 @@ export default function CommunityPage() {
 
     return (
         <div className="max-w-5xl mx-auto p-6 bg-[#DAD7CD] min-h-screen">
-            <h1 className="text-4xl font-bold mb-6 text-center text-[#588157]">Community Posts</h1>
+            <h1 className="text-4xl font-bold mb-6 text-center text-[#588157]">Community Posts1</h1>
 
             <div className="flex justify-center gap-6 mb-10">
                 <button
