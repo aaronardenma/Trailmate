@@ -8,20 +8,17 @@ import Landing from "./pages/Landing.jsx";
 import Favourites from "./pages/Favourites";
 import UserProfile from "./pages/UserProfile";
 import TrailPage from "@/pages/TrailPage.jsx";
-import ProfileSetup from "./pages/ProfileSetup.jsx";
 import PlanTripPage from "@/pages/PlanTrip.jsx";
 import TripPage from "@/pages/TripPage.jsx";
 import CommunityPage from "@/pages/CommunityPage.jsx";
 import UserPostPage from "@/pages/UserPostPage.jsx";
 import Auth from "./pages/Auth";
-import AccountSetup from "./pages/AccountSetup";
 import Register from "./pages/Register";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const location = useLocation();
 
-  // Function to check authentication status
   const checkAuthStatus = async () => {
     try {
       console.log('Checking auth status...');
@@ -60,7 +57,6 @@ function App() {
     initAuth();
   }, []);
 
-  // Function to handle logout (can be passed to Nav component)
   const handleLogout = async () => {
     try {
       await fetch('http://localhost:5001/api/users/logout', {
@@ -70,12 +66,10 @@ function App() {
       setIsAuthenticated(false);
     } catch (error) {
       console.error('Logout failed:', error);
-      // Still set as unauthenticated locally
       setIsAuthenticated(false);
     }
   };
 
-  // Function to handle successful login (can be passed to Auth component)
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
   };
@@ -116,10 +110,6 @@ function App() {
           </>
         )}
         
-        {/* Public routes - accessible regardless of authentication */}
-        
-        
-        {/* Catch-all route for unauthenticated users */}
         {!isAuthenticated && (
           <Route path="*" element={<Landing />} />
         )}
