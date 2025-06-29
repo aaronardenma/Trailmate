@@ -3,7 +3,10 @@ const Schema = mongoose.Schema;
 
 
 const postSchema = new Schema({
-    userId: String,
+    userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+            required: true},
     title: { type: String, required: true },
 
     description: { type: String, required: true },
