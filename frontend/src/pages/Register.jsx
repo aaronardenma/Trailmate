@@ -54,7 +54,7 @@ export default function Register({handleLogInSuccess}) {
 
     const combinedData = {
       ...accountData,
-      experience: profileData.expererience,
+      badge: profileData.experience,
       gear: flattenSelectedGear(profileData.selectedGear)
     };
 
