@@ -1,91 +1,150 @@
 import { useState } from "react";
-import NavGuest from "../components/NavGuest";
-import { useNavigate } from "react-router-dom"; 
-import { gearCategories } from "@/utils/gearData";
+import AccountSetup from "./AccountSetup";
+import ProfileSetup from "./ProfileSetup";
+import { useNavigate } from "react-router-dom";
+import { flattenSelectedGear } from "@/utils/gearRecommendation";
 
-export default function RegisterPage() {
-  const [experience, setExperience] = useState("");
-  const [selectedGear, setSelectedGear] = useState({});
-  const navigate = useNavigate(); 
+export default function Register({handleLogInSuccess}) {
+  const nav = useNavigate()
+  const [accountData, setAccountData] = useState({
+    nickname: "",
+    firstName: "",
+    lastName: "",
+    gender: "",
+    country: "",
+    visibility: "public",
+  });
+
+  const [profileData, setProfileData] = useState({
+    experience: "",
+    selectedGear: {},
+  });
+
+  const [page, setPage] = useState(1);
+
+  const handleAccountChange = (field, value) => {
+    setAccountData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleProfileChange = (field, value) => {
+    setProfileData((prev) => ({ ...prev, [field]: value }));
+  };
 
   const toggleGearItem = (category, item) => {
-    setSelectedGear((prev) => {
-      const categoryGear = prev[category] || {};
+    setProfileData((prev) => {
+      const categoryGear = prev.selectedGear[category] || {};
       return {
         ...prev,
-        [category]: {
-          ...categoryGear,
-          [item]: !categoryGear[item],
+        selectedGear: {
+          ...prev.selectedGear,
+          [category]: {
+            ...categoryGear,
+            [item]: !categoryGear[item],
+          },
         },
       };
     });
   };
 
-  const handleFinish = () => {
-    if (!experience) {
+  const handleSubmit = async () => {
+    if (!profileData.experience) {
       alert("Please select your experience level");
       return;
     }
-    navigate("/");
+
+    const combinedData = {
+      ...accountData,
+      experience: profileData.expererience,
+      gear: flattenSelectedGear(profileData.selectedGear)
+    };
+
+    try {
+      const response = await fetch("http://localhost:5001/api/users/register/setup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: 'include',
+        body: JSON.stringify(combinedData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        alert("Registration complete!");
+        await handleLogInSuccess()
+        nav("/")
+      } else {
+        alert(data.message || "Failed to complete registration");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("An error occurred during registration");
+    }
   };
 
   return (
-    <div>
-      <NavGuest />
-      <div className="p-8 max-w-[90rem] mx-auto">
-        <h2 className="text-2xl font-semibold mb-6 text-center" style={{ color: "#344E41" }}>
-        Register
-        </h2>
-        <div className="mb-8">
-            <h3 className="text-lg font-bold mb-3">Select Your Experience Level</h3>
-            <div className="flex flex-row gap-x-8">
-                {["Beginner", "Intermediate", "Advanced"].map((level) => (
-                <label key={level} className="flex items-center gap-2 cursor-pointer">
-                    <input
-                    type="radio"
-                    name="experience"
-                    value={level}
-                    checked={experience === level}
-                    onChange={() => setExperience(level)}
-                    className="cursor-pointer"
-                    />
-                    <span>{level}</span>
-                </label>
-                ))}
-            </div>
-        </div>
-
-        <h3 className="text-lg font-bold mb-3">What Gear Do You Own?</h3>
-        {Object.entries(gearCategories).map(([category, items]) => (
-          <div key={category} className="mb-8">
-            <h4 className="text-md font-semibold text-[#588157] mb-3">
-              {category.replace(/_/g, " ")}
-            </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {items.map((item) => (
-                <label key={item} className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={!!selectedGear[category]?.[item]}
-                    onChange={() => toggleGearItem(category, item)}
-                    className="cursor-pointer"
-                  />
-                  <span>{item}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-        ))}
-
-        <div className="flex justify-center">
-          <button
-            onClick={handleFinish}
-            className="bg-[#588157] hover:bg-[#476246] text-white font-semibold px-6 py-2 rounded-lg transition"
-          >
-            Finish Registration
-          </button>
-        </div>
-      </div>
+  <div className="max-w-4xl mx-auto p-4">
+    <div className="flex gap-2 mb-6 w-full max-w-none">
+      {[1, 2].map((num) => (
+        <button
+          key={num}
+          onClick={() => setPage(num)}
+          className={`flex-1 py-3 rounded cursor-pointer transition-colors ${
+            page === num 
+              ? "bg-[#588157] text-white" 
+              : "bg-gray-200 hover:bg-gray-400"
+          }`}
+          style={{ width: '50vw' }}
+          aria-current={page === num ? "page" : undefined}
+        >
+          Step {num}
+        </button>
+      ))}
     </div>
-  );
+
+    {page === 1 && (
+      <AccountSetup
+        data={accountData}
+        onChange={handleAccountChange}
+        visibility={accountData.visibility}
+        setVisibility={(val) => handleAccountChange("visibility", val)}
+      />
+    )}
+    {page === 2 && (
+      <ProfileSetup
+        experience={profileData.experience}
+        setExperience={(val) => handleProfileChange("experience", val)}
+        selectedGear={profileData.selectedGear}
+        toggleGearItem={toggleGearItem}
+      />
+    )}
+
+    <div className={`flex mt-4 max-w-xs mx-auto ${
+      page === 1 ? "justify-center" : "justify-between"
+    }`}>
+      {page > 1 && (
+        <button
+          onClick={() => setPage(page - 1)}
+          className="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
+        >
+          Back
+        </button>
+      )}
+      {page < 2 ? (
+        <button
+          onClick={() => setPage(page + 1)}
+          className="px-4 py-2 mt-8 bg-[#588157] text-white rounded hover:bg-[#6fa26c]"
+        >
+          Next
+        </button>
+      ) : (
+        <button
+          onClick={handleSubmit}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Submit
+        </button>
+      )}
+    </div>
+  </div>
+);
 }
