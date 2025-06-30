@@ -37,6 +37,7 @@ export default function TripPage() {
         try {
             await fetch("http://localhost:5001/api/trips/addTrip", {
                 method: "POST",
+                credentials: "include",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     userId: user_id,
