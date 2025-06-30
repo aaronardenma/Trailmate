@@ -19,17 +19,39 @@ The app emphasizes safety and preparation by helping users:
 ---
 
 ## Milestone 2 — Progress Summary
-- Created a proper landing page
-- Created a community page where you cna make a post looking for hiking buddies
-  - You can view all the posts made by other community members as well as yourself
-- Created a "Favourites" page where users can have easy access to their favourite trails
-- User page
-  - Now you can update and modify user details
-  - A new feature is the "Your Past Trips" section where users can rate their trips
-  - Can add new users
-- Created a feature called "Gear list" linked to each trail
--
----
+
+### User Authentication & Profiles
+- Implemented login/signup using Redux and MongoDB
+- Profile page now supports updating user details
+- “Your Past Trips” section shows previously completed or planned trips
+- Users can rate their trips post-hike
+
+### Trip Planning
+- Users can plan a trip from any trail’s description page
+- Planned trips are saved to the database
+- Planned trips automatically show up in the “Your Past Trips” section on the user profile
+
+### Community Features
+- Users can create posts (e.g., "Looking for a hiking buddy")
+- Posts can be edited, deleted, and liked
+- All community posts are viewable on the Community page
+
+### Favourite Trails
+- Users can save and view their favourite trails for quick access
+
+### Gear List
+- Gear recommendations dynamically generated per trail, based on difficulty and seasonal factors
+- Users can save the gear they own and modify it the user profile page to personalize the generated recommended gear list
+
+### Trail Search & Filtering
+- Search bar for trail discovery by name or keyword
+- Tag-based filtering implemented
+- Filter options now appear in a pop-up dialog for better user experience
+
+### Backend Improvements
+- Trail data now served from MongoDB
+- Improved data flow between frontend and backend via Redux and API routes
+
 
 ## Milestone 1 — Progress Summary
 - **Frontend Pages**:
