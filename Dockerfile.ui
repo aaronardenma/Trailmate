@@ -1,14 +1,14 @@
 FROM node:22-alpine
 
-WORKDIR /index
+WORKDIR /app
 
 COPY package.json .
+
+COPY . .
 
 RUN npm install
 
 RUN npm i -g serve
-
-COPY . .
 
 RUN npm run build
 

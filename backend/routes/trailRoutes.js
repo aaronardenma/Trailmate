@@ -14,6 +14,7 @@ router.get('/getTrails', async (req, res) => {
 router.get('/getTrailById/:id', async (req, res) => {
     try {
         const trail = await Trail.findById(req.params.id);
+        console.log(trail)
         if (!trail) {
             return res.status(404).json({ message: 'Trail not found' });
         }

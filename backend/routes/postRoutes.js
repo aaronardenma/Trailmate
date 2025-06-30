@@ -9,7 +9,7 @@ router.get('/getPosts', async (req, res) => {
         const items = await Post.find();
         res.json(items);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({error: err.message});
     }
 });
 router.get('/getPostsForUser/:userId', async (req, res) => {
@@ -18,72 +18,78 @@ router.get('/getPostsForUser/:userId', async (req, res) => {
     console.log(userID)
     try {
         console.log(userID)
-        const posts = await Post.find({ userId: userID });
+        const posts = await Post.find({userId: userID});
         console.log(posts)
         res.status(200).json(posts);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({error: err.message});
     }
 });
 
 router.post('/addPost', async (req, res) => {
-    const { userId, title, description, photoUrl } = req.body;
+    const {userId, title, description, photoUrl} = req.body;
 
     const newPost = new Post({
         userId,
         title,
         description,
         dateOfPost: new Date(),
+        likedByUsers: [],
         photoUrl: photoUrl || '',
     });
     console.log(newPost)
 
     try {
         await newPost.save();
-        res.status(201).json({ message: 'Post created successfully', post: newPost });
+        res.status(201).json({message: 'Post created successfully', post: newPost});
     } catch (err) {
-        res.status(500).json({ error: 'Error creating post', details: err.message });
+        res.status(500).json({error: 'Error creating post', details: err.message});
     }
 });
 router.put('/updatePost/:id', async (req, res) => {
-    console.log("her ei am")
-    const { userId, title, description, photoUrl, likes, comments } = req.body;
+    let currentUserLikingPost = req.body.user_id
+    let currentUserComments = req.body.comments
+    let currentPost = await Post.findOne({_id: req.params.id})
 
-
-    const newPost = new Post({
-        userId,
-        title,
-        description,
-        dateOfPost: new Date(),
-        photoUrl: photoUrl || '',likes, comments
-    });
-    console.log(newPost)
+    console.log("current comment " + currentUserComments);
+    console.log("current post " + currentPost);
 
     try {
-        const updatedUser = await Post.findByIdAndUpdate(
-            req.params.id,
-            {
-                userId, title, description, photoUrl, likes, comments
-            },
-            { new: true, runValidators: true }
-        );
-
-        res.status(201).json({ message: 'Post created successfully', post: updatedUser });
-    } catch (err) {
-        res.status(500).json({ error: 'Error creating post', details: err.message });
+        if (currentPost.likedByUsers.length === 0) {
+            currentPost.likedByUsers.push(currentUserLikingPost)
+            currentPost.likes += 1
+        } else {
+            for (let i = 0; i < currentPost.likedByUsers.length; i++) {
+                if (currentUserLikingPost.equals(currentPost.likedByUsers[i])) {
+                    res = currentPost.likes;
+                }
+            }
+        }
+        if (currentUserComments !== null){
+            currentPost.comments.push(currentUserComments);
+        }
+        console.log("current comment " + currentUserComments);
+        // console.log("current post " + currentPost);
+        currentPost.save();
     }
+    catch (err) {
+        res.status(500).json({error: 'Error creating post', details: err.message});
+    }
+    res.status(201).json({message: 'Post updated successfully'});
 });
+
+
 router.delete('/deletePost/:id', async (req, res) => {
     console.log(req.params.id)
     try {
         const deletedUser = await Post.findByIdAndDelete(req.params.id);
         console.log("inside delete")
         if (!deletedUser) {
-            return res.status(404).json({ message: 'Post not found' });
+            return res.status(404).json({message: 'Post not found'});
         }
-        res.status(200).json({ message: 'Post deleted successfully', user: deletedUser });
+        res.status(200).json({message: 'Post deleted successfully', user: deletedUser});
     } catch (err) {
-        res.status(500).json({ error: 'Error deleting post', details: err.message });
+        res.status(500).json({error: 'Error deleting post', details: err.message});
     }
 });
 

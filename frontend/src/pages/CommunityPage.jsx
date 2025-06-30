@@ -2,20 +2,22 @@ import React, { useEffect, useState } from "react";
 import {useNavigate} from "react-router-dom";
 
 export default function CommunityPage() {
+    let user_id = window.localStorage.getItem("user_id")
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
-
-
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [photoUrl, setPhotoUrl] = useState("");
     const [posting, setPosting] = useState(false);
     const [error, setError] = useState("");
+    const [comment, setComment] = useState("");
 
     const [showModal, setShowModal] = useState(false);
 
     const fetchPosts = () => {
+        console.log("user_id " + user_id)
+
         setLoading(true);
         fetch("http://localhost:5001/api/posts/getPosts")
             .then((res) => res.json())
@@ -29,26 +31,20 @@ export default function CommunityPage() {
             });
     };
     const handleLike = async (post) => {
-        console.log("reached")
         try {
             const res = await fetch(`http://localhost:5001/api/posts/updatePost/${post._id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    userId: post.userId,
-                    title: post.title,
-                    description: post.description,
-                    dateOfPost: post.dateOfPost,
-                    photoUrl: post.photoUrl,
-                    likes: post.likes + 1,
-                    comments: post.comments
+                    // likes: post.likes,
+                    comments: post.comments,
+                    user_id: user_id
                 }),
             });
 
             if (!res.ok) throw new Error("Failed to like post");
 
             const updatedPost = await res.json();
-
             fetchPosts()
         } catch (err) {
             console.error("Error liking post:", err);
@@ -92,7 +88,7 @@ export default function CommunityPage() {
 
     return (
         <div className="max-w-5xl mx-auto p-6 bg-[#DAD7CD] min-h-screen">
-            <h1 className="text-4xl font-bold mb-6 text-center text-[#588157]">Community Posts</h1>
+            <h1 className="text-4xl font-bold mb-6 text-center text-[#588157]">Community Posts 123</h1>
 
             <div className="flex justify-center gap-6 mb-10">
                 <button
@@ -200,10 +196,18 @@ export default function CommunityPage() {
                                     <button
                                         onClick={() => handleLike(post)}
                                         className="ml-2 text-sm bg-[#A3B18A] text-white px-3 py-1 rounded hover:bg-[#859966] transition"
-                                    >
-                                        Like
+                                    >Like
                                     </button>
                                 </p>
+
+                                <p className="mt-1 text-gray-500 text-sm flex items-center gap-2">
+                                    <button
+                                        onClick={() => setComment(true)}
+                                        className="ml-2 text-sm bg-[#A3B18A] text-white px-3 py-1 rounded hover:bg-[#859966] transition"
+                                    >Comment
+                                    </button>
+                                </p>
+
                                 {post.comments && post.comments.length > 0 && (
                                     <div className="mt-4 p-3 bg-gray-100 rounded">
                                         <strong>First comment:</strong>{" "}
