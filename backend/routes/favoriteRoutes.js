@@ -1,39 +1,41 @@
 const express = require('express');
 const router = express.Router();
 const Favorite = require('../models/favorite');
+const authenticateToken = require("../service/auth")
 
-router.get('/getFavoriteTrails/:userId', async (req, res) => {
+router.get('/getFavoriteTrails/', authenticateToken, async (req, res) => {
     try {
-        const trails = await Favorite.find({ userId: req.params.userId });
+        const trails = await Favorite.find({ userId: req.user.id });
         res.status(200).json(trails);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
-router.post('/isFavorite', async (req, res) => {
 
-    const { userId, trailID } = req.body;
-    console.log(trailID)
+router.post('/isFavorite', authenticateToken, async (req, res) => {
+    const { trailID } = req.body;
+    
+    if (!trailID) {
+        return res.status(400).json({ error: 'trailID is required' });
+    }
+    
     try {
-        const trails = await Favorite.find({ userId: userId });
-        let isFavorite = false;
-        for (let t of trails){
-            const t_id = t.trailID
-            if (t_id === trailID){
-                isFavorite = true
-            }
-        }
-        res.status(200).json({ isFavorite: isFavorite });
+        const favorite = await Favorite.findOne({ userId: req.user.id, trailID });
+        const isFavorite = favorite !== null;
+        
+        res.status(200).json({ isFavorite });
     } catch (err) {
+        console.error('Error checking favorite status:', err);
         res.status(500).json({ error: err.message });
     }
 });
 
-router.post('/addFavorite', async (req, res) => {
-    const { userId, trailID } = req.body;
+router.post('/addFavorite', authenticateToken, async (req, res) => {
+    const { trailID } = req.body;
+    const userId = req.user.id;
 
-    if (!userId || !trailID) {
-        return res.status(400).json({ error: 'userId and trailID are required' });
+    if (!trailID) {
+        return res.status(400).json({ error: 'trailID are required' });
     }
 
     try {
@@ -44,17 +46,17 @@ router.post('/addFavorite', async (req, res) => {
 
         const favorite = new Favorite({ userId, trailID });
         await favorite.save();
-
+        console.log('saved favourite')
         res.status(201).json({ message: 'Favorite added successfully', favorite });
     } catch (err) {
         res.status(500).json({ error: 'Error adding favorite', details: err.message });
     }
 });
 
-router.delete('/deleteFavorite', async (req, res) => {
+router.delete('/deleteFavorite', authenticateToken, async (req, res) => {
 
-    const { userId, trailID } = req.body;
-    console.log(userId)
+    const {trailID } = req.body;
+    const userId = req.user.id
     console.log(trailID)
 
     if (!userId || !trailID) {
