@@ -8,7 +8,8 @@ const userRoutes = require('./routes/userRoutes');
 const tripRoutes = require('./routes/tripRoutes');
 const favoriteRoutes = require('./routes/favoriteRoutes');
 const postRoutes = require('./routes/postRoutes');
-const commentRoutes = require('./routes/favoriteRoutes');
+const commentRoutes = require('./routes/favoriteRoutes'); // is this supposed to be commentRoutes
+const gearRoutes = require('./routes/gearRoutes');
 const cookieParser = require('cookie-parser')
 
 dotenv.config();
@@ -28,6 +29,7 @@ app.use('/api/trips', tripRoutes);
 app.use('/api/favorite', favoriteRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/comments', commentRoutes);
+app.use('/api/gear', gearRoutes);
 
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
