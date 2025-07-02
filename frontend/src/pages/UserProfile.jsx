@@ -34,31 +34,40 @@ function Toast({ message, onClose }) {
 }
 
 export default function UserProfile() {
-  const user_id = localStorage.getItem("user_id");
-
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [pastTrips, setPastTrips] = useState([]);
   const [message, setMessage] = useState("");
+  const [userId, setUserId] = useState(null);
 
   const [ownedGear, setOwnedGear] = useState({});
   const [isSaved, setIsSaved] = useState(true);
 
-  useEffect(() => {
-    if (!user_id) {
-      setMessage("No user logged in");
-      setLoading(false);
-      return;
-    }
 
-    fetch(`http://localhost:5001/api/users/getUserById/${user_id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch user");
-        return res.json();
-      })
-      .then((data) => {
-        setUser(data);
+  const getCurrentUser = async () => {
+    try {
+      const response = await fetch('http://localhost:5001/api/users/me', {
+        method: 'GET',
+        credentials: 'include'
+      });
+
+      if (!response.ok) {
+        throw new Error('Not authenticated');
+      }
+
+      const userData = await response.json();
+      return userData;
+    } catch (error) {
+      throw new Error('Authentication failed');
+    }
+  };
+
+  useEffect(() => {
+    getCurrentUser()
+      .then((userData) => {
+        setUserId(userData.id);
+        setUser(userData);
         setLoading(false);
 
         const savedGear = JSON.parse(localStorage.getItem("ownedGear"));
@@ -74,22 +83,26 @@ export default function UserProfile() {
             },
           });
 
-        fetchPastTrips();
+        fetchPastTrips(userData.id);
       })
       .catch((err) => {
-        setMessage(err.message);
+        setMessage("Please log in to view your profile");
         setLoading(false);
       });
-  }, [user_id]);
+  }, []);
 
-  const fetchPastTrips = async () => {
+  const fetchPastTrips = async (userIdParam) => {
     try {
-      const res = await fetch(`http://localhost:5001/api/trips/getTripsForUser/${user_id}`);
+      const res = await fetch(`http://localhost:5001/api/trips/getTripsForUser/${userIdParam}`, {
+        credentials: 'include'
+      });
       const data = await res.json();
       const tripsWithTrail = await Promise.all(
         (data || []).map(async (trip) => {
           try {
-            const trailRes = await fetch(`http://localhost:5001/api/trails/getTrailById/${trip.trailID}`);
+            const trailRes = await fetch(`http://localhost:5001/api/trails/getTrailById/${trip.trailID}`, {
+              credentials: 'include'
+            });
             const trailData = await trailRes.json();
             return { ...trip, trail: trailData };
           } catch {
@@ -129,12 +142,13 @@ export default function UserProfile() {
   };
 
   const handleUpdate = async () => {
-    if (!user) return;
+    if (!user || !userId) return;
     setUpdating(true);
     try {
-      const res = await fetch(`http://localhost:5001/api/users/updateUser/${user_id}`, {
+      const res = await fetch(`http://localhost:5001/api/users/updateUser/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
+        credentials: 'include',
         body: JSON.stringify(user),
       });
       if (!res.ok) throw new Error("Update failed");
@@ -149,27 +163,38 @@ export default function UserProfile() {
   const handleDelete = async () => {
     if (!window.confirm("Are you sure you want to delete your account? This cannot be undone.")) return;
     try {
-      const res = await fetch(`http://localhost:5001/api/users/deleteUser/${user_id}`, {
+      const res = await fetch(`http://localhost:5001/api/users/deleteUser/${userId}`, {
         method: "DELETE",
+        credentials: 'include'
       });
       if (!res.ok) throw new Error("Delete failed");
       setMessage("Account deleted successfully.");
-      localStorage.setItem("user_id", null);
       setUser(null);
+      setUserId(null);
     } catch (err) {
       setMessage("Error deleting account: " + err.message);
     }
   };
 
   const handleLogout = async () => {
-    setMessage("Logged out successfully.");
-    await new Promise((resolve) => setTimeout(resolve, 700));
-    localStorage.setItem("user_id", null);
-    setUser(null);
+    try {
+      await fetch('http://localhost:5001/api/users/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+      setMessage("Logged out successfully.");
+      await new Promise((resolve) => setTimeout(resolve, 700));
+      setUser(null);
+      setUserId(null);
+    } catch (err) {
+      setMessage("Logout failed, but clearing local session");
+      setUser(null);
+      setUserId(null);
+    }
   };
 
   if (loading) return <div className="p-4 text-center">Loading user data...</div>;
-  if (!user) return <div className="p-4 text-center text-red-600">{message || "User not found"}</div>;
+  if (!user) return <div className="p-4 text-center text-red-600">{message || "Please log in to view your profile"}</div>;
 
   return (
     <div className="flex flex-col items-center bg-[#DAD7CD] min-h-screen py-10 px-4">

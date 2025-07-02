@@ -18,6 +18,41 @@ The app emphasizes safety and preparation by helping users:
 
 ---
 
+## Milestone 2 — Progress Summary
+
+### User Authentication & Profiles
+- Implemented login/signup using Redux and MongoDB
+- Profile page now supports updating user details
+- “Your Past Trips” section shows previously completed or planned trips
+- Users can rate their trips post-hike
+
+### Trip Planning
+- Users can plan a trip from any trail’s description page
+- Planned trips are saved to the database
+- Planned trips automatically show up in the “Your Past Trips” section on the user profile
+
+### Community Features
+- Users can create posts (e.g., "Looking for a hiking buddy")
+- Posts can be edited, deleted, and liked
+- All community posts are viewable on the Community page
+
+### Favourite Trails
+- Users can save and view their favourite trails for quick access
+
+### Gear List
+- Gear recommendations dynamically generated per trail, based on difficulty and seasonal factors
+- Users can save the gear they own and modify it the user profile page to personalize the generated recommended gear list
+
+### Trail Search & Filtering
+- Search bar for trail discovery by name or keyword
+- Tag-based filtering implemented
+- Filter options now appear in a pop-up dialog for better user experience
+
+### Backend Improvements
+- Trail data now served from MongoDB
+- Improved data flow between frontend and backend via Redux and API routes
+
+
 ## Milestone 1 — Progress Summary
 - **Frontend Pages**:
   - **Home Page**: Displays an introduction to the app and featured trails.
@@ -45,8 +80,4 @@ The app emphasizes safety and preparation by helping users:
 
 ### Build the Docker Image
 ```bash
-docker build -t trailmate .
-
-docker run -d --name trailmate -p 3000:3000 trailmate
-
-Open http://localhost:3000 to run the app.
+docker compose up -d
