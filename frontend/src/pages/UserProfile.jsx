@@ -93,7 +93,8 @@ export default function UserProfile() {
 
   const fetchPastTrips = async (userIdParam) => {
     try {
-      const res = await fetch(`http://localhost:5001/api/trips/getTripsForUser/${userIdParam}`, {
+      const res = await fetch(`http://localhost:5001/api/trips/userTrips/`, {
+        method: 'GET',
         credentials: 'include'
       });
       const data = await res.json();

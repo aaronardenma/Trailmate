@@ -2,81 +2,78 @@ const express = require('express');
 const router = express.Router();
 const Trip = require('../models/trips');
 const mongoose = require('mongoose');
+const authenticateToken = require('../service/auth')
 
-router.get('/getTripsForUser/:userId', async (req, res) => {
-    console.log("jere")
-    const userID = req.params.userId
+router.get('/userTrips/', authenticateToken, async (req, res) => {
+    const userID = req.user.id
     try {
-        console.log("ojeay")
-        console.log(userID)
         const trips = await Trip.find({ userId: userID });
         console.log(trips)
-        console.log("jwoefjwe")
         res.status(200).json(trips);
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-router.get('/getUsersForTrip/:trailId', async (req, res) => {
-    console.log("here")
-    const t = req.params.trailId
-    console.log(t)
-    try {
-        const trips = await Trip.find({ trailID: req.params.trailId });
-        const userIds = trips.map(trip => trip.userId);
-        res.status(200).json(userIds);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+// router.get('/getUsersForTrip/:trailId', async (req, res) => {
+//     console.log("here")
+//     const t = req.params.trailId
+//     console.log(t)
+//     try {
+//         const trips = await Trip.find({ trailID: req.params.trailId });
+//         const userIds = trips.map(trip => trip.userId);
+//         res.status(200).json(userIds);
+//     } catch (err) {
+//         res.status(500).json({ error: err.message });
+//     }
+// });
 
-router.get('/getTripsForDate/:date', async (req, res) => {
-    try {
-        const targetDate = new Date(req.params.date);
-        const nextDate = new Date(targetDate);
-        nextDate.setDate(nextDate.getDate() + 1);
+// router.get('/getTripsForDate/:date', async (req, res) => {
+//     try {
+//         const targetDate = new Date(req.params.date);
+//         const nextDate = new Date(targetDate);
+//         nextDate.setDate(nextDate.getDate() + 1);
 
-        const trips = await Trip.find({
-            dateOfTrip: {
-                $gte: targetDate,
-                $lt: nextDate
-            }
-        });
+//         const trips = await Trip.find({
+//             dateOfTrip: {
+//                 $gte: targetDate,
+//                 $lt: nextDate
+//             }
+//         });
 
-        res.status(200).json(trips);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+//         res.status(200).json(trips);
+//     } catch (err) {
+//         res.status(500).json({ error: err.message });
+//     }
+// });
 
-router.get('/getTripsBetweenDates', async (req, res) => {
-    const { start, end } = req.query;
+// router.get('/getTripsBetweenDates', async (req, res) => {
+//     const { start, end } = req.query;
 
-    if (!start || !end) {
-        return res.status(400).json({ error: "Start and end dates are required" });
-    }
+//     if (!start || !end) {
+//         return res.status(400).json({ error: "Start and end dates are required" });
+//     }
 
-    try {
-        const startDate = new Date(start);
-        const endDate = new Date(end);
+//     try {
+//         const startDate = new Date(start);
+//         const endDate = new Date(end);
 
-        const trips = await Trip.find({
-            dateOfTrip: {
-                $gte: startDate,
-                $lte: endDate
-            }
-        });
+//         const trips = await Trip.find({
+//             dateOfTrip: {
+//                 $gte: startDate,
+//                 $lte: endDate
+//             }
+//         });
 
-        res.status(200).json(trips);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
+//         res.status(200).json(trips);
+//     } catch (err) {
+//         res.status(500).json({ error: err.message });
+//     }
+// });
 
-router.post('/addTrip', async (req, res) => {
-    const { userId, trailID, dateOfTrip, status,userRating, userComments } = req.body;
-
+router.post('/addTrip', authenticateToken, async (req, res) => {
+    const { trailID, dateOfTrip, status, userRating, userComments } = req.body;
+    const userId = req.user.id
     const newTrip = new Trip({
         userId,
         trailID,
@@ -115,9 +112,9 @@ router.put('/updateTrip/:id', async (req, res) => {
 });
 
 router.delete('/deleteTrip/:id', async (req, res) => {
+    const tripID = req.params.id
     try {
-        const deletedTrip = await Trip.findByIdAndDelete(req.params.id);
-
+        const deletedTrip = await Trip.findByIdAndDelete(tripID)
         if (!deletedTrip) {
             return res.status(404).json({ message: 'Trip not found' });
         }

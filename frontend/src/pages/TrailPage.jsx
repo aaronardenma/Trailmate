@@ -4,7 +4,6 @@ import LocationMap from "../components/LocationMap.jsx";
 
 export default function TrailPage() {
     const { id } = useParams();
-    const user_id = localStorage.getItem("user_id");
     const [trail, setTrail] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -19,40 +18,36 @@ export default function TrailPage() {
                 setTrail(data);
                 setLoading(false);
 
-                if (user_id) {
-                    const favRes = await fetch(`http://localhost:5001/api/favorite/isFavorite`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ userId: user_id, trailID: id }),
-                    });
-                    if (favRes.status === 404) {
-                        setFavorite(false);
-                    } else {
-                        const favData = await favRes.json();
-                        setFavorite(favData.isFavorite);
-                    }
+                const favRes = await fetch(`http://localhost:5001/api/favorite/isFavorite`, {
+                    method: "POST",
+                    credentials: 'include',
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ trailID: id }),
+                });
+                if (favRes.status === 404) {
+                    setFavorite(false);
+                } else {
+                    const favData = await favRes.json();
+                    setFavorite(favData.isFavorite);
                 }
+                
             } catch (err) {
                 setError(err.message);
                 setLoading(false);
             }
         };
         fetchTrailData();
-    }, [id, user_id]);
+    }, [id]);
 
     const handleFavorite = async () => {
-        if (!user_id) {
-            alert("You must be logged in to favorite trails.");
-            return;
-        }
-
         if (favorite) {
             setFavorite(false);
             try {
                 await fetch("http://localhost:5001/api/favorite/deleteFavorite", {
                     method: "DELETE",
+                    credentials: 'include',
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ userId: user_id, trailID: id }),
+                    body: JSON.stringify({ trailID: id }),
                 });
             } catch (err) {
                 setFavorite((fav) => !fav);
@@ -63,8 +58,9 @@ export default function TrailPage() {
             try {
                 await fetch("http://localhost:5001/api/favorite/addFavorite", {
                     method: "POST",
+                    credentials: 'include',
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ userId: user_id, trailID: id }),
+                    body: JSON.stringify({ trailID: id }),
                 });
             } catch (err) {
                 setFavorite((fav) => !fav);
