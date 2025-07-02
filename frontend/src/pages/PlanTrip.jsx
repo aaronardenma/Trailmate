@@ -1,83 +1,137 @@
-import {useNavigate, useParams} from "react-router-dom";
-import { useState } from "react";
-
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { recommendGear } from "../utils/gearRecommendation";
 
 export default function PlanTripPage() {
-    const { _id } = useParams();
-    const [date, setDate] = useState("");
-    const [tripStarted, setTripStarted] = useState(false);
-    const navigate = useNavigate();
+  const { _id } = useParams();
+  const [date, setDate] = useState("");
+  const [gearData, setGearData] = useState([]); 
+  const [recommendedByCategory, setRecommendedByCategory] = useState({});
+  const [tripStarted, setTripStarted] = useState(false);
+  const [ownedGear, setOwnedGear] = useState({});
+  const navigate = useNavigate();
 
-    const handleStartTrip = () => {
-        if (!date) {
-            alert("Please select a date for your trip.");
-        }
-        navigate(`/trip/${_id}`);
-        setTripStarted(true);
+  useEffect(() => {
+    async function fetchGear() {
+      try {
+        const res = await fetch("http://localhost:5001/api/gear");
+        const data = await res.json();
+        setGearData(data);
+      } catch (err) {
+        console.error("Error fetching gear:", err);
+      }
+    }
+
+    fetchGear();
+
+    const storedGear = localStorage.getItem("ownedGear");
+    if (storedGear) {
+      setOwnedGear(JSON.parse(storedGear));
+    }
+  }, []);
+
+  const userOwnsItem = (item) => {
+    return Object.values(ownedGear).some(category => category?.[item]);
+  };
+
+  useEffect(() => {
+    if (!date || gearData.length === 0) return;
+
+    // replace with call to weather API later
+    const conditions = {
+      temperatureC: -3,
+      raining: false,
+      tripLengthDays: 2,
+      difficulty: "hard",
     };
 
-    const gearRecommendations = [
-        "Insulated hiking boots",
-        "Thermal jacket",
-        "Snow pants",
-        "Gloves and beanie",
-        "Trekking poles",
-        "Waterproof backpack",
-        "Emergency blanket",
-        "Headlamp with extra batteries"
-    ];
+    const recs = recommendGear(conditions);
+    
+    const recommendedGrouped = {};
 
-    return (
-        <div className="min-h-screen bg-gradient-to-b from-[#ECECEC] to-[#F5F5F5] py-12 px-6">
-            <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 space-y-8 border border-gray-200">
-                <h1 className="text-3xl font-bold text-center text-[#2F4F4F]">Plan Your Trip</h1>
+    gearData.forEach(({ category, items }) => {
+      const recommendedItemsInCategory = items.filter(item => recs.includes(item));
+      if (recommendedItemsInCategory.length > 0) {
+        recommendedGrouped[category] = recommendedItemsInCategory;
+      }
+    });
 
-                <div className="flex flex-col gap-4 items-center">
-                    <label className="text-lg font-semibold text-gray-700">Select your trip date:</label>
-                    <input
-                        type="date"
-                        value={date}
-                        onChange={(e) => {
-                            setDate(e.target.value);
-                            setTripStarted(false); // reset trip started if date changes
-                        }}
-                        className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring focus:border-[#A3B18A]"
-                    />
-                </div>
+    setRecommendedByCategory(recommendedGrouped);
+  }, [date, gearData]);
 
-                {date && (
-                    <>
-                        <div className="bg-gray-50 rounded-lg p-6 shadow-sm border border-gray-100">
-                            <h2 className="text-xl font-semibold text-[#4A4A4A] mb-2">Expected Weather</h2>
-                            <p className="text-gray-600 text-lg">❄️ Snowy</p>
-                        </div>
+  const handleStartTrip = () => {
+    if (!date) return alert("Please select a date for your trip.");
+    navigate(`/trip/${_id}`);
+    setTripStarted(true);
+  };
 
-                        <div className="bg-gray-50 rounded-lg p-6 shadow-sm border border-gray-100">
-                            <h2 className="text-xl font-semibold text-[#4A4A4A] mb-4">Gear Recommendations</h2>
-                            <ul className="list-disc list-inside text-gray-700 space-y-1">
-                                {gearRecommendations.map((gear, index) => (
-                                    <li key={index}>{gear}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    </>
-                )}
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-[#ECECEC] to-[#F5F5F5] py-12 px-6">
+      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8 space-y-8 border border-gray-200">
+        <h1 className="text-3xl font-bold text-center text-[#2F4F4F]">Plan Your Trip</h1>
 
-                <div className="flex justify-center">
-                    <button
-                        onClick={handleStartTrip}
-                        className="bg-[#A3B18A] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#859966] transition"
-                    >
-                        Start Trip
-                    </button>
-                </div>
-
-                {tripStarted && (
-                    <div className="text-center text-green-700 font-semibold text-lg">
-                        Your trip has started! Stay safe and enjoy the trail.
-                    </div>
-                )}
-            </div>
+        <div className="flex flex-col gap-4 items-center">
+          <label className="text-lg font-semibold text-gray-700">Select your trip date:</label>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => {
+              setDate(e.target.value);
+              setTripStarted(false);
+            }}
+            className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring focus:border-[#A3B18A]"
+          />
         </div>
-    );
+
+        {date && (
+          <>
+            <div className="bg-gray-50 rounded-lg p-6 shadow-sm border border-gray-100">
+              <h2 className="text-xl font-semibold text-[#4A4A4A] mb-2">Expected Weather</h2>
+              <p className="text-gray-600 text-lg">❄️ Snowy</p>
+            </div>
+
+            <div className="bg-gray-50 rounded-lg p-6 shadow-sm border border-gray-100">
+              <h2 className="text-xl font-semibold text-[#4A4A4A] mb-4">Gear Recommendations</h2>
+              {Object.keys(recommendedByCategory).length > 0 ? (
+                Object.entries(recommendedByCategory).map(([category, items]) => (
+                  <div key={category} className="mb-4">
+                    <h3 className="text-lg font-bold text-[#588157] mb-2">
+                        {category.replace(/_/g, " and ")}
+                    </h3>
+                    <ul className="list-disc list-inside text-gray-700 space-y-1">
+                      {items.map((gear) => (
+                        <li
+                          key={gear}
+                          className={userOwnsItem(gear) ? "text-[#000000]" : "text-gray-700"}
+                        >
+                          {gear} {userOwnsItem(gear) && "✓"}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500">Loading recommendations...</p>
+              )}
+            </div>
+          </>
+        )}
+
+        <div className="flex justify-center">
+          <button
+            onClick={handleStartTrip}
+            className="bg-[#588157] text-white font-semibold py-3 px-6 rounded-lg hover:bg-[#476246] transition"
+          >
+            Start Trip
+          </button>
+        </div>
+
+        {tripStarted && (
+          <div className="text-center font-semibold text-lg" style={{ color: "#588157" }}>
+            Your trip has started! Stay safe and enjoy the trail.
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
