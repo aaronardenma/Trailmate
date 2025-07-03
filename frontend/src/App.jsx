@@ -14,7 +14,6 @@ import CommunityPage from "@/pages/CommunityPage.jsx";
 import UserPostPage from "@/pages/UserPostPage.jsx";
 import Auth from "./pages/Auth";
 import Register from "./pages/Register";
-import PlanInputs from "./components/PlanInputs";
 import PastTrips from "./pages/PastTrips";
 
 function App() {

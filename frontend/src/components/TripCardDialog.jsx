@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dialog";
 import { FaRegStar, FaStar } from "react-icons/fa";
 import TripDialogContent from "./TripDialogContent"
-import PlanInputs from "./PlanInputs";
 import { useNavigate } from "react-router-dom";
 
 export default function TripCardDialog({ trip, trigger, date, setDate, status, setStatus, open, onOpenChange }) {
