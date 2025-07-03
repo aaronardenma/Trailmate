@@ -14,13 +14,11 @@ export default function CommunityPage() {
     const [showInput, setShowInput] = useState(false);
     const [showComment, setShowComment] = useState([]);
     const [comment, setComment] = useState("");
-    // const [savedComment, setSavedComment] = useState("");
+    const [userLinks, setUserLink] = useState({});
 
     const [showModal, setShowModal] = useState(false);
 
     const handleSaveComment = async (post) => {
-        // setSavedComment(comment);
-        // console.log("savedComment" + savedComment);
         setShowInput(false);
         setShowComment([])
 
@@ -60,6 +58,7 @@ export default function CommunityPage() {
 
     const handleLike = async (post) => {
         try {
+
             const res = await fetch(`http://localhost:5001/api/posts/updatePostLikes/${post._id}`, {
                 method: "PUT",
                 headers: {"Content-Type": "application/json"},
@@ -77,6 +76,7 @@ export default function CommunityPage() {
             console.error("Error liking post:", err);
         }
     };
+
     const handleYourPosts = () => {
         navigate('/yourPosts')
     }
@@ -112,6 +112,26 @@ export default function CommunityPage() {
             setPosting(false);
         }
     };
+
+
+    // TODO: This is the new logic
+    const handleUserLinks = async (e) => {
+        try {
+            setLoading(true);
+            fetch(`http://localhost:5001/api/posts/getUser/${post._id}`)
+                .then((res) => res.json())
+                .then((data) => {
+                    setUserLink(data);
+                    setLoading(false);
+                })
+                .catch((err) => {
+                    console.error("Failed to fetch user profile:", err);
+                    setLoading(false);
+                });
+        } catch (err) {
+            console.error("Error liking post:", err);
+        }
+    }
 
     return (
         <div className="max-w-5xl mx-auto p-6 bg-[#DAD7CD] min-h-screen">
