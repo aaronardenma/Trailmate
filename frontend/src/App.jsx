@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Map from "./pages/Map.jsx";
 import Nav from "./components/Nav";
@@ -14,10 +14,12 @@ import CommunityPage from "@/pages/CommunityPage.jsx";
 import UserPostPage from "@/pages/UserPostPage.jsx";
 import Auth from "./pages/Auth";
 import Register from "./pages/Register";
+import PastTrips from "./pages/PastTrips";
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const location = useLocation();
+  const nav = useNavigate();
 
   const checkAuthStatus = async () => {
     try {
@@ -40,11 +42,13 @@ function App() {
       } else {
         console.log('User not authenticated');
         setIsAuthenticated(false);
+        nav("/")
         return null;
       }
     } catch (error) {
       console.error('Auth check failed:', error);
       setIsAuthenticated(false);
+      nav("/")
       return null;
     }
   };
@@ -99,14 +103,15 @@ function App() {
           <>
             <Route path="/home" element={<Home />} />
             <Route path="/map" element={<Map />} />
-            <Route path="/trail/:id" element={<TrailPage />} />
+            {/* <Route path="/trail/:id" element={<TrailPage />} /> */}
             <Route path="/planTrip/:_id" element={<PlanTripPage />} />
             <Route path="/filters" element={<Filters />} />
             <Route path="/favourites" element={<Favourites />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/community" element={<CommunityPage />} />
             <Route path="/yourPosts" element={<UserPostPage />} />
-            <Route path="/trip/:_id" element={<TripPage />} />
+            <Route path="/trip/:tripId" element={<TripPage />} />
+            <Route path="/profile/trips" element={<PastTrips />} />
           </>
         )}
         

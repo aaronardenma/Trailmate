@@ -46,7 +46,6 @@ export default function UserProfile() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
-  const [pastTrips, setPastTrips] = useState([]);
   const [message, setMessage] = useState("");
   const [userId, setUserId] = useState(null);
 
@@ -100,7 +99,7 @@ export default function UserProfile() {
           setOwnedGear({});  
         }
 
-        fetchPastTrips(userData.id);
+        fetchPastTrips();
       })
       .catch(() => {
         setMessage("Please log in to view your profile");
@@ -108,31 +107,7 @@ export default function UserProfile() {
       });
   }, []);
 
-  const fetchPastTrips = async (userIdParam) => {
-    try {
-      const res = await fetch(`http://localhost:5001/api/trips/userTrips/`, {
-        method: 'GET',
-        credentials: 'include'
-      });
-      const data = await res.json();
-      const tripsWithTrail = await Promise.all(
-        (data || []).map(async (trip) => {
-          try {
-            const trailRes = await fetch(`http://localhost:5001/api/trails/getTrailById/${trip.trailID}`, {
-              credentials: 'include'
-            });
-            const trailData = await trailRes.json();
-            return { ...trip, trail: trailData };
-          } catch {
-            return { ...trip, trail: { name: "Unknown Trail", photoUrl: "" } };
-          }
-        })
-      );
-      setPastTrips(tripsWithTrail);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -274,32 +249,7 @@ export default function UserProfile() {
         setMessage={setMessage}
       />
 
-      <h2 className="mt-16 mb-8 text-3xl font-semibold text-gray-800 w-full max-w-4xl text-center">
-        Your Past Trips
-      </h2>
-      <div className="w-full max-w-4xl space-y-6">
-        {pastTrips.length === 0 && <p className="text-center text-gray-600">No past trips found.</p>}
-        {pastTrips.map((trip) => (
-          <div key={trip._id} className="flex bg-white rounded-xl shadow-md overflow-hidden border border-gray-300">
-            <div className="w-1/3">
-              <img
-                src={trip.trail.photoUrl || "https://via.placeholder.com/150"}
-                alt={trip.trail.name}
-                className="object-cover w-full h-full"
-              />
-            </div>
-            <div className="w-2/3 p-6 flex flex-col justify-center">
-              <h3 className="text-xl font-bold text-gray-800">{trip.trail.name}</h3>
-              <div className="mt-2 flex items-center space-x-3">
-                <span className="font-semibold text-green-700">Rating: {trip.userRating}/5</span>
-              </div>
-              <p className="mt-1 text-gray-600">
-                Date: {trip.dateOfTrip ? new Date(trip.dateOfTrip).toLocaleDateString() : "Unknown"}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
+      
 
       <div className="flex flex-col sm:flex-row gap-4 max-w-4xl w-full mt-10 justify-center">
         <button
