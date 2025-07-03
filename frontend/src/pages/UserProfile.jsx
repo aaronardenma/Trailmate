@@ -32,6 +32,15 @@ function Toast({ message, onClose }) {
   );
 }
 
+function gearArrayToNestedObject(gearArray) {
+  const nested = {};
+  gearArray.forEach(({ category, item }) => {
+    if (!nested[category]) nested[category] = {};
+    nested[category][item] = true;
+  });
+  return nested;
+}
+
 export default function UserProfile() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -84,18 +93,11 @@ export default function UserProfile() {
         setUser(userData);
         setLoading(false);
 
-        const savedGear = JSON.parse(localStorage.getItem("ownedGear"));
-        if (savedGear) setOwnedGear(savedGear);
-        else
-          setOwnedGear({
-            Clothing: {
-              "Moisture-wicking T-shirts (short sleeve)": true,
-              "Waterproof breathable rain jacket": true,
-            },
-            Footwear: {
-              "Hiking boots (waterproof)": true,
-            },
-          });
+        if (userData.gear && userData.gear.length > 0) {
+          setOwnedGear(gearArrayToNestedObject(userData.gear));
+        } else {
+          setOwnedGear({});  
+        }
 
         fetchPastTrips(userData.id);
       })
@@ -154,7 +156,9 @@ export default function UserProfile() {
     const gearArray = [];
     for (const [category, items] of Object.entries(ownedGear)) {
       for (const item of Object.keys(items)) {
-        gearArray.push({ category, item });
+        if (items[item]) {
+          gearArray.push({ category, item });
+        }
       }
     }
   
@@ -323,7 +327,6 @@ export default function UserProfile() {
         >
           Save Gear Changes
         </button>
-
         {!isSaved && <p className="mt-2 text-sm text-gray-500">You have unsaved changes.</p>}
         {isSaved && <p className="mt-2 text-sm text-green-600">Changes saved!</p>}
       </div>
@@ -379,3 +382,4 @@ export default function UserProfile() {
     </div>
   );
 }
+       
