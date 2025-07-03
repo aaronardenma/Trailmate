@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 export default function CommunityPage() {
@@ -11,9 +11,36 @@ export default function CommunityPage() {
     const [photoUrl, setPhotoUrl] = useState("");
     const [posting, setPosting] = useState(false);
     const [error, setError] = useState("");
+    const [showInput, setShowInput] = useState(false);
+    const [showComment, setShowComment] = useState([]);
     const [comment, setComment] = useState("");
+    // const [savedComment, setSavedComment] = useState("");
 
     const [showModal, setShowModal] = useState(false);
+
+    const handleSaveComment = async (post) => {
+        // setSavedComment(comment);
+        // console.log("savedComment" + savedComment);
+        setShowInput(false);
+        setShowComment([])
+
+        try {
+            const res = await fetch(`http://localhost:5001/api/posts/updatePostComments/${post._id}`, {
+                method: "PUT",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({
+                    comments: comment,
+                    user_id: user_id
+                }),
+            });
+
+            if (!res.ok) throw new Error("Failed to like post");
+            const updatedPost = await res.json();
+            fetchPosts()
+        } catch (err) {
+            console.error("Error liking post:", err);
+        }
+    }
 
     const fetchPosts = () => {
         console.log("user_id " + user_id)
@@ -30,11 +57,12 @@ export default function CommunityPage() {
                 setLoading(false);
             });
     };
+
     const handleLike = async (post) => {
         try {
-            const res = await fetch(`http://localhost:5001/api/posts/updatePost/${post._id}`, {
+            const res = await fetch(`http://localhost:5001/api/posts/updatePostLikes/${post._id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
+                headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
                     // likes: post.likes,
                     comments: post.comments,
@@ -43,7 +71,6 @@ export default function CommunityPage() {
             });
 
             if (!res.ok) throw new Error("Failed to like post");
-
             const updatedPost = await res.json();
             fetchPosts()
         } catch (err) {
@@ -70,8 +97,8 @@ export default function CommunityPage() {
             const userId = localStorage.getItem("user_id");
             const res = await fetch("http://localhost:5001/api/posts/addPost", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ userId, title, description, dateOfPost: new Date(), photoUrl }),
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({userId, title, description, dateOfPost: new Date(), photoUrl}),
             });
             if (!res.ok) throw new Error("Failed to post");
             setTitle("");
@@ -88,7 +115,7 @@ export default function CommunityPage() {
 
     return (
         <div className="max-w-5xl mx-auto p-6 bg-[#DAD7CD] min-h-screen">
-            <h1 className="text-4xl font-bold mb-6 text-center text-[#588157]">Community Posts 123</h1>
+            <h1 className="text-4xl font-bold mb-6 text-center text-[#588157]">Community Posts</h1>
 
             <div className="flex justify-center gap-6 mb-10">
                 <button
@@ -99,7 +126,7 @@ export default function CommunityPage() {
                 </button>
 
                 <button
-                    onClick={() =>handleYourPosts()}
+                    onClick={() => handleYourPosts()}
                     className="bg-[#588157] text-white  px-6 py-3 rounded font-semibold hover:bg-[#E6E6E6] transition"
                 >
                     Your Posts
@@ -201,17 +228,44 @@ export default function CommunityPage() {
                                 </p>
 
                                 <p className="mt-1 text-gray-500 text-sm flex items-center gap-2">
-                                    <button
-                                        onClick={() => setComment(true)}
-                                        className="ml-2 text-sm bg-[#A3B18A] text-white px-3 py-1 rounded hover:bg-[#859966] transition"
-                                    >Comment
-                                    </button>
+                                    {(
+                                        <button
+                                            onClick={() => {
+                                                // setShowInput(true);
+                                                setShowComment([post._id]);
+                                            }}
+                                            className="ml-2 text-sm bg-[#A3B18A] text-white px-3 py-1 rounded hover:bg-[#859966] transition"
+                                        >Comment
+                                        </button>
+                                    )}
+
+                                    {showComment.find(id => id === post._id) && (
+                                        <div>
+                                            <input
+                                                type="text"
+                                                placeholder="Comments..."
+                                                value={comment}
+                                                onChange={(e) => setComment(e.target.value)}
+                                                className="w-full border p-3 rounded"
+                                            />
+                                            <button
+                                                onClick={() => handleSaveComment(post)}
+                                                className="ml-2 text-sm bg-[#A3B18A] text-white px-3 py-1 rounded hover:bg-[#859966] transition"
+                                            > Save
+                                            </button>
+                                        </div>
+                                    )}
                                 </p>
 
                                 {post.comments && post.comments.length > 0 && (
                                     <div className="mt-4 p-3 bg-gray-100 rounded">
-                                        <strong>First comment:</strong>{" "}
-                                        <span>{post.comments[0].comment}</span>
+                                        <strong>Comments :</strong>{" "}
+                                        {/*<span>{post.comments[0]}</span>*/}
+                                        <span>{post.comments.map((comment, index) => (
+                                            <ul key={index}>
+                                                {comment}
+                                            </ul>
+                                        ))}</span>
                                     </div>
                                 )}
                             </div>

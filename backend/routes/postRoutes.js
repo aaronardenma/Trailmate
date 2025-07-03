@@ -46,36 +46,90 @@ router.post('/addPost', async (req, res) => {
         res.status(500).json({error: 'Error creating post', details: err.message});
     }
 });
-router.put('/updatePost/:id', async (req, res) => {
-    let currentUserLikingPost = req.body.user_id
-    let currentUserComments = req.body.comments
-    let currentPost = await Post.findOne({_id: req.params.id})
 
-    console.log("current comment " + currentUserComments);
-    console.log("current post " + currentPost);
+
+router.put('/updatePost/:id', async (req, res) => {
+    console.log("her ei am")
+    const {userId, title, description, photoUrl, likes, comments} = req.body;
+
+    const newPost = new Post({
+        userId,
+        title,
+        description,
+        dateOfPost: new Date(),
+        photoUrl: photoUrl || '', likes, comments
+    });
+    console.log(newPost)
 
     try {
-        if (currentPost.likedByUsers.length === 0) {
+        const updatedUser = await Post.findByIdAndUpdate(
+            req.params.id,
+            {
+                userId, title, description, photoUrl, likes, comments
+            },
+            {new: true, runValidators: true}
+        );
+
+        res.status(201).json({message: 'Post created successfully', post: updatedUser});
+    } catch (err) {
+        res.status(500).json({error: 'Error creating post', details: err.message});
+    }
+});
+
+router.put('/updatePostLikes/:id', async (req, res) => {
+    let currentUserLikingPost = req.body.user_id
+    let currentPost = await Post.findOne({_id: req.params.id})
+    let message = ""
+
+    // console.log("currentUserLikingPost " + currentUserLikingPost);
+    console.log("currentPost.likedByUsers.length >>>>>>>>>>>>>>>" + currentPost.likedByUsers.length);
+
+    try {
+        if (currentPost.likes === 0) {
             currentPost.likedByUsers.push(currentUserLikingPost)
             currentPost.likes += 1
+            await currentPost.save();
         } else {
             for (let i = 0; i < currentPost.likedByUsers.length; i++) {
-                if (currentUserLikingPost.equals(currentPost.likedByUsers[i])) {
-                    res = currentPost.likes;
+                console.log((currentPost.likedByUsers[i]).toString())
+                if (currentUserLikingPost === (currentPost.likedByUsers[i]).toString()) {
+                    message = 'You have already liked this post'
+                    res.status(304).json({message: 'You have already liked this post'});
                 }
             }
+            currentPost.likedByUsers.push(currentUserLikingPost)
+            currentPost.likes += 1
+            await currentPost.save();
+            message = "You liked this post!"
+            // res.status(201).json({message: 'You have already liked this post'});
         }
-        if (currentUserComments !== null){
+        console.log("currentPost.likedByUsers.length <<<<<<<<<<<<<<<<<<" + currentPost.likedByUsers.length);
+        // console.log("current post AFTER " + currentPost);
+        message = "Post updated successfully"
+        res.status(201).json({message: message});
+    } catch (err) {
+        res.status(500).json({error: 'Error creating post', details: err.message});
+    }
+    // res.status(201).json({message: 'Post updated successfully'});
+});
+
+
+router.put('/updatePostComments/:id', async (req, res) => {
+    let currentUserComments = req.body.comments
+    let currentPost = await Post.findOne({_id: req.params.id})
+    console.log(currentUserComments)
+
+    try {
+        if (currentUserComments !== null) {
             currentPost.comments.push(currentUserComments);
         }
         console.log("current comment " + currentUserComments);
-        // console.log("current post " + currentPost);
-        currentPost.save();
-    }
-    catch (err) {
+        await currentPost.save();
+        // res.json(currentPost);
+        res.status(201).json({message: 'Post updated successfully'});
+    } catch (err) {
         res.status(500).json({error: 'Error creating post', details: err.message});
     }
-    res.status(201).json({message: 'Post updated successfully'});
 });
 
 

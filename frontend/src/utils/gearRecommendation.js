@@ -49,3 +49,17 @@ export function recommendGear(conditions) {
     return Array.from(recommendations);
   }
   
+
+export const flattenSelectedGear = (selectedGear) => {
+    const gearArray = [];
+    
+    Object.entries(selectedGear).forEach(([category, items]) => {
+      Object.entries(items).forEach(([item, isSelected]) => {
+        if (isSelected) {
+          gearArray.push(item);
+        }
+      });
+    });
+    
+    return gearArray;
+  };
