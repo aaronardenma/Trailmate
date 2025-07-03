@@ -12,6 +12,29 @@ export default function PlanTripPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    async function fetchUserData() {
+      try {
+        const res = await fetch("http://localhost:5001/api/users/me", {
+          credentials: "include",
+        });
+        if (!res.ok) throw new Error("Not authenticated");
+        const userData = await res.json();
+
+        const nestedGear = {};
+        (userData.gear || []).forEach(({ category, item }) => {
+          if (!nestedGear[category]) nestedGear[category] = {};
+          nestedGear[category][item] = true;
+        });
+        setOwnedGear(nestedGear);
+      } catch (err) {
+        console.error("Error fetching user data", err);
+        setOwnedGear({});
+      }
+    }
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
     async function fetchGear() {
       try {
         const res = await fetch("http://localhost:5001/api/gear");
@@ -21,23 +44,13 @@ export default function PlanTripPage() {
         console.error("Error fetching gear:", err);
       }
     }
-
     fetchGear();
-
-    const storedGear = localStorage.getItem("ownedGear");
-    if (storedGear) {
-      setOwnedGear(JSON.parse(storedGear));
-    }
   }, []);
-
-  const userOwnsItem = (item) => {
-    return Object.values(ownedGear).some(category => category?.[item]);
-  };
 
   useEffect(() => {
     if (!date || gearData.length === 0) return;
 
-    // replace with call to weather API later
+    // Replace with real weather API later
     const conditions = {
       temperatureC: -3,
       raining: false,
@@ -58,6 +71,10 @@ export default function PlanTripPage() {
 
     setRecommendedByCategory(recommendedGrouped);
   }, [date, gearData]);
+
+  const userOwnsItem = (category, item) => {
+    return !!ownedGear?.[category]?.[item];
+  };
 
   const handleStartTrip = () => {
     if (!date) return alert("Please select a date for your trip.");
@@ -96,15 +113,19 @@ export default function PlanTripPage() {
                 Object.entries(recommendedByCategory).map(([category, items]) => (
                   <div key={category} className="mb-4">
                     <h3 className="text-lg font-bold text-[#588157] mb-2">
-                        {category.replace(/_/g, " and ")}
+                      {category.replace(/_/g, " and ")}
                     </h3>
                     <ul className="list-disc list-inside text-gray-700 space-y-1">
                       {items.map((gear) => (
                         <li
                           key={gear}
-                          className={userOwnsItem(gear) ? "text-[#000000]" : "text-gray-700"}
+                          className={`select-none ${
+                            userOwnsItem(category, gear)
+                              ? "text-black font-semibold"
+                              : "text-gray-700"
+                          }`}
                         >
-                          {gear} {userOwnsItem(gear) && "✓"}
+                          {gear} {userOwnsItem(category, gear) && "✓"}
                         </li>
                       ))}
                     </ul>

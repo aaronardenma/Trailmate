@@ -15,7 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { gearCategories } from "@/utils/gearData";
 
 function Toast({ message, onClose }) {
   useEffect(() => {
@@ -41,9 +40,9 @@ export default function UserProfile() {
   const [message, setMessage] = useState("");
   const [userId, setUserId] = useState(null);
 
+  const [gearData, setGearData] = useState([]);  
   const [ownedGear, setOwnedGear] = useState({});
   const [isSaved, setIsSaved] = useState(true);
-
 
   const getCurrentUser = async () => {
     try {
@@ -62,6 +61,21 @@ export default function UserProfile() {
       throw new Error('Authentication failed');
     }
   };
+
+  useEffect(() => {
+    async function fetchGear() {
+      try {
+        const res = await fetch("http://localhost:5001/api/gear");
+        if (!res.ok) throw new Error("Failed to fetch gear data");
+        const data = await res.json();
+        setGearData(data);
+      } catch (err) {
+        console.error(err);
+        setMessage("Error loading gear categories");
+      }
+    }
+    fetchGear();
+  }, []);
 
   useEffect(() => {
     getCurrentUser()
@@ -136,11 +150,32 @@ export default function UserProfile() {
     });
   };
 
-  const handleSaveGear = () => {
-    localStorage.setItem("ownedGear", JSON.stringify(ownedGear));
-    setIsSaved(true);
-    setMessage("Gear saved!");
-  };
+  const handleSaveGear = async () => {
+    const gearArray = [];
+    for (const [category, items] of Object.entries(ownedGear)) {
+      for (const item of Object.keys(items)) {
+        gearArray.push({ category, item });
+      }
+    }
+  
+    try {
+      const res = await fetch('http://localhost:5001/api/users/updateGear', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ gear: gearArray }),
+      });
+  
+      const data = await res.json();
+  
+      if (!res.ok) throw new Error(data.message || 'Failed to update gear');
+  
+      setIsSaved(true);
+      setMessage('Gear saved to database!');
+    } catch (error) {
+      setMessage(`Error saving gear: ${error.message}`);
+    }
+  };  
 
   const handleUpdate = async () => {
     if (!user || !userId) return;
@@ -256,25 +291,30 @@ export default function UserProfile() {
 
       <div className="w-full max-w-4xl mt-12">
         <h2 className="text-xl font-semibold mb-4">My Gear</h2>
-        {Object.entries(gearCategories).map(([category, items]) => (
-          <div key={category} className="mb-6">
-            <h3 className="text-lg font-bold text-[#588157] mb-2">
-              {category.replace(/_/g, " ")}
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-              {items.map((item) => (
-                <label key={item} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={!!ownedGear?.[category]?.[item]}
-                    onChange={() => toggleGearItem(category, item)}
-                  />
-                  <span>{item}</span>
-                </label>
-              ))}
+
+        {gearData.length === 0 ? (
+          <p>Loading gear categories...</p>
+        ) : (
+          gearData.map(({ category, items }) => (
+            <div key={category} className="mb-6">
+              <h3 className="text-lg font-bold text-[#588157] mb-2">
+                {category.replace(/_/g, " ")}
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                {items.map((item) => (
+                  <label key={item} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={!!ownedGear?.[category]?.[item]}
+                      onChange={() => toggleGearItem(category, item)}
+                    />
+                    <span>{item}</span>
+                  </label>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
 
         <button
           className="bg-[#588157] hover:bg-[#476246] text-white font-semibold px-6 py-2 rounded-lg transition"
@@ -283,6 +323,7 @@ export default function UserProfile() {
         >
           Save Gear Changes
         </button>
+
         {!isSaved && <p className="mt-2 text-sm text-gray-500">You have unsaved changes.</p>}
         {isSaved && <p className="mt-2 text-sm text-green-600">Changes saved!</p>}
       </div>
