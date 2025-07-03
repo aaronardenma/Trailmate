@@ -139,5 +139,25 @@ router.post('/logout', (req, res) => {
     res.status(200).json({ success: true, message: 'Logged out successfully' });
 });
 
+router.post('/updateGear', authenticateToken, async (req, res) => {
+    const { gear } = req.body;
+    const userId = req.user.id;
+
+    try {
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { gear },
+            { new: true, runValidators: true }
+        );
+
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        res.status(200).json({ success: true, message: 'Gear updated successfully', user });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Failed to update gear', error: err.message });
+    }
+});
 
 module.exports = router;
