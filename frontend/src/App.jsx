@@ -103,7 +103,7 @@ function App() {
           <>
             <Route path="/home" element={<Home />} />
             <Route path="/map" element={<Map />} />
-            <Route path="/trail/:id" element={<TrailPage />} />
+            {/* <Route path="/trail/:id" element={<TrailPage />} /> */}
             <Route path="/planTrip/:_id" element={<PlanTripPage />} />
             <Route path="/filters" element={<Filters />} />
             <Route path="/favourites" element={<Favourites />} />
