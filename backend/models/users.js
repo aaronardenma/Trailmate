@@ -44,7 +44,7 @@ const usersSchema = new Schema({
     },
     profileCompleted: {
         type: Boolean,
-        required,
+        required: true,
         default: false
     }
 });
