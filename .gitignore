@@ -7,9 +7,6 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-UI/node_modules
-API/node_modules
-dist
 dist-ssr
 *.local
 
@@ -32,8 +29,6 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
 dist-ssr
 *.local
 
@@ -49,5 +44,7 @@ dist-ssr
 *.sw?
 
 backend/.env
-node_modules
 backend/.env.test
+backend/node_modules
+frontend/node_modules
+frontend/dist
