@@ -22,9 +22,11 @@ const trailsSchema = new Schema({
     city: String,
     description: String,
     avgElevationM: Number,
-    weather: String,
     tags: [String],
-    difficulty: String,
+    difficulty: {
+        type: String,
+        enum: ['Easy', 'Medium', 'Challenging']
+    },
     distanceKm: Number,
 }, {
     timestamps: true
