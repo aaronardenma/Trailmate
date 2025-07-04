@@ -1,32 +1,78 @@
-export default function TripDialogContent({ trip, updating, date, setDate, time, setTime}) {
+import PopoverCalendar from "./PopoverCalendar";
+
+export default function TripDialogContent({
+  trip,
+  updating,
+  date,
+  setDate,
+  time,
+  setTime,
+  userRating,
+  setUserRating,
+  userComments,
+  setUserComments,
+}) {
   const trail = trip.trailID;
+
   return updating ? (
     <div className="mb-8 space-y-4">
-      <h3 className="font-semibold text-lg">Update Your Hike Details</h3>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Select dates:
-        </label>
-        <PopoverCalendar date={date} setDate={setDate} />
-      </div>
+      {trip.status !== "Completed" && (
+        <>
+          <h3 className="font-semibold text-lg">Update Your Hike Details</h3>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Select dates:
+            </label>
+            <PopoverCalendar date={date} setDate={setDate} />
+          </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Starting time:
-        </label>
-        <input
-          className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent"
-          name="time"
-          type="time"
-          value={time}
-          onChange={(e) => setTime(e.target.value)}
-        />
-      </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Starting time:
+            </label>
+            <input
+              className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              name="time"
+              type="time"
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
+            />
+          </div>
+        </>
+      )}
+
+      {trip.status === "Completed" && (
+        <div>
+          <label className="block text-gray-700 font-semibold">
+            Your Rating
+          </label>
+          <select
+            value={userRating}
+            onChange={(e) => setUserRating(Number(e.target.value))}
+            className="w-full border border-gray-300 rounded px-4 py-2 focus:outline-none focus:ring focus:border-green-400"
+          >
+            <option value={0}>Select rating</option>
+            {[1, 2, 3, 4, 5].map((num) => (
+              <option key={num} value={num}>
+                {num} Star{num > 1 ? "s" : ""}
+              </option>
+            ))}
+          </select>
+
+          <label className="block text-gray-700 font-semibold">Comments</label>
+          <textarea
+            value={userComments}
+            onChange={(e) => setUserComments(e.target.value)}
+            rows={4}
+            placeholder="Write your experience..."
+            className="w-full border border-gray-300 rounded px-4 py-2 resize-none focus:outline-none focus:ring focus:border-green-400"
+          />
+        </div>
+      )}
     </div>
   ) : (
     <div>
       <div className="grid md:grid-cols-2 gap-10 px-6 pb-6">
-        {/* First Column - Trail Info */}
         <div>
           <div className="flex flex-col">
             <div className="flex flex-col items-start mb-6">
@@ -71,12 +117,11 @@ export default function TripDialogContent({ trip, updating, date, setDate, time,
               <p className="text-center">
                 On{" "}
                 <span className="font-bold">
-                  {new Date(trip.startDate).toLocaleDateString()} -{" "}
-                  {new Date(trip.endDate).toLocaleDateString()}
+                  {new Date(date.from).toLocaleDateString()} -{" "}
+                  {new Date(date.to).toLocaleDateString()}
                 </span>{" "}
-                around <span className="font-bold">{trip.time}</span>, the
-                conditions on <span className="font-bold">{trail.name}</span>{" "}
-                are:
+                around <span className="font-bold">{time}</span>, the conditions
+                on <span className="font-bold">{trail.name}</span> are:
               </p>
 
               <p>

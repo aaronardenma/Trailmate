@@ -69,17 +69,19 @@ export default function TrailCard({ trail_id }) {
     if (!trail) return null;
 
     return (
-        <div className="relative rounded cursor-pointer mb-2 min-w-full max-w-1/3 hover:shadow-lg transition-shadow duration-200">
+        <div className="relative rounded group cursor-pointer mb-2 min-w-full max-w-1/3 hover:shadow-lg transition-all duration-200">
             <TrailCardDialog 
                 trailId={trail._id}
                 trigger={
                     <div className="block px-4 py-3 cursor-pointer">
-                        <div className="relative">
-                            <img
-                                src={trail.photoUrl}
-                                alt={trail.name}
-                                className="rounded-t-2xl w-full h-48 object-cover"
-                            />
+                        <div className="relative overflow-hidden rounded-2xl">
+                            <div>
+                                <img
+                                    src={trail.photoUrl}
+                                    alt={trail.name}
+                                    className="rounded-t-2xl w-full h-48 object-cover group-hover:scale-110 duration-200"
+                                />
+                            </div>
                             <button
                                 onClick={handleFavoriteToggle}
                                 aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}

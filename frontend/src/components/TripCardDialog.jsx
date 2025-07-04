@@ -13,10 +13,13 @@ import { FaRegStar, FaStar } from "react-icons/fa";
 import TripDialogContent from "./TripDialogContent"
 import { useNavigate } from "react-router-dom";
 
-export default function TripCardDialog({ trip, trigger, date, setDate, status, setStatus, open, onOpenChange }) {
+export default function TripCardDialog({ trip, date, setDate, userRating, setUserRating, trigger, open, onOpenChange }) {
+  const [time, setTime] = useState(trip.time)
+  const [userComments, setUserComments] = useState(trip.userComments)
+
   const [favorite, setFavorite] = useState(false);
   const [updating, setUpdating] = useState(false);
-  const [time, setTime] = useState('12:00')
+
   const nav = useNavigate()
 
   useEffect(() => {
@@ -77,15 +80,29 @@ export default function TripCardDialog({ trip, trigger, date, setDate, status, s
       setUpdating(true)
     } else {
       try {
-        const res = await fetch('http://localhost:5001/api/trips/update', {
+        const res = await fetch(`http://localhost:5001/api/trips/update/${trip._id}`, {
           method: 'PUT',
           credentials: 'include',
+          headers: {
+            "Content-Type": "application/json"
+          },
           body: JSON.stringify({
             startDate: date.from,
             endDate: date.to,
-            time: time
+            time: time,
+            userRating: userRating,
+            userComments: userComments
           })
         })
+
+        const data = await res.json()
+
+        if (data.success && res.ok) {
+
+          setUpdating(false);
+        } else {
+          throw new Error('Could not update trip details')
+        }
       } catch (err) {
         console.error(err)
       }
@@ -99,7 +116,16 @@ export default function TripCardDialog({ trip, trigger, date, setDate, status, s
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={(isOpen) => {
+    if (!isOpen) {
+      setTimeout(() => {
+        setUpdating(false);
+        setTime(trip.time);
+        setUserComments(trip.userComments);
+      }, 300); 
+    }
+    onOpenChange(isOpen);
+  }}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent className="max-w-[calc(100%-2rem)] sm:max-w-7xl w-[95vw] max-h-[90vh] overflow-y-auto">
         <DialogHeader className="px-6">
@@ -120,7 +146,7 @@ export default function TripCardDialog({ trip, trigger, date, setDate, status, s
           </DialogTitle>
         </DialogHeader>
         <DialogDescription />
-        <TripDialogContent trip={trip} updating={updating} date={date} setDate={setDate} time={time} setTime={setTime} />
+        <TripDialogContent trip={trip} updating={updating} date={date} setDate={setDate} time={time} setTime={setTime} userRating={userRating} setUserRating={setUserRating} userComments={userComments} setUserComments={setUserComments} />
       <DialogFooter className={`flex ${trip.status !== 'Completed' ? 'justify-between' : 'justify-end'}`}>
           <button
             className="w-fit bg-[#DAD7CD] text-black font-bold py-3 px-6 rounded-md hover:bg-[#E5E3DB] transition-colors cursor-pointer disabled:opacity-50"
@@ -128,7 +154,7 @@ export default function TripCardDialog({ trip, trigger, date, setDate, status, s
           >
             Update
           </button>
-          {trip.status !== "Completed" && (
+          {trip.status !== "Completed" && !updating && (new Date() > new Date(date.to)) && (
             <DialogClose asChild>
               <button
                 className="w-fit bg-[#588157] text-white font-bold py-3 px-6 rounded-md hover:bg-[#4a6e49] transition-colors cursor-pointer disabled:opacity-50"

@@ -18,7 +18,7 @@ router.get('/', authenticateToken, async (req, res) => {
     }
 });
 
-router.get('/getTrip/:tripId', authenticateToken, async (req, res) => {
+router.get('/:tripId', authenticateToken, async (req, res) => {
     const userId = req.user.id
     const {tripId} = req.params
     try {
@@ -33,7 +33,7 @@ router.get('/getTrip/:tripId', authenticateToken, async (req, res) => {
     }
 })
 
-router.post('/saveTrip', authenticateToken, async (req, res) => {
+router.post('/save', authenticateToken, async (req, res) => {
     const { trailID, startDate, endDate, time } = req.body;
     const userId = req.user.id;
     
@@ -70,7 +70,7 @@ router.post('/saveTrip', authenticateToken, async (req, res) => {
     }
 });
 
-router.post('/startTrip', authenticateToken, async (req, res) => {
+router.post('/start', authenticateToken, async (req, res) => {
     const { trailID, startDate, endDate, time } = req.body;
     const userId = req.user.id;
     console.log(typeof startDate)
@@ -108,47 +108,47 @@ router.post('/startTrip', authenticateToken, async (req, res) => {
     }
 });
 
-// router.put('/updateStatus/:tripId', authenticateToken, async (req, res) => {
-//     const { tripId } = req.params;
-//     const { status } = req.body;
-//     const userId = req.user.id;
+router.put('/updateStatus/:tripId', authenticateToken, async (req, res) => {
+    const { tripId } = req.params;
+    const { status } = req.body;
+    const userId = req.user.id;
     
-//     if (!['Upcoming', 'In Progress', 'Completed'].includes(status)) {
-//         return res.status(400).json({ 
-//             success: false, 
-//             message: 'Invalid status. Must be Upcoming, In Progress, or Completed' 
-//         });
-//     }
+    if (!['Upcoming', 'In Progress', 'Completed'].includes(status)) {
+        return res.status(400).json({ 
+            success: false, 
+            message: 'Invalid status. Must be Upcoming, In Progress, or Completed' 
+        });
+    }
 
-//     try {
-//         const updatedTrip = await Trip.findOneAndUpdate(
-//             { _id: tripId, userId },
-//             { status },
-//             { new: true, runValidators: true }
-//         ).populate('trailID');
+    try {
+        const updatedTrip = await Trip.findOneAndUpdate(
+            { _id: tripId, userId },
+            { status },
+            { new: true, runValidators: true }
+        ).populate('trailID');
 
-//         if (!updatedTrip) {
-//             return res.status(404).json({ 
-//                 success: false, 
-//                 message: 'Trip not found or not authorized' 
-//             });
-//         }
+        if (!updatedTrip) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Trip not found or not authorized' 
+            });
+        }
 
-//         res.status(200).json({ 
-//             success: true, 
-//             message: 'Trip status updated successfully', 
-//             trip: updatedTrip 
-//         });
-//     } catch (err) {
-//         res.status(500).json({ 
-//             success: false, 
-//             message: 'Error updating trip status', 
-//             error: err.message 
-//         });
-//     }
-// });
+        res.status(200).json({ 
+            success: true, 
+            message: 'Trip status updated successfully', 
+            trip: updatedTrip 
+        });
+    } catch (err) {
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error updating trip status', 
+            error: err.message 
+        });
+    }
+});
 
-router.put('/endTrip/:tripId', authenticateToken, async (req, res) => {
+router.put('/end/:tripId', authenticateToken, async (req, res) => {
     const { tripId } = req.params;
     const { userRating, userComments } = req.body;
     const userId = req.user.id;
@@ -192,45 +192,45 @@ router.put('/endTrip/:tripId', authenticateToken, async (req, res) => {
     }
 });
 
-// router.put('/updateTrip/:tripId', authenticateToken, async (req, res) => {
-//     const { tripId } = req.params;
-//     const { startDate, endDate, time, userRating, userComments } = req.body;
-//     const userId = req.user.id;
+router.put('/update/:tripId', authenticateToken, async (req, res) => {
+    const { tripId } = req.params;
+    const { startDate, endDate, time, userRating, userComments } = req.body;
+    const userId = req.user.id;
 
-//     try {
-//         const updateData = {};
-//         if (startDate) updateData.startDate = startDate;
-//         if (endDate) updateData.endDate = endDate;
-//         if (time) updateData.time = time;
-//         if (userRating) updateData.userRating = userRating;
-//         if (userComments !== undefined) updateData.userComments = userComments;
+    try {
+        const updateData = {};
+        if (startDate) updateData.startDate = startDate;
+        if (endDate) updateData.endDate = endDate;
+        if (time) updateData.time = time;
+        if (userRating) updateData.userRating = userRating;
+        if (userComments !== undefined) updateData.userComments = userComments;
 
-//         const updatedTrip = await Trip.findOneAndUpdate(
-//             { _id: tripId, userId },
-//             updateData,
-//             { new: true, runValidators: true }
-//         ).populate('trailID');
+        const updatedTrip = await Trip.findOneAndUpdate(
+            { _id: tripId, userId },
+            updateData,
+            { new: true, runValidators: true }
+        ).populate('trailID');
 
-//         if (!updatedTrip) {
-//             return res.status(404).json({ 
-//                 success: false, 
-//                 message: 'Trip not found or not authorized' 
-//             });
-//         }
+        if (!updatedTrip) {
+            return res.status(404).json({ 
+                success: false, 
+                message: 'Trip not found or not authorized' 
+            });
+        }
 
-//         res.status(200).json({ 
-//             success: true, 
-//             message: 'Trip updated successfully', 
-//             trip: updatedTrip 
-//         });
-//     } catch (err) {
-//         res.status(500).json({ 
-//             success: false, 
-//             message: 'Error updating trip', 
-//             error: err.message 
-//         });
-//     }
-// });
+        res.status(200).json({ 
+            success: true, 
+            message: 'Trip updated successfully', 
+            trip: updatedTrip 
+        });
+    } catch (err) {
+        res.status(500).json({ 
+            success: false, 
+            message: 'Error updating trip', 
+            error: err.message 
+        });
+    }
+});
 
 router.delete('/delete/:tripId', authenticateToken, async (req, res) => {
     const { tripId } = req.params;
