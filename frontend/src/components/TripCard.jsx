@@ -1,26 +1,29 @@
+import { useNavigate } from "react-router-dom";
 import TripCardDialog from "./TripCardDialog";
 import { useState } from "react";
 
 export default function TripCard({ trip, onDelete, defaultOpen}) {
-    const [date, setDate] = useState({from: trip.startDate, to: trip.endDate})
-    const [status, setStatus] = useState(trip.status)
     const [isOpen, setIsOpen] = useState(defaultOpen || false);
+    const [date, setDate] = useState({from: trip.startDate, to: trip.endDate})
+    const [userRating, setUserRating] = useState(trip.userRating)
 
+    const nav = useNavigate()
 
   const handleDelete = () => {
     onDelete(trip._id);
   };
 
-
+  const handleFinish = async () => {
+    
+    nav(`/trip/${trip._id}`)
+  }
 
   return (
-    <div className="relative rounded cursor-pointer mb-2 min-w-full max-w-1/3 hover:shadow-lg transition-shadow duration-200">
+    <div className="relative rounded cursor-pointer min-w-full max-w-1/3 hover:shadow-lg transition-shadow duration-200">
       <TripCardDialog
         trip={trip}
-        date = {date}
-        setDate = {setDate}
-        status = {status}
-        setStatus = {setStatus}
+        date = {date} setDate = {setDate}
+        userRating = {userRating} setUserRating={setUserRating}
         open={isOpen} onOpenChange={setIsOpen}
         trigger={
           <div className="flex bg-white rounded-xl shadow-md overflow-hidden border border-gray-300 cursor-pointer hover:shadow-lg transition-shadow">
@@ -41,25 +44,25 @@ export default function TripCard({ trip, onDelete, defaultOpen}) {
                   <span>Status:{" "}</span>
                   <span
                     className={`${
-                      status === "Completed"
+                      trip.status === "Completed"
                         ? "text-green-500"
-                        : "text-yellow-500"
+                        : trip.status === "In Progress" ? "text-yellow-400" : "text-blue-300"
                     }`}
                   >
-                    {status}
+                    {trip.status}
                   </span>
                 </div>
-                {status === "Completed" && (
+                {trip.status === "Completed" && (
                   <div className="font-semibold">
                     <span>Rating:{" "}</span>
                     <span
                       className={`${
-                        status === "Completed"
+                        trip.status === "Completed"
                           ? "text-green-500"
                           : "text-yellow-500"
                       }`}
                     >
-                      {trip.userRating}/5
+                      {userRating}/5
                     </span>
                   </div>
                 )}
@@ -83,6 +86,12 @@ export default function TripCard({ trip, onDelete, defaultOpen}) {
               >
                 Delete
               </button>
+              {trip.status !== "Completed" && (new Date() > new Date(date.to)) && <button
+                className="outline rounded-md p-2 h-fit cursor-pointer bg-green-500 hover:bg-green-600 font-bold text-white transition-colors"
+                onClick={handleFinish}
+              >
+                Finish
+              </button>}
             </div>
           </div>
         }

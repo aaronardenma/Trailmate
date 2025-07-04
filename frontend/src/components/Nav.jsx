@@ -1,10 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { FaRegUserCircle } from "react-icons/fa";
 import { FaRegStar } from "react-icons/fa";
-import { resetDistanceFilter, resetElevationFilter } from "../store/trailFiltersSlice";
-import { logout } from "@/store/userSlice";
 import { TbLogout } from "react-icons/tb";
 import { TbBuildingCommunity } from "react-icons/tb";
 import { IoChevronDown } from "react-icons/io5";

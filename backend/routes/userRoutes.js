@@ -88,7 +88,9 @@ router.post('/register/setup', authenticateToken, async (req, res) => {
                                                 nickname: nickname,
                                                 country: country,
                                                 gear: gear,
-                                                visibility: visibility}}, {new: true, runValidators: true})
+                                                visibility: visibility,
+                                            profileCompleted: true}},
+                                                 {new: true, runValidators: true})
 
         if (!user) {
             throw new Error('User not found');
@@ -139,7 +141,7 @@ router.post('/logout', (req, res) => {
     res.status(200).json({ success: true, message: 'Logged out successfully' });
 });
 
-router.post('/updateGear', authenticateToken, async (req, res) => {
+router.post('/update/gear', authenticateToken, async (req, res) => {
     const { gear } = req.body;
     const userId = req.user.id;
 
@@ -159,5 +161,11 @@ router.post('/updateGear', authenticateToken, async (req, res) => {
         res.status(500).json({ success: false, message: 'Failed to update gear', error: err.message });
     }
 });
+
+router.put('update', authenticateToken, async (req, res) => {
+    const userId = req.user.id;
+
+    
+})
 
 module.exports = router;

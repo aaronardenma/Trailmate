@@ -5,7 +5,7 @@ import Toastify from 'toastify-js'
 import "toastify-js/src/toastify.css"
 
 
-export default function TripPage() {
+export default function TripFeedback() {
   const [tripStarted, setTripStarted] = useState(true);
   const [feedbackGiven, setFeedbackGiven] = useState(false);
   const { tripId } = useParams();
@@ -22,7 +22,7 @@ export default function TripPage() {
     const fetchTripData = async () => {
       try {
         const tripResponse = await fetch(
-          `http://localhost:5001/api/trips/getTrip/${tripId}`,
+          `http://localhost:5001/api/trips/${tripId}`,
           {
             method: "GET",
             credentials: "include",
@@ -49,7 +49,7 @@ export default function TripPage() {
   const handleSubmitFeedback = async () => {
     setLoading(true);
     try {
-      await fetch(`http://localhost:5001/api/trips/endTrip/${tripId}`, {
+      await fetch(`http://localhost:5001/api/trips/end/${tripId}`, {
         method: "PUT",
         credentials: "include",
         headers: { "Content-Type": "application/json" },

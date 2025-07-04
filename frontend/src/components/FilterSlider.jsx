@@ -1,5 +1,4 @@
 import {Slider} from "@/components/ui/slider"
-import {useState} from 'react'
 
 export default function FilterSlider({min, max, filterName, value, onChange, defaultValue}) {
 
