@@ -115,7 +115,7 @@ export default function UserProfile() {
   };
 
   const handleSaveGear = async (gearArray) => {
-    const res = await fetch('http://localhost:5001/api/users/updateGear', {
+    const res = await fetch('http://localhost:5001/api/users/update/gear', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       credentials: 'include',
@@ -131,7 +131,7 @@ export default function UserProfile() {
     if (!user || !userId) return;
     setUpdating(true);
     try {
-      const res = await fetch(`http://localhost:5001/api/users/updateUser/${userId}`, {
+      const res = await fetch(`http://localhost:5001/api/users/update/`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: 'include',
