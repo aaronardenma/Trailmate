@@ -64,7 +64,7 @@ export default function PastTrips() {
   return (
     <div className="flex flex-col items-center">
       <h2 className="mt-16 mb-8 text-3xl font-bold max-w-4xl">Your Trips</h2>
-      <div className="w-full max-w-4xl space-y-6">
+      <div className="w-full max-w-4xl space-y-5">
         {pastTrips.length === 0 && (
           <p className="text-center text-gray-600">No past trips found.</p>
         )}

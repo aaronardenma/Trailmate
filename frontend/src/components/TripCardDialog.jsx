@@ -80,6 +80,10 @@ export default function TripCardDialog({ trip, date, setDate, userRating, setUse
       setUpdating(true)
     } else {
       try {
+        if (new Date() > new Date(date.from)) {
+          alert("Invalid start date")
+          return
+        }
         const res = await fetch(`http://localhost:5001/api/trips/update/${trip._id}`, {
           method: 'PUT',
           credentials: 'include',
@@ -114,7 +118,7 @@ export default function TripCardDialog({ trip, date, setDate, userRating, setUse
     nav(`/trip/${trip._id}`)
     
   }
-
+  
   return (
     <Dialog open={open} onOpenChange={(isOpen) => {
     if (!isOpen) {
@@ -154,7 +158,7 @@ export default function TripCardDialog({ trip, date, setDate, userRating, setUse
           >
             Update
           </button>
-          {trip.status !== "Completed" && !updating && (new Date() > new Date(date.to)) && (
+          {trip.status !== "Completed" && !updating && (new Date() >= new Date(date.from)) && (
             <DialogClose asChild>
               <button
                 className="w-fit bg-[#588157] text-white font-bold py-3 px-6 rounded-md hover:bg-[#4a6e49] transition-colors cursor-pointer disabled:opacity-50"

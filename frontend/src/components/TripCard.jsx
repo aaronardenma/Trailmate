@@ -19,7 +19,7 @@ export default function TripCard({ trip, onDelete, defaultOpen}) {
   }
 
   return (
-    <div className="relative rounded cursor-pointer mb-2 min-w-full max-w-1/3 hover:shadow-lg transition-shadow duration-200">
+    <div className="relative rounded cursor-pointer min-w-full max-w-1/3 hover:shadow-lg transition-shadow duration-200">
       <TripCardDialog
         trip={trip}
         date = {date} setDate = {setDate}
@@ -46,7 +46,7 @@ export default function TripCard({ trip, onDelete, defaultOpen}) {
                     className={`${
                       trip.status === "Completed"
                         ? "text-green-500"
-                        : "text-yellow-500"
+                        : trip.status === "In Progress" ? "text-yellow-400" : "text-blue-300"
                     }`}
                   >
                     {trip.status}
