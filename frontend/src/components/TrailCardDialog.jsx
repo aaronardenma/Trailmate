@@ -146,8 +146,6 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
 
       if (res.ok && data.success) {
         alert("Trip started successfully! Have a great hike!");
-        // Could redirect to active trip tracking page
-        // or close dialog and show trip in progress
         nav(`/trip/${data.tripId}`)
 
       } else {
