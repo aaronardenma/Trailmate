@@ -7,9 +7,8 @@ import Filters from "./pages/Filters";
 import Landing from "./pages/Landing.jsx";
 import Favourites from "./pages/Favourites";
 import UserProfile from "./pages/UserProfile";
-import TrailPage from "@/pages/TrailPage.jsx";
 import PlanTripPage from "@/pages/PlanTrip.jsx";
-import TripPage from "@/pages/TripPage.jsx";
+import TripFeedback from "@/pages/TripFeedback.jsx";
 import CommunityPage from "@/pages/CommunityPage.jsx";
 import UserPostPage from "@/pages/UserPostPage.jsx";
 import Auth from "./pages/Auth";
@@ -103,14 +102,13 @@ function App() {
           <>
             <Route path="/home" element={<Home />} />
             <Route path="/map" element={<Map />} />
-            {/* <Route path="/trail/:id" element={<TrailPage />} /> */}
             <Route path="/planTrip/:_id" element={<PlanTripPage />} />
             <Route path="/filters" element={<Filters />} />
             <Route path="/favourites" element={<Favourites />} />
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/community" element={<CommunityPage />} />
             <Route path="/yourPosts" element={<UserPostPage />} />
-            <Route path="/trip/:tripId" element={<TripPage />} />
+            <Route path="/trip/:tripId" element={<TripFeedback />} />
             <Route path="/profile/trips" element={<PastTrips />} />
           </>
         )}
