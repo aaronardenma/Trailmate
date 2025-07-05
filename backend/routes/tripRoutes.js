@@ -9,12 +9,12 @@ router.get('/getTripsForUser/:userId', async (req, res) => {
     try {
         console.log("ojeay")
         console.log(userID)
-        const trips = await Trip.find({ userId: userID });
+        const trips = await Trip.find({userId: userID});
         console.log(trips)
         console.log("jwoefjwe")
         res.status(200).json(trips);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({error: err.message});
     }
 });
 
@@ -23,11 +23,11 @@ router.get('/getUsersForTrip/:trailId', async (req, res) => {
     const t = req.params.trailId
     console.log(t)
     try {
-        const trips = await Trip.find({ trailID: req.params.trailId });
+        const trips = await Trip.find({trailID: req.params.trailId});
         const userIds = trips.map(trip => trip.userId);
         res.status(200).json(userIds);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({error: err.message});
     }
 });
 
@@ -46,15 +46,15 @@ router.get('/getTripsForDate/:date', async (req, res) => {
 
         res.status(200).json(trips);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({error: err.message});
     }
 });
 
 router.get('/getTripsBetweenDates', async (req, res) => {
-    const { start, end } = req.query;
+    const {start, end} = req.query;
 
     if (!start || !end) {
-        return res.status(400).json({ error: "Start and end dates are required" });
+        return res.status(400).json({error: "Start and end dates are required"});
     }
 
     try {
@@ -70,47 +70,47 @@ router.get('/getTripsBetweenDates', async (req, res) => {
 
         res.status(200).json(trips);
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({error: err.message});
     }
 });
 
 router.post('/addTrip', async (req, res) => {
-    const { userId, trailID, dateOfTrip, status,userRating, userComments } = req.body;
-
-    const newTrip = new Trip({
-        userId,
-        trailID,
-        dateOfTrip,
-        status,
-        userRating,
-        userComments
-    });
-
+    console.log(req.body)
+    let newTrip = null
     try {
+        const {userId, trailID, dateOfTrip, status, userRating, userComments} = req.body;
+        newTrip = new Trip({
+            userId: userId,
+            trailID: trailID,
+            dateOfTrip: dateOfTrip,
+            status: status,
+            userRating: userRating,
+            userComments: userComments
+        });
         await newTrip.save();
-        res.status(201).json({ message: 'Trip added successfully', trip: newTrip });
+        res.status(201).json({message: 'Trip added successfully', trip: newTrip});
     } catch (err) {
-        res.status(500).json({ error: 'Error adding trip', details: err.message });
+        res.status(500).json({error: 'Error adding trip', details: err.message});
     }
 });
 
 router.put('/updateTrip/:id', async (req, res) => {
-    const { userId, trailID, dateOfTrip, userRating, userComments } = req.body;
+    const {userId, trailID, dateOfTrip, userRating, userComments} = req.body;
 
     try {
         const updatedTrip = await Trip.findByIdAndUpdate(
             req.params.id,
-            { userId, trailID, dateOfTrip, userRating, userComments },
-            { new: true, runValidators: true }
+            {userId, trailID, dateOfTrip, userRating, userComments},
+            {new: true, runValidators: true}
         );
 
         if (!updatedTrip) {
-            return res.status(404).json({ message: 'Trip not found' });
+            return res.status(404).json({message: 'Trip not found'});
         }
 
-        res.status(200).json({ message: 'Trip updated successfully', trip: updatedTrip });
+        res.status(200).json({message: 'Trip updated successfully', trip: updatedTrip});
     } catch (err) {
-        res.status(500).json({ error: 'Error updating trip', details: err.message });
+        res.status(500).json({error: 'Error updating trip', details: err.message});
     }
 });
 
@@ -119,12 +119,12 @@ router.delete('/deleteTrip/:id', async (req, res) => {
         const deletedTrip = await Trip.findByIdAndDelete(req.params.id);
 
         if (!deletedTrip) {
-            return res.status(404).json({ message: 'Trip not found' });
+            return res.status(404).json({message: 'Trip not found'});
         }
 
-        res.status(200).json({ message: 'Trip deleted successfully', trip: deletedTrip });
+        res.status(200).json({message: 'Trip deleted successfully', trip: deletedTrip});
     } catch (err) {
-        res.status(500).json({ error: 'Error deleting trip', details: err.message });
+        res.status(500).json({error: 'Error deleting trip', details: err.message});
     }
 });
 
