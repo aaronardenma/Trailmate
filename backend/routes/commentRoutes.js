@@ -16,6 +16,8 @@ router.post('/addComment', async (req, res) => {
         comment,
         date
     });
+    console.log("yaha nefewf")
+    console.log(newComment)
     try {
         await newComment.save();
         res.status(201).json({ message: 'Comment added successfully', comment: newComment });
