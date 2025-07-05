@@ -177,7 +177,6 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
   };
 
   const saveTrip = async () => {
-    setIsSubmitting(true);
     try {
       const res = await fetch("http://localhost:5001/api/trips/save", {
         method: "POST",
@@ -204,12 +203,10 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
       console.error(err);
       alert("Error saving trip: " + err.message);
     } finally {
-      setIsSubmitting(false);
     }
   };
 
   const startTrip = async () => {
-    setIsSubmitting(true);
     try {
       const res = await fetch("http://localhost:5001/api/trips/start", {
         method: "POST",
@@ -235,8 +232,6 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
     } catch (err) {
       console.error(err);
       alert("Error starting trip: " + err.message);
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
