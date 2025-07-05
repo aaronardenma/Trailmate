@@ -7,7 +7,7 @@ const Trip = require("../models/trips");
 router.get('/getPosts', async (req, res) => {
     try {
         const items = await Post.find();
-        res.json(items);
+        res.status(200).json(items);
     } catch (err) {
         res.status(500).json({error: err.message});
     }
@@ -50,7 +50,6 @@ router.post('/addPost', async (req, res) => {
 
 
 router.put('/updatePost/:id', async (req, res) => {
-    console.log("her ei am")
     const {userId, title, description, photoUrl, likes, comments} = req.body;
 
     const newPost = new Post({
@@ -83,7 +82,7 @@ router.put('/updatePostLikes/:id', async (req, res) => {
     let message = ""
 
     // console.log("currentUserLikingPost " + currentUserLikingPost);
-    console.log("currentPost.likedByUsers.length >>>>>>>>>>>>>>>" + currentPost.likedByUsers.length);
+    // console.log("starting length >>>>>>>>>>>>>>>" + currentPost.likedByUsers.length);
 
     try {
         if (currentPost.likes === 0) {
@@ -92,24 +91,23 @@ router.put('/updatePostLikes/:id', async (req, res) => {
             await currentPost.save();
         } else {
             for (let i = 0; i < currentPost.likedByUsers.length; i++) {
-                console.log((currentPost.likedByUsers[i]).toString())
+                // console.log((currentPost.likedByUsers[i]).toString())
+                // console.log("_____________")
                 if (currentUserLikingPost === (currentPost.likedByUsers[i]).toString()) {
                     message = 'You have already liked this post'
-                    res.status(304).json({message: 'You have already liked this post'});
+                    return res.status(304).json({message: 'You have already liked this post'});
                 }
             }
             currentPost.likedByUsers.push(currentUserLikingPost)
             currentPost.likes += 1
             await currentPost.save();
             message = "You liked this post!"
-            // res.status(201).json({message: 'You have already liked this post'});
         }
-        console.log("currentPost.likedByUsers.length <<<<<<<<<<<<<<<<<<" + currentPost.likedByUsers.length);
-        // console.log("current post AFTER " + currentPost);
+        // console.log("ending lengthlength <<<<<<<<<<<<<<<<<<" + currentPost.likedByUsers.length);
         message = "Post updated successfully"
-        res.status(201).json({message: message});
+        res.status(201).json({message: message, post: currentPost});
     } catch (err) {
-        res.status(500).json({error: 'Error creating post', details: err.message});
+        res.status(500).json({error: 'Error liking post', details: err.message});
     }
     // res.status(201).json({message: 'Post updated successfully'});
 });
@@ -127,7 +125,7 @@ router.put('/updatePostComments/:id', async (req, res) => {
         console.log("current comment " + currentUserComments);
         await currentPost.save();
         // res.json(currentPost);
-        res.status(201).json({message: 'Post updated successfully'});
+        res.status(201).json({message: 'Post updated successfully', post: currentPost});
     } catch (err) {
         res.status(500).json({error: 'Error creating post', details: err.message});
     }
@@ -137,12 +135,12 @@ router.put('/updatePostComments/:id', async (req, res) => {
 router.delete('/deletePost/:id', async (req, res) => {
     console.log(req.params.id)
     try {
-        const deletedUser = await Post.findByIdAndDelete(req.params.id);
-        console.log("inside delete")
-        if (!deletedUser) {
+        const deletedPost = await Post.findByIdAndDelete(req.params.id);
+        // console.log("inside delete")
+        if (!deletedPost) {
             return res.status(404).json({message: 'Post not found'});
         }
-        res.status(200).json({message: 'Post deleted successfully', user: deletedUser});
+        res.status(200).json({message: 'Post deleted successfully', post: deletedPost});
     } catch (err) {
         res.status(500).json({error: 'Error deleting post', details: err.message});
     }
