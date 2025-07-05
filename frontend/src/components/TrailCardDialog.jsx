@@ -15,8 +15,9 @@ import { FaStar } from "react-icons/fa6";
 import { addDays, set } from "date-fns";
 import TrailInfo from "./TrailInfo.jsx";
 import TrailPlanResults from "./TrailPlanResults.jsx";
+import { fetchWeather } from "../utils/weatherAPI.js";
+import { recommendGear } from "../utils/gearRecommendation";
 import { useNavigate } from "react-router-dom";
-
 
 export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) {
   const [trail, setTrail] = useState(null);
@@ -28,6 +29,10 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
   const [planning, setPlanning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [savedTripId, setSavedTripId] = useState(null);
+  const [weather, setWeather] = useState(null);
+  const [gearData, setGearData] = useState([]);
+  const [ownedGear, setOwnedGear] = useState({});
+  const [recommendedByCategory, setRecommendedByCategory] = useState({});
   const nav = useNavigate()
 
   useEffect(() => {
@@ -40,7 +45,7 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
         );
         if (!response.ok) throw new Error("Failed to fetch trail data");
         const data = await response.json();
-        setTrail(data);
+        setTrail(data);   
 
         const favRes = await fetch(
           `http://localhost:5001/api/favorite/isFavorite`,
@@ -64,6 +69,84 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
 
     fetchTrailData();
   }, [trailId]);
+
+  useEffect(() => {
+    if (!trail || !trail.latitude || !trail.longitude || !date?.from) return;
+  
+    const fetchWeatherForDate = async () => {
+      const weatherData = await fetchWeather(trail.latitude, trail.longitude, date.from);
+      setWeather(weatherData);
+    };
+  
+    fetchWeatherForDate();
+  }, [trail, date?.from]);  
+
+  useEffect(() => {
+    async function fetchGear() {
+      try {
+        const res = await fetch("http://localhost:5001/api/gear");
+        const data = await res.json();
+        setGearData(data);
+      } catch (err) {
+        console.error("Error fetching gear:", err);
+      }
+    }
+    fetchGear();
+  }, []);
+
+  useEffect(() => {
+    async function fetchUserData() {
+      try {
+        const res = await fetch("http://localhost:5001/api/users/me", {
+          credentials: "include",
+        });
+        if (!res.ok) throw new Error("Not authenticated");
+        const userData = await res.json();
+
+        const nestedGear = {};
+        (userData.gear || []).forEach(({ category, item }) => {
+          if (!nestedGear[category]) nestedGear[category] = {};
+          nestedGear[category][item] = true;
+        });
+        setOwnedGear(nestedGear);
+      } catch (err) {
+        console.error("Error fetching user data", err);
+        setOwnedGear({});
+      }
+    }
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+    if (
+      !weather ||
+      gearData.length === 0 ||
+      !trail ||
+      !date ||
+      !date.to ||
+      !date.from
+    )
+      return;
+  
+    const conditions = {
+      temperatureC: weather.temperatureC,
+      raining: weather.raining,
+      tripLengthDays: Math.max(1, Math.ceil((date.to - date.from) / (1000 * 60 * 60 * 24))),
+      difficulty: trail.difficulty,
+    };
+  
+    const recs = recommendGear(conditions);
+  
+    const grouped = {};
+    gearData.forEach(({ category, items }) => {
+      const recommendedItems = items.filter(item => recs.includes(item));
+      if (recommendedItems.length > 0) {
+        grouped[category] = recommendedItems;
+      }
+    });
+  
+    setRecommendedByCategory(grouped);
+  }, [weather, gearData, trail, date?.to, date?.from]);  
 
   const handleFavorite = async () => {
     if (favorite) {
@@ -200,6 +283,9 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
             time={time}
             saveTrip={saveTrip}
             startTrip={startTrip}
+            weather={weather} 
+            recommendedByCategory={recommendedByCategory}
+            ownedGear={ownedGear}
           />
         ) : (
           <TrailInfo
