@@ -4,7 +4,10 @@ export default function TrailPlanResults({
   date,
   time,
   saveTrip,
-  startTrip
+  startTrip,
+  weather,
+  recommendedByCategory,
+  ownedGear
 }) {
   return (
     <div>
@@ -49,7 +52,16 @@ export default function TrailPlanResults({
 
             <p>
               <span className="font-bold">Weather: </span>
-              {/* TODO: connect weather api data */}
+              {weather ? (
+                <>
+                  {weather.description}, {weather.temperatureC}°C, 
+                  {weather.raining
+                    ? " Rain expected"
+                    : " No rain expected"}
+                </>
+              ) : (
+                "Loading..."
+              )}
             </p>
             <p>
               <span className="font-bold">Trail: </span>
@@ -68,7 +80,31 @@ export default function TrailPlanResults({
         <div className="flex flex-col">
           <div className="mb-8 space-y-4">
             <h3 className="font-semibold text-lg">Recommended Gear List</h3>
-            {/* TODO: Input Gear List */}
+            {Object.keys(recommendedByCategory).length > 0 ? (
+              Object.entries(recommendedByCategory).map(([category, items]) => (
+                <div key={category}>
+                  <h4 className="font-bold text-[#588157] mb-1">
+                    {category.replace(/_/g, " and ")}
+                  </h4>
+                  <ul className="list-disc list-inside text-gray-700 space-y-1">
+                    {items.map((item) => (
+                      <li
+                        key={item}
+                        className={`${
+                          ownedGear?.[category]?.[item]
+                            ? "font-semibold text-black"
+                            : "text-gray-600"
+                        }`}
+                      >
+                        {item} {ownedGear?.[category]?.[item] && "✓"}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500">Loading gear recommendations...</p>
+            )}
           </div>
 
           <div className="flex-1">

@@ -1,7 +1,9 @@
 import NavGuest from "../components/NavGuest";
-import { gearCategories } from "@/utils/gearData";
+import { useEffect, useState } from "react";
 
 export default function ProfileSetup({ experience, setExperience, selectedGear, toggleGearItem }) {
+  const [gearData, setGearData] = useState([]);
+  const [loading, setLoading] = useState(true);
   
   // const toggleGearItem = (category, item) => {
   //   setSelectedGear((prev) => {
@@ -15,6 +17,24 @@ export default function ProfileSetup({ experience, setExperience, selectedGear, 
   //     };
   //   });
   // };
+
+  useEffect(() => {
+    async function fetchGear() {
+      try {
+        const res = await fetch("http://localhost:5001/api/gear");
+        if (!res.ok) throw new Error("Failed to fetch gear data");
+        const data = await res.json();
+        setGearData(data); 
+        setLoading(false);
+      } catch (err) {
+        console.error("Error loading gear:", err);
+        setGearData([]);
+        setLoading(false);
+      }
+    }
+
+    fetchGear();
+  }, []);
 
   return (
     <div>
@@ -46,27 +66,33 @@ export default function ProfileSetup({ experience, setExperience, selectedGear, 
         </div>
 
         <h3 className="text-lg font-bold mb-3">What Gear Do You Own?</h3>
-        {Object.entries(gearCategories).map(([category, items]) => (
-          <div key={category} className="mb-8">
-            <h4 className="text-md font-semibold text-[#588157] mb-3">
-              {category.replace(/_/g, " ")}
-            </h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {items.map((item) => (
-                <label key={item} className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={!!selectedGear[category]?.[item]}
-                    onChange={() => toggleGearItem(category, item)}
-                    className="cursor-pointer"
-                  />
-                  <span>{item}</span>
-                </label>
-              ))}
+        {loading ? (
+          <p>Loading gear...</p>
+        ) : gearData.length === 0 ? (
+          <p>No gear categories found.</p>
+        ) : (
+          gearData.map(({ category, items }) => (
+            <div key={category} className="mb-8">
+              <h4 className="text-md font-semibold text-[#588157] mb-3">
+                {category.replace(/_/g, " ")}
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {items.map((item) => (
+                  <label key={item} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={!!selectedGear[category]?.[item]}
+                      onChange={() => toggleGearItem(category, item)}
+                      className="cursor-pointer"
+                    />
+                    <span>{item}</span>
+                  </label>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
-    </div>
+    </div>  
   );
 }

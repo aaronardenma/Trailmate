@@ -1,6 +1,5 @@
 [
   {
-    "id": 1,
     "name": "Grouse Grind",
     "distanceKm": 2.9,
     "avgElevationM": 853,
@@ -10,10 +9,10 @@
     "description": "A steep and challenging trail often called 'Mother Nature's Stairmaster', popular for fitness enthusiasts.",
     "latitude": 49.371206,
     "longitude": -123.098424,
-    "tags": ["Challenging", "Mountain", "Out-and-Back", "Trail running"]
+    "difficulty": "Challenging",
+    "tags": ["Mountain", "Out-and-Back", "Trail running"]
   },
   {
-    "id": 2,
     "name": "St Marks Summit",
     "distanceKm": 11,
     "avgElevationM": 460,
@@ -23,10 +22,10 @@
     "description": "A rewarding hike with stunning views of Howe Sound and the surrounding mountains.",
     "latitude": 49.42802,
     "longitude": -123.20133,
-    "tags": ["Scenic", "Challenging", "Mountain", "Out-and-Back"]
+    "difficulty": "Challenging",
+    "tags": ["Scenic", "Mountain", "Out-and-Back"]
   },
   {
-    "id": 3,
     "name": "Dog Mountain",
     "distanceKm": 5,
     "avgElevationM": 150,
@@ -36,10 +35,10 @@
     "description": "An easy trail with a panoramic view of Vancouver from the top.",
     "latitude": 49.37373,
     "longitude": -122.97043,
+    "difficulty": "Easy",
     "tags": ["Pet-friendly", "Scenic", "Family-friendly", "Forest"]
   },
   {
-    "id": 4,
     "name": "Lynn Loop",
     "distanceKm": 5.1,
     "avgElevationM": 100,
@@ -49,10 +48,10 @@
     "description": "A peaceful forest loop following the banks of Lynn Creek.",
     "latitude": 49.358,
     "longitude": -123.000,
+    "difficulty": "Easy",
     "tags": ["Forest", "Loop", "Family-friendly", "Pet-friendly"]
   },
   {
-    "id": 5,
     "name": "Quarry Rock",
     "distanceKm": 3.8,
     "avgElevationM": 100,
@@ -62,10 +61,10 @@
     "description": "A short hike to a popular viewpoint over Indian Arm and Deep Cove.",
     "latitude": 49.3269,
     "longitude": -122.9487,
+    "difficulty": "Easy",
     "tags": ["Scenic", "Family-friendly", "Out-and-Back", "Pet-friendly"]
   },
   {
-    "id": 6,
     "name": "Capilano Pacific",
     "distanceKm": 7.5,
     "avgElevationM": 180,
@@ -75,10 +74,10 @@
     "description": "A scenic riverside trail that ends at the historic Capilano Dam.",
     "latitude": 49.354,
     "longitude": -123.114,
+    "difficulty": "Easy",
     "tags": ["Scenic", "River", "Out-and-Back", "Family-friendly"]
   },
   {
-    "id": 7,
     "name": "Norvan Falls",
     "distanceKm": 14,
     "avgElevationM": 195,
@@ -88,10 +87,10 @@
     "description": "A long forested trail ending at a beautiful waterfall, suitable for all levels.",
     "latitude": 49.358,
     "longitude": -123.000,
+    "difficulty": "Moderate",
     "tags": ["Forest", "Scenic", "Out-and-Back", "Wildlife"]
   },
   {
-    "id": 8,
     "name": "Eagle Bluffs",
     "distanceKm": 8,
     "avgElevationM": 350,
@@ -101,10 +100,10 @@
     "description": "A moderately difficult hike offering panoramic views of Vancouver and Howe Sound.",
     "latitude": 49.395,
     "longitude": -123.201,
-    "tags": ["Scenic", "Mountain", "Challenging", "Out-and-Back"]
+    "difficulty": "Challenging",
+    "tags": ["Scenic", "Mountain", "Out-and-Back"]
   },
   {
-    "id": 9,
     "name": "Velodrome Trail",
     "distanceKm": 1.3,
     "avgElevationM": 240,
@@ -114,10 +113,10 @@
     "description": "A short but steep trail up Burnaby Mountain, also known as Burnaby's Grouse Grind.",
     "latitude": 49.281,
     "longitude": -122.926,
-    "tags": ["Challenging", "Mountain", "Out-and-Back"]
+    "difficulty": "Challenging",
+    "tags": ["Mountain", "Out-and-Back"]
   },
   {
-    "id": 10,
     "name": "Pacific Spirit Loop",
     "distanceKm": 10,
     "avgElevationM": 60,
@@ -127,6 +126,7 @@
     "description": "A flat loop trail through peaceful coastal rainforest near UBC.",
     "latitude": 49.260,
     "longitude": -123.254,
+    "difficulty": "Easy",
     "tags": ["Forest", "Loop", "Family-friendly", "Pet-friendly", "Trail running"]
   }
 ]

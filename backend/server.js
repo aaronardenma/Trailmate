@@ -9,6 +9,7 @@ const favoriteRoutes = require('./routes/favoriteRoutes');
 const postRoutes = require('./routes/postRoutes');
 const commentRoutes = require('./routes/commentRoutes');
 const gearRoutes = require('./routes/gearRoutes');
+const tagRoutes = require('./routes/tagRoutes');
 const cookieParser = require('cookie-parser')
 const router = require("./routes/postRoutes");
 
@@ -34,6 +35,7 @@ app.use('/api/favorite', favoriteRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/comments', commentRoutes);
 app.use('/api/gear', gearRoutes);
+app.use('/api/tags', tagRoutes);
 
 // console.log(process.env.MONGO_URI)
 
