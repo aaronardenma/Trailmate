@@ -4,7 +4,8 @@ export default function TrailPlanResults({
   date,
   time,
   saveTrip,
-  startTrip
+  startTrip,
+  weather
 }) {
   return (
     <div>
@@ -49,7 +50,16 @@ export default function TrailPlanResults({
 
             <p>
               <span className="font-bold">Weather: </span>
-              {/* TODO: connect weather api data */}
+              {weather ? (
+                <>
+                  {weather.description}, {weather.temperatureC}°C, 
+                  {weather.raining
+                    ? " Rain expected"
+                    : " No rain expected"}
+                </>
+              ) : (
+                "Loading..."
+              )}
             </p>
             <p>
               <span className="font-bold">Trail: </span>

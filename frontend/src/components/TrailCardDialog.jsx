@@ -15,8 +15,8 @@ import { FaStar } from "react-icons/fa6";
 import { addDays, set } from "date-fns";
 import TrailInfo from "./TrailInfo.jsx";
 import TrailPlanResults from "./TrailPlanResults.jsx";
+import { fetchWeather } from "../utils/weatherAPI.js";
 import { useNavigate } from "react-router-dom";
-
 
 export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) {
   const [trail, setTrail] = useState(null);
@@ -28,6 +28,7 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
   const [planning, setPlanning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [savedTripId, setSavedTripId] = useState(null);
+  const [weather, setWeather] = useState(null);
   const nav = useNavigate()
 
   useEffect(() => {
@@ -40,7 +41,7 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
         );
         if (!response.ok) throw new Error("Failed to fetch trail data");
         const data = await response.json();
-        setTrail(data);
+        setTrail(data);   
 
         const favRes = await fetch(
           `http://localhost:5001/api/favorite/isFavorite`,
@@ -64,6 +65,17 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
 
     fetchTrailData();
   }, [trailId]);
+
+  useEffect(() => {
+    if (!trail || !trail.latitude || !trail.longitude || !date.from) return;
+  
+    const fetchWeatherForDate = async () => {
+      const weatherData = await fetchWeather(trail.latitude, trail.longitude, date.from);
+      setWeather(weatherData);
+    };
+  
+    fetchWeatherForDate();
+  }, [trail, date.from]);  
 
   const handleFavorite = async () => {
     if (favorite) {
@@ -200,6 +212,7 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
             time={time}
             saveTrip={saveTrip}
             startTrip={startTrip}
+            weather={weather} 
           />
         ) : (
           <TrailInfo
