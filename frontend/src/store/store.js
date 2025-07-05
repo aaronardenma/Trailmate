@@ -1,12 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import trailFiltersReducer from "./trailFiltersSlice"
-import userReducer from "./userSlice.js"
+import authReducer from "./authSlice"
+import userReducer from "./userSlice"
 
 export const store = configureStore({
     reducer: {
         filters: trailFiltersReducer,
-        users:userReducer
-        
+        auth:authReducer,
+        user: userReducer
     },
 
 })

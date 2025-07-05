@@ -11,11 +11,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-export default function PopoverCalendar({className}) {
-  const [date, setDate] = useState({
-    from: new Date(),
-    to: addDays(new Date(), 5),
-  })
+export default function PopoverCalendar({date, setDate}) {
+  
 
   return (
     <div className={cn("grid gap-2 cursor-pointer mb-4")}>

@@ -18,7 +18,6 @@ export default function ProfileSetup({ experience, setExperience, selectedGear, 
 
   return (
     <div>
-      {/* <NavGuest /> */}
       <div className="p-8 max-w-[90rem] mx-auto">
         <h2
           className="text-2xl font-semibold mb-6 text-center"
@@ -29,7 +28,7 @@ export default function ProfileSetup({ experience, setExperience, selectedGear, 
 
         <div className="mb-8">
           <h3 className="text-lg font-bold mb-3">Select Your Experience Level</h3>
-          <div className="flex flex-row gap-x-8">
+          <div className="flex flex-col space-y-2 md:flex-row md:gap-x-8">
             {["Beginner", "Intermediate", "Advanced"].map((level) => (
               <label key={level} className="flex items-center gap-2 cursor-pointer">
                 <input

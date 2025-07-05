@@ -5,81 +5,18 @@ const authenticateToken = require('../service/auth');
 const User = require('../models/users');
 const { error } = require('console');
 
-router.get('/getUserById/:id', authenticateToken, async (req, res) => {
+router.get('/me', authenticateToken, async (req, res) => {
     try {
-        const targetUser = await User.findById(req.params.id);
-
-        if (!targetUser) {
+        const user = await User.findById(req.user.id);
+        
+        if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        const isOwner = req.user.id === req.params.id;
-
-        if (isOwner) {
-            // Full access if the logged-in user is requesting their own profile
-            return res.status(200).json(targetUser.toJSON());
-        } else {
-            // Only return selected public fields
-            const {
-                firstName,
-                lastName,
-                badge,
-                nickname,
-                country,
-                photoUrl
-            } = targetUser;
-
-            return res.status(200).json({
-                firstName,
-                lastName,
-                badge,
-                nickname,
-                country,
-                photoUrl
-            });
-        }
+        res.status(200).json(user.toJSON());
+        
     } catch (err) {
         res.status(500).json({ error: err.message });
-    }
-});
-
-router.put('/updateUser/:id', async (req, res) => {
-    const {
-        firstName,
-        lastName,
-        email,
-        badge,
-        gender,
-        language,
-        nickname,
-        country,
-        photoUrl
-    } = req.body;
-
-    try {
-        const updatedUser = await User.findByIdAndUpdate(
-            req.params.id,
-            {
-                firstName,
-                lastName,
-                email,
-                badge,
-                gender,
-                language,
-                nickname,
-                country,
-                photoUrl
-            },
-            { new: true, runValidators: true }
-        );
-
-        if (!updatedUser) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        res.status(200).json({ message: 'User updated successfully', user: updatedUser });
-    } catch (err) {
-        res.status(500).json({ error: 'Error updating user', details: err.message });
     }
 });
 
@@ -151,7 +88,9 @@ router.post('/register/setup', authenticateToken, async (req, res) => {
                                                 nickname: nickname,
                                                 country: country,
                                                 gear: gear,
-                                                visibility: visibility}}, {new: true, runValidators: true})
+                                                visibility: visibility,
+                                            profileCompleted: true}},
+                                                 {new: true, runValidators: true})
 
         if (!user) {
             throw new Error('User not found');
@@ -202,19 +141,31 @@ router.post('/logout', (req, res) => {
     res.status(200).json({ success: true, message: 'Logged out successfully' });
 });
 
-router.get('/me', authenticateToken, async (req, res) => {
+router.post('/update/gear', authenticateToken, async (req, res) => {
+    const { gear } = req.body;
+    const userId = req.user.id;
+
     try {
-        const user = await User.findById(req.user.id);
-        
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { gear },
+            { new: true, runValidators: true }
+        );
+
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ success: false, message: 'User not found' });
         }
 
-        res.status(200).json(user.toJSON());
-        
+        res.status(200).json({ success: true, message: 'Gear updated successfully', user });
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({ success: false, message: 'Failed to update gear', error: err.message });
     }
 });
+
+router.put('update', authenticateToken, async (req, res) => {
+    const userId = req.user.id;
+
+    
+})
 
 module.exports = router;

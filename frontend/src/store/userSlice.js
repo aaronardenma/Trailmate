@@ -1,24 +1,28 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    user: null,
-    loggedIn: false,
-}
+  user: null,
+  profileCompleted: false,
+};
 
-const users = createSlice({
-    name: "users",
-    initialState,
-    reducers: {
-        login: (state, action) => {
-            state.user = action.payload.user
-            state.loggedIn = true;
-        },
-        logout: (state, _action) => {
-            state.user = null
-            state.loggedIn = false
-        }
-    }
-})
+const userSlice = createSlice({
+  name: "user",
+  initialState,
+  reducers: {
+    setUser: (state, action) => {
+      state.user = action.payload;
+      state.profileCompleted = action.payload.profileCompleted
+    },
+    updateUser: (state, action) => {
+      state.user = { ...state.user, ...action.payload };
+      state.profileCompleted = action.payload.profileCompleted
+    },
+    clearUser: (state) => {
+      state.user = null;
+      state.profileCompleted = false;
+    },
+  },
+});
 
-export const { login, logout } = users.actions
-export default users.reducer;
+export const { setUser, updateUser, clearUser } = userSlice.actions;
+export default userSlice.reducer;

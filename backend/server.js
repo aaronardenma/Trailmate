@@ -7,7 +7,8 @@ const userRoutes = require('./routes/userRoutes');
 const tripRoutes = require('./routes/tripRoutes');
 const favoriteRoutes = require('./routes/favoriteRoutes');
 const postRoutes = require('./routes/postRoutes');
-const commentRoutes = require('./routes/favoriteRoutes');
+const commentRoutes = require('./routes/favoriteRoutes'); // is this supposed to be commentRoutes
+const gearRoutes = require('./routes/gearRoutes');
 const cookieParser = require('cookie-parser')
 const router = require("./routes/postRoutes");
 
@@ -32,6 +33,7 @@ app.use('/api/trips', tripRoutes);
 app.use('/api/favorite', favoriteRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/comments', commentRoutes);
+app.use('/api/gear', gearRoutes);
 
 // console.log(process.env.MONGO_URI)
 

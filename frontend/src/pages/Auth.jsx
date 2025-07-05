@@ -2,15 +2,16 @@ import { useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Input } from '../components/ui/input';
 import banffImg from "../Images/banff.jpeg";
-import { useDispatch, useSelector } from 'react-redux';
-import { login } from '../store/userSlice';
+import { useDispatch } from 'react-redux';
+import { setAuthenticated } from '../store/authSlice';
+import { setUser } from '../store/userSlice';
 
-export default function Auth({handleLogInSuccess}) {
+export default function Auth({ handleLogInSuccess }) {
     const { type } = useParams();
     const isLogin = type === 'login';
 
     const nav = useNavigate();
-    const loggedIn = useSelector(state => state.users.loggedIn);
+    const dispatch = useDispatch();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -30,9 +31,14 @@ export default function Auth({handleLogInSuccess}) {
                 });
 
                 const data = await response.json();
-
+                console.log(data)
                 if (response.ok && data.success) {
-                    await handleLogInSuccess()
+                    dispatch(setUser(data.user));
+                    dispatch(setAuthenticated());
+                    
+                    handleLogInSuccess();
+                    console.log(data.user)
+                    localStorage.setItem('user_id', data.user._id)
                     nav("/");
                 } else {
                     alert(data.message || "Login failed");
@@ -56,6 +62,8 @@ export default function Auth({handleLogInSuccess}) {
                 const data = await response.json();
 
                 if (response.ok) {
+                    dispatch(setUser({ email: data.user, profileCompleted: false }));
+                    dispatch(setAuthenticated());
                     nav("/setup");
                 } else {
                     alert(data.message || "Registration failed");
@@ -68,27 +76,30 @@ export default function Auth({handleLogInSuccess}) {
     };
 
     return (
-        <div className='flex'>
-            <div className='max-w-3/4'>
-                <img src={banffImg} alt="" />
+        <div className="flex flex-col md:flex-row min-h-screen">
+            <div className="md:w-3/5 w-full">
+                <img
+                    src={banffImg}
+                    alt="Scenic trail"
+                    className="w-full h-full object-cover"
+                />
             </div>
-            <div className='flex flex-col mx-auto text-left justify-center'>
+
+            <div className="md:w-2/5 w-full flex flex-col justify-center p-8 md:p-16 bg-white">
                 <Link className='text-3xl font-bold mb-12' to="/">TrailMate</Link>
                 <h2 className='font-semibold mb-4'>
                     {isLogin ? "Nice to see you again" : "Create your Account"}
                 </h2>
                 <form className='flex flex-col' onSubmit={handleSubmit}>
                     <div className='mb-4'>
-                        <div className='mb-4'>
-                            <p className='mb-2 text-xs ml-2 text-gray-500'>Login</p>
-                            <Input id="email" name="email" placeholder="Email" className="outline rounded hover:bg-accent focus:bg-accent" type="email" required />
-                        </div>
-                        <div className='mb-4'>
-                            <p className='mb-2 text-xs ml-2 text-gray-500'>Password</p>
-                            <Input id="password" name="password" placeholder="Enter password" className="outline rounded hover:bg-accent focus:bg-accent" type="password" required />
-                        </div>
+                        <p className='mb-2 text-xs ml-2 text-gray-500'>Login</p>
+                        <Input id="email" name="email" placeholder="Email" type="email" required />
                     </div>
-                    <button className="outline w-full text-sm rounded bg-[#588157] text-[#fff] font-semibold p-2 cursor-pointer" type="submit">
+                    <div className='mb-4'>
+                        <p className='mb-2 text-xs ml-2 text-gray-500'>Password</p>
+                        <Input id="password" name="password" placeholder="Password" type="password" required />
+                    </div>
+                    <button className="outline w-full text-sm rounded bg-[#588157] text-white font-semibold p-2 cursor-pointer" type="submit">
                         {isLogin ? "Sign in" : "Create Account"}
                     </button>
                 </form>

@@ -36,8 +36,16 @@ const usersSchema = new Schema({
         default: 'public',
     },
     gear: {
-        type: [String],
+        type: [{
+          category: String,
+          item: String
+        }],
         default: []
+    },
+    profileCompleted: {
+        type: Boolean,
+        // required,
+        default: false
     }
 });
 

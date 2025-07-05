@@ -15,7 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { gearCategories } from "@/utils/gearData";
+import UserGear from "../components/UserGear";
 
 function Toast({ message, onClose }) {
   useEffect(() => {
@@ -33,17 +33,25 @@ function Toast({ message, onClose }) {
   );
 }
 
+function gearArrayToNestedObject(gearArray) {
+  const nested = {};
+  gearArray.forEach(({ category, item }) => {
+    if (!nested[category]) nested[category] = {};
+    nested[category][item] = true;
+  });
+  return nested;
+}
+
 export default function UserProfile() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
-  const [pastTrips, setPastTrips] = useState([]);
   const [message, setMessage] = useState("");
   const [userId, setUserId] = useState(null);
 
+  const [gearData, setGearData] = useState([]);  
   const [ownedGear, setOwnedGear] = useState({});
   const [isSaved, setIsSaved] = useState(true);
-
 
   const getCurrentUser = async () => {
     try {
@@ -64,88 +72,66 @@ export default function UserProfile() {
   };
 
   useEffect(() => {
+    async function fetchGear() {
+      try {
+        const res = await fetch("http://localhost:5001/api/gear");
+        if (!res.ok) throw new Error("Failed to fetch gear data");
+        const data = await res.json();
+        setGearData(data);
+      } catch (err) {
+        console.error(err);
+        setMessage("Error loading gear categories");
+      }
+    }
+    fetchGear();
+  }, []);
+
+  useEffect(() => {
     getCurrentUser()
       .then((userData) => {
         setUserId(userData.id);
         setUser(userData);
         setLoading(false);
 
-        const savedGear = JSON.parse(localStorage.getItem("ownedGear"));
-        if (savedGear) setOwnedGear(savedGear);
-        else
-          setOwnedGear({
-            Clothing: {
-              "Moisture-wicking T-shirts (short sleeve)": true,
-              "Waterproof breathable rain jacket": true,
-            },
-            Footwear: {
-              "Hiking boots (waterproof)": true,
-            },
-          });
+        if (userData.gear && userData.gear.length > 0) {
+          setOwnedGear(gearArrayToNestedObject(userData.gear));
+        } else {
+          setOwnedGear({});  
+        }
 
-        fetchPastTrips(userData.id);
+        fetchPastTrips();
       })
-      .catch((err) => {
+      .catch(() => {
         setMessage("Please log in to view your profile");
         setLoading(false);
       });
   }, []);
 
-  const fetchPastTrips = async (userIdParam) => {
-    try {
-      const res = await fetch(`http://localhost:5001/api/trips/getTripsForUser/${userIdParam}`, {
-        credentials: 'include'
-      });
-      const data = await res.json();
-      const tripsWithTrail = await Promise.all(
-        (data || []).map(async (trip) => {
-          try {
-            const trailRes = await fetch(`http://localhost:5001/api/trails/getTrailById/${trip.trailID}`, {
-              credentials: 'include'
-            });
-            const trailData = await trailRes.json();
-            return { ...trip, trail: trailData };
-          } catch {
-            return { ...trip, trail: { name: "Unknown Trail", photoUrl: "" } };
-          }
-        })
-      );
-      setPastTrips(tripsWithTrail);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser((prev) => ({ ...prev, [name]: value }));
   };
 
-  const toggleGearItem = (category, item) => {
-    setOwnedGear((prev) => {
-      const updated = {
-        ...prev,
-        [category]: {
-          ...(prev[category] || {}),
-          [item]: !prev[category]?.[item],
-        },
-      };
-      setIsSaved(false);
-      return updated;
+  const handleSaveGear = async (gearArray) => {
+    const res = await fetch('http://localhost:5001/api/users/update/gear', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({ gear: gearArray }),
     });
-  };
 
-  const handleSaveGear = () => {
-    localStorage.setItem("ownedGear", JSON.stringify(ownedGear));
-    setIsSaved(true);
-    setMessage("Gear saved!");
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.message || 'Failed to update gear');
   };
 
   const handleUpdate = async () => {
     if (!user || !userId) return;
     setUpdating(true);
     try {
-      const res = await fetch(`http://localhost:5001/api/users/updateUser/${userId}`, {
+      const res = await fetch(`http://localhost:5001/api/users/update/`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: 'include',
@@ -253,65 +239,17 @@ export default function UserProfile() {
         </div>
       </div>
 
-      <div className="w-full max-w-4xl mt-12">
-        <h2 className="text-xl font-semibold mb-4">My Gear</h2>
-        {Object.entries(gearCategories).map(([category, items]) => (
-          <div key={category} className="mb-6">
-            <h3 className="text-lg font-bold text-[#588157] mb-2">
-              {category.replace(/_/g, " ")}
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-              {items.map((item) => (
-                <label key={item} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={!!ownedGear?.[category]?.[item]}
-                    onChange={() => toggleGearItem(category, item)}
-                  />
-                  <span>{item}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-        ))}
+      <UserGear
+        gearData={gearData}
+        ownedGear={ownedGear}
+        setOwnedGear={setOwnedGear}
+        onSave={handleSaveGear}
+        isSaved={isSaved}
+        setIsSaved={setIsSaved}
+        setMessage={setMessage}
+      />
 
-        <button
-          className="bg-[#588157] hover:bg-[#476246] text-white font-semibold px-6 py-2 rounded-lg transition"
-          onClick={handleSaveGear}
-          disabled={isSaved}
-        >
-          Save Gear Changes
-        </button>
-        {!isSaved && <p className="mt-2 text-sm text-gray-500">You have unsaved changes.</p>}
-        {isSaved && <p className="mt-2 text-sm text-green-600">Changes saved!</p>}
-      </div>
-
-      <h2 className="mt-16 mb-8 text-3xl font-semibold text-gray-800 w-full max-w-4xl text-center">
-        Your Past Trips
-      </h2>
-      <div className="w-full max-w-4xl space-y-6">
-        {pastTrips.length === 0 && <p className="text-center text-gray-600">No past trips found.</p>}
-        {pastTrips.map((trip) => (
-          <div key={trip._id} className="flex bg-white rounded-xl shadow-md overflow-hidden border border-gray-300">
-            <div className="w-1/3">
-              <img
-                src={trip.trail.photoUrl || "https://via.placeholder.com/150"}
-                alt={trip.trail.name}
-                className="object-cover w-full h-full"
-              />
-            </div>
-            <div className="w-2/3 p-6 flex flex-col justify-center">
-              <h3 className="text-xl font-bold text-gray-800">{trip.trail.name}</h3>
-              <div className="mt-2 flex items-center space-x-3">
-                <span className="font-semibold text-green-700">Rating: {trip.userRating}/5</span>
-              </div>
-              <p className="mt-1 text-gray-600">
-                Date: {trip.dateOfTrip ? new Date(trip.dateOfTrip).toLocaleDateString() : "Unknown"}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
+      
 
       <div className="flex flex-col sm:flex-row gap-4 max-w-4xl w-full mt-10 justify-center">
         <button
