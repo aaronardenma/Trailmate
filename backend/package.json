@@ -4,7 +4,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "NODE_ENV=test node server.js"
+    "test": "cross-env NODE_ENV=test mocha --exit"
   },
   "keywords": [],
   "author": "",
@@ -17,15 +17,20 @@
     "dotenv": "^16.6.1",
     "express": "^5.1.0",
     "firebase": "^11.9.1",
+    "http-status-codes": "^2.3.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.17.0",
-    "mongoose": "^8.16.1",
-    "node": "^24.2.0"
+    "node": "^24.2.0",
+    "supertest": "^7.1.1"
   },
   "devDependencies": {
-    "chai": "^5.2.0",
-    "chai-http": "^5.1.2",
-    "mocha": "^11.7.1",
-    "nodemon": "^3.1.10"
+    "chai": "^4.3.3",
+    "chai-http": "^4.3.0",
+    "mocha": "^8.3.1",
+    "cross-env": "^7.0.3",
+    "mocha-html-reporter": "^0.0.1",
+    "mongoose": "^8.16.1",
+    "nodemon": "^3.1.10",
+    "nyc": "^17.1.0"
   }
 }
