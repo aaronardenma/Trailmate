@@ -159,7 +159,8 @@ export default function Register({ handleLogInSuccess }) {
         ) : (
           <button
             onClick={handleSubmit}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="px-4 py-2 text-white rounded"
+            style={{ backgroundColor: "#588157" }}
           >
             Submit
           </button>
