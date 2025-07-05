@@ -27,8 +27,6 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
   });
   const [time, setTime] = useState("12:00");
   const [planning, setPlanning] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [savedTripId, setSavedTripId] = useState(null);
   const [weather, setWeather] = useState(null);
   const [gearData, setGearData] = useState([]);
   const [ownedGear, setOwnedGear] = useState({});
@@ -242,10 +240,6 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
     }
   };
 
-  const handleTripSubmission = async (e) => {
-    e.preventDefault();
-    setPlanning(true);
-  };
 
   return (
     <Dialog>
