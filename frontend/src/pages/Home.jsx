@@ -10,7 +10,7 @@ export default function Home() {
 
     const elevationFilter = useSelector(state => state.filters.elevation)
     const distanceFilter = useSelector(state => state.filters.distance)
-    const tagFilter = useSelector(state => state.filters.tags)
+    const tagFilter = useSelector(state => state.filters.selectedTags)
 
     useEffect(() => {
         const fetchTrails = async () => {
@@ -49,9 +49,9 @@ export default function Home() {
         // console.log("Filters - elevation:", elevationFilter, "distance:", distanceFilter, "tags:", tagFilter);
         
         const filteredTrails = filterTrails(searchedTrails, elevationFilter, distanceFilter, tagFilter);
+        console.log(filteredTrails)
         // console.log("filteredTrails.length:", filteredTrails.length);
         return filteredTrails.map((trail) => (
-            
             <TrailCard key={trail._id} trail_id={trail._id} />
         ));
     };
