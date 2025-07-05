@@ -4,7 +4,6 @@ const Trip = require('../models/trips');
 const mongoose = require('mongoose');
 const authenticateToken = require('../service/auth')
 
-// Get all user trips with populated trail data
 router.get('/', authenticateToken, async (req, res) => {
     const userID = req.user.id
     try {

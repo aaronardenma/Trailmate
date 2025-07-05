@@ -6,12 +6,13 @@ function authenticateToken(req, res, next) {
     console.log('request headers cookie:', req.headers.cookie);
     console.log('parsed cookies:', req.cookies);
     console.log('headers:', req.headers);
+    console.log('token',  req.cookies.token)
     
     const token = req.cookies.token;
+    console.log(token)
     if (!token) {
         return res.status(401).json({ message: 'No token provided' });
     }
-
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
