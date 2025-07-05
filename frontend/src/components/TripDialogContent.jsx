@@ -1,4 +1,6 @@
 import PopoverCalendar from "./PopoverCalendar";
+import {formatTo12Hour} from "../utils/datetime"
+
 
 export default function TripDialogContent({
   trip,
@@ -11,6 +13,9 @@ export default function TripDialogContent({
   setUserRating,
   userComments,
   setUserComments,
+  weather,
+  recommendedByCategory,
+  ownedGear
 }) {
   const trail = trip.trailID;
 
@@ -107,7 +112,7 @@ export default function TripDialogContent({
             </p>
             {trip.status === "Completed" && (
               <p className="text-lg text-left font-bold text-green-500">
-                Rating: <span>{trip.userRating}/5</span>
+                Rating: <span>{userRating}/5</span>
               </p>
             )}
           </div>
@@ -117,16 +122,24 @@ export default function TripDialogContent({
               <p className="text-center">
                 On{" "}
                 <span className="font-bold">
-                  {new Date(date.from).toLocaleDateString()} -{" "}
-                  {new Date(date.to).toLocaleDateString()}
+                  {new Date(date.from).toLocaleDateString()}
                 </span>{" "}
-                around <span className="font-bold">{time}</span>, the conditions
+                around <span className="font-bold">{formatTo12Hour(time)}</span>, the conditions
                 on <span className="font-bold">{trail.name}</span> are:
               </p>
 
               <p>
                 <span className="font-bold">Weather: </span>
-                {/* TODO: connect weather api data */}
+                  {weather ? (
+                  <>
+                    {weather.description}, {weather.temperatureC}°C, 
+                    {weather.raining
+                      ? " Rain expected"
+                      : " No rain expected"}
+                  </>
+                ) : (
+                  "Loading..."
+                )}
               </p>
               <p>
                 <span className="font-bold">Trail: </span>
@@ -147,7 +160,31 @@ export default function TripDialogContent({
         <div className="flex flex-col">
           <div className="mb-8 space-y-4">
             <h3 className="font-semibold text-lg">Recommended Gear List</h3>
-            {/* TODO: Input Gear List */}
+            {Object.keys(recommendedByCategory).length > 0 ? (
+              Object.entries(recommendedByCategory).map(([category, items]) => (
+                <div key={category}>
+                  <h4 className="font-bold text-[#588157] mb-1">
+                    {category.replace(/_/g, " and ")}
+                  </h4>
+                  <ul className="list-disc list-inside text-gray-700 space-y-1">
+                    {items.map((item) => (
+                      <li
+                        key={item}
+                        className={`${
+                          ownedGear?.[category]?.[item]
+                            ? "font-semibold text-black"
+                            : "text-gray-600"
+                        }`}
+                      >
+                        {item} {ownedGear?.[category]?.[item] && "✓"}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500">Loading gear recommendations...</p>
+            )}
           </div>
 
           <div className="mb-8">
@@ -157,7 +194,7 @@ export default function TripDialogContent({
           {trip.status === "Completed" && (
             <div>
               <h3 className="font-semibold text-lg mb-3">Comments</h3>
-              <p className="text-gray-700">{trip.userComments}</p>
+              <p className="text-gray-700">{trip.userComments.length > 0 ? trip.userComments : 'No comments made'}</p>
             </div>
           )}
         </div>
