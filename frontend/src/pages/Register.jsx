@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 import AccountSetup from "./AccountSetup";
 import ProfileSetup from "./ProfileSetup";
 import { useNavigate } from "react-router-dom";
-import { flattenSelectedGear } from "@/utils/gearRecommendation";
 import { updateUser } from '../store/userSlice';
 
 export default function Register({ handleLogInSuccess }) {
@@ -50,6 +49,18 @@ export default function Register({ handleLogInSuccess }) {
     });
   };
 
+  const flattenSelectedGear = (selectedGear) => {
+    const gearArray = [];
+    Object.entries(selectedGear).forEach(([category, itemsObj]) => {
+      Object.entries(itemsObj).forEach(([item, selected]) => {
+        if (selected) {
+          gearArray.push({ category, item });
+        }
+      });
+    });
+    return gearArray;
+  };
+
   const handleSubmit = async () => {
     if (!profileData.experience) {
       alert("Please select your experience level");
@@ -59,7 +70,7 @@ export default function Register({ handleLogInSuccess }) {
     const combinedData = {
       ...accountData,
       badge: profileData.experience,
-      gear: flattenSelectedGear(profileData.selectedGear),
+      gear: flattenSelectedGear(profileData.selectedGear), 
     };
 
     try {
@@ -73,7 +84,6 @@ export default function Register({ handleLogInSuccess }) {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        // Update Redux store with complete user profile
         dispatch(updateUser({
           ...data.user,
           profileCompleted: true
