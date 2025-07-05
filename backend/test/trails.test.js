@@ -4,7 +4,7 @@ const chaiHttp = require('chai-http');
 const mongoose = require('mongoose');
 const expect = chai.expect;
 
-const server = require('../server'); // make sure this exports your express app
+const server = require('../server');
 const Trails = require('../models/trails');
 
 chai.use(chaiHttp);
@@ -148,4 +148,28 @@ describe('Trail API Test Collection', () => {
                 });
         });
     });
+    describe('DELETE /deleteTrail/:id', () => {
+        it('should delete a trail by ID', (done) => {
+            chai.request(server)
+                .delete(`/api/trails/deleteTrail/${trailId}`)
+                .end((err, res) => {
+                    expect(res).to.have.status(200);
+                    expect(res.body).to.have.property('message', 'Trail deleted successfully');
+                    expect(res.body.trail).to.have.property('_id', trailId);
+                    done();
+                });
+        });
+
+        it('should return 404 for non-existing trail', (done) => {
+            const fakeId = new mongoose.Types.ObjectId();
+            chai.request(server)
+                .delete(`/api/trails/deleteTrail/${fakeId}`)
+                .end((err, res) => {
+                    expect(res).to.have.status(404);
+                    expect(res.body).to.have.property('message', 'Trail not found');
+                    done();
+                });
+        });
+    });
+
 });
