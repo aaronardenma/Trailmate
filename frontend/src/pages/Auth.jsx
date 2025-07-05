@@ -37,6 +37,8 @@ export default function Auth({ handleLogInSuccess }) {
                     dispatch(setAuthenticated());
                     
                     handleLogInSuccess();
+                    console.log(data.user)
+                    localStorage.setItem('user_id', data.user._id)
                     nav("/");
                 } else {
                     alert(data.message || "Login failed");
