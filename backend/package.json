@@ -4,7 +4,8 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "mocha test/*.test.js --reporter mochawesome"
+    "test": "cross-env NODE_ENV=test mocha --exit",
+    "test-html": "mocha --timeout 5000 --reporter mochawesome"
   },
   "keywords": [],
   "author": "",
