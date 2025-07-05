@@ -71,7 +71,7 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
   }, [trailId]);
 
   useEffect(() => {
-    if (!trail || !trail.latitude || !trail.longitude || !date.from) return;
+    if (!trail || !trail.latitude || !trail.longitude || !date?.from) return;
   
     const fetchWeatherForDate = async () => {
       const weatherData = await fetchWeather(trail.latitude, trail.longitude, date.from);
@@ -79,7 +79,7 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
     };
   
     fetchWeatherForDate();
-  }, [trail, date.from]);  
+  }, [trail, date?.from]);  
 
   useEffect(() => {
     async function fetchGear() {
@@ -118,7 +118,15 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
   }, []);
 
   useEffect(() => {
-    if (!weather || gearData.length === 0 || !trail) return;
+    if (
+      !weather ||
+      gearData.length === 0 ||
+      !trail ||
+      !date ||
+      !date.to ||
+      !date.from
+    )
+      return;
   
     const conditions = {
       temperatureC: weather.temperatureC,
@@ -138,7 +146,7 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
     });
   
     setRecommendedByCategory(grouped);
-  }, [weather, gearData, trail, date]);  
+  }, [weather, gearData, trail, date?.to, date?.from]);  
 
   const handleFavorite = async () => {
     if (favorite) {
