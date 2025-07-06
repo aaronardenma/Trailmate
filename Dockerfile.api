@@ -4,9 +4,13 @@ WORKDIR /app
 
 COPY package.json .
 
+COPY . .
+
 RUN npm install
-RUN npm install -g nodemon
+
+ARG ENV_FILE=.env
+COPY ${ENV_FILE} .env
 
 EXPOSE 5001
 
-CMD [ "node", "server.js" ]
+CMD [ "node", "server.js"]
