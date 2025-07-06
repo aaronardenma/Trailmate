@@ -2,60 +2,104 @@ import { Link } from "react-router-dom";
 import UserPreview from "./UserPreview";
 import { useEffect, useState } from "react";
 
-export default function Post({ post, handleSaveComment, handleLike }) {
-  //   console.log("comment: ", comment);
-  //   console.log("showComment: ", showComment);
-  //   console.log("post.comments: ", post.comments);
+export default function Post({ post }) {
   const [postComments, setPostComments] = useState([]);
   const [likeStatus, setLikeStatus] = useState(false);
   const [comment, setComment] = useState("");
-  const [showCommentInput, setShowCommentInput] = useState(false);
+  const [likes, setLikes] = useState(post.likes);
+
+  const fetchPostComments = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:5001/api/comments/post/${post._id}`,
+        {
+          method: "GET",
+        }
+      );
+      if (!res.ok) {
+        throw new Error("Failed to fetch comments");
+      }
+
+      const data = await res.json();
+      console.log("Comments data:", data);
+
+      setPostComments(data.comments);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchLikeStatus = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:5001/api/posts/postLikeStatus/${post._id}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      if (!res.ok) {
+        throw new Error("Failed to fetch user like status");
+      }
+      const data = await res.json();
+      console.log("like status", data.liked);
+      setLikeStatus(data.liked);
+    } catch (err) {
+      console.error(err);
+      setLikeStatus(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchPostComments = async () => {
-      try {
-        const res = await fetch(
-          `http://localhost:5001/api/comments/post/${post._id}`,
-          {
-            method: "GET",
-          }
-        );
-        if (!res.ok) {
-          throw new Error("Failed to fetch comments");
-        }
-
-        const data = await res.json();
-        console.log("Comments data:", data);
-
-        // Extract comments array from response
-        setPostComments(data.comments || []);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-    const fetchLikeStatus = async () => {
-      try {
-        const res = await fetch(
-          `http://localhost:5001/api/posts/postLikeStatus/${post._id}`,
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
-        if (!res.ok) {
-          throw new Error("Failed to fetch user like status");
-        }
-        const data = await res.json();
-        console.log("like status", data.liked);
-        setLikeStatus(data.liked);
-      } catch (err) {
-        console.error(err);
-        setLikeStatus(false);
-      }
-    };
     fetchPostComments();
     fetchLikeStatus();
   }, []);
+
+  const handleSaveComment = async (post) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5001/api/comments/add/${post._id}`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            comment: comment,
+          }),
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to save comment");
+      setComment("");
+      await fetchPostComments();
+    } catch (err) {
+      console.error("Error saving comment: ", err);
+    }
+  };
+
+  const handleLike = async () => {
+    try {
+      const res = await fetch(
+        `http://localhost:5001/api/posts/updatePostLikes/${post._id}`,
+        {
+          method: "PUT",
+          credentials: "include",
+        }
+      );
+
+      if (!res.ok) throw new Error("Failed to like post");
+
+      if (likeStatus) {
+        setLikes((prev) => Math.max(0, prev - 1));
+      } else {
+        setLikes((prev) => prev + 1);
+      }
+
+      setLikeStatus(!likeStatus);
+    } catch (err) {
+      console.error("Error liking post:", err);
+    }
+  };
 
   return (
     <div
@@ -86,7 +130,7 @@ export default function Post({ post, handleSaveComment, handleLike }) {
           />
         </div>
         <p className="mt-1 text-gray-500 text-sm flex items-center gap-2">
-          Likes: {post.likes}
+          Likes: {likes}
           <button
             onClick={() => handleLike(post)}
             className="ml-2 text-sm bg-[#A3B18A] text-white px-3 py-1 rounded hover:bg-[#859966] transition cursor-pointer"
@@ -96,18 +140,6 @@ export default function Post({ post, handleSaveComment, handleLike }) {
         </p>
 
         <div className="mt-1 text-gray-500 text-sm flex items-center gap-2">
-          {/* {
-            <button
-              onClick={() => {
-                // setShowInput(true);
-                setShowCommentInput(!showCommentInput);
-              }}
-              className="ml-2 text-sm bg-[#A3B18A] text-white px-3 py-1 rounded hover:bg-[#859966] transition"
-            >
-              Comment
-            </button>
-          } */}
-
           <div className="mt-4 flex flex-col sm:flex-row sm:items-center gap-2">
             <textarea
               placeholder="Add a comment"

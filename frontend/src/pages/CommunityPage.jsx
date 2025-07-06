@@ -11,27 +11,10 @@ export default function CommunityPage() {
     const [photoUrl, setPhotoUrl] = useState("");
     const [posting, setPosting] = useState(false);
     const [error, setError] = useState("");
+    
 
     const [showModal, setShowModal] = useState(false);
 
-    const handleSaveComment = async (post) => {
-        try {
-            const res = await fetch(`http://localhost:5001/api/comments/add/${post._id}`, {
-                method: "POST",
-                credentials: 'include',
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    comment: comment
-                }),
-            });
-
-            if (!res.ok) throw new Error("Failed to save comment");
-            const data = await res.json();
-            fetchPosts()
-        } catch (err) {
-            console.error("Error saving comment: ", err);
-        }
-    }
 
     const fetchPosts = () => {
         setLoading(true);
@@ -46,21 +29,6 @@ export default function CommunityPage() {
                 console.error("Failed to fetch posts:", err);
                 setLoading(false);
             });
-    };
-
-    const handleLike = async (post) => {
-        try {
-
-            const res = await fetch(`http://localhost:5001/api/posts/updatePostLikes/${post._id}`, {
-                method: "PUT",
-                credentials: 'include',
-            });
-
-            if (!res.ok) throw new Error("Failed to like post");
-            fetchPosts()
-        } catch (err) {
-            console.error("Error liking post:", err);
-        }
     };
 
     const handleYourPosts = () => {
@@ -181,7 +149,7 @@ export default function CommunityPage() {
                 ) : posts.length === 0 ? (
                     <p className="text-center text-gray-600">No posts found.</p>
                 ) : (
-                    posts.map((post) => (<Post post={post} handleSaveComment={handleSaveComment} handleLike={handleLike} />
+                    posts.map((post) => (<Post post={post}  />
                     ))
                 )}
             </div>
