@@ -17,7 +17,7 @@ export default function TripCard({ trip, onDelete, defaultOpen}) {
     
     nav(`/trip/${trip._id}`)
   }
-
+  // console.log(trip)
   return (
     <div className="relative rounded cursor-pointer min-w-full max-w-1/3 hover:shadow-lg transition-shadow duration-200">
       <TripCardDialog

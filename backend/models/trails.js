@@ -19,13 +19,16 @@ const trailsSchema = new Schema({
         type: String,
         required: true
     },
-    city: String,
+    location: String,
     description: String,
     avgElevationM: Number,
-    tags: [String],
+    tags: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Tag"
+    }],
     difficulty: {
         type: String,
-        enum: ['Easy', 'Medium', 'Challenging']
+        enum: ['Easy', 'Moderate', 'Challenging']
     },
     distanceKm: Number,
 }, {

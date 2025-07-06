@@ -6,6 +6,7 @@ const expect = chai.expect;
 
 const server = require('../server'); // make sure this exports your express app
 const Trails = require('../models/trails');
+const Tags = require('../models/tags')
 
 chai.use(chaiHttp);
 
@@ -22,7 +23,7 @@ const sampleTrails = [
         description: "A steep and challenging trail.",
         latitude: 49.371206,
         longitude: -123.098424,
-        tags: ["Challenging", "Mountain"]
+        tags: ["6868a33d60ce72eeb17cb831", "6868a33d60ce72eeb17cb835"]
     },
     {
         name: "Lynn Loop",
@@ -34,7 +35,7 @@ const sampleTrails = [
         description: "Peaceful forest loop.",
         latitude: 49.355,
         longitude: -123.016,
-        tags: ["Easy", "Loop"]
+        tags: ["6868a33d60ce72eeb17cb838", "6868a33d60ce72eeb17cb82e"]
     },
     {
         name: "Stawamus Chief",
@@ -46,31 +47,51 @@ const sampleTrails = [
         description: "Famous granite monolith hike.",
         latitude: 49.683,
         longitude: -123.155,
-        tags: ["Challenging", "Scenic"]
+        tags: ["6868a33d60ce72eeb17cb82e", "6868a33d60ce72eeb17cb831"]
+    },
+    // {
+    //     name: "Dog Mountain",
+    //     distanceKm: 5.0,
+    //     avgElevationM: 150,
+    //     timeMinutes: 75,
+    //     location: "Mount Seymour, BC",
+    //     photoUrl: "http://example.com/dogmountain.jpg",
+    //     description: "Easy with great views.",
+    //     latitude: 49.384,
+    //     longitude: -122.95,
+    //     tags: ["Easy", "Viewpoint"]
+    // },
+    // {
+    //     name: "Quarry Rock",
+    //     distanceKm: 3.8,
+    //     avgElevationM: 100,
+    //     timeMinutes: 60,
+    //     location: "Deep Cove, BC",
+    //     photoUrl: "http://example.com/quarryrock.jpg",
+    //     description: "Short, sweet, and scenic.",
+    //     latitude: 49.325,
+    //     longitude: -122.948,
+    //     tags: ["Family", "Short"]
+    // }
+];
+
+const sampleTags = [
+    {
+        // _id: new mongoose.Schema.Types.ObjectId,
+        name: "Challenging",
     },
     {
-        name: "Dog Mountain",
-        distanceKm: 5.0,
-        avgElevationM: 150,
-        timeMinutes: 75,
-        location: "Mount Seymour, BC",
-        photoUrl: "http://example.com/dogmountain.jpg",
-        description: "Easy with great views.",
-        latitude: 49.384,
-        longitude: -122.95,
-        tags: ["Easy", "Viewpoint"]
+        name: "Easy",
     },
     {
-        name: "Quarry Rock",
-        distanceKm: 3.8,
-        avgElevationM: 100,
-        timeMinutes: 60,
-        location: "Deep Cove, BC",
-        photoUrl: "http://example.com/quarryrock.jpg",
-        description: "Short, sweet, and scenic.",
-        latitude: 49.325,
-        longitude: -122.948,
-        tags: ["Family", "Short"]
+        name: "Scenic",
+    },
+    {
+        name: "Loop",
+    },
+    {
+        name: "Family",
+
     }
 ];
 
@@ -95,7 +116,7 @@ describe('Trail API Test Collection', () => {
             .get('/api/trails/getTrails')
             .end((err, res) => {
                 expect(res).to.have.status(200);
-                expect(res.body).to.be.an('array').with.lengthOf(5);
+                expect(res.body).to.be.an('array').with.lengthOf(3);
                 done();
             });
     });
@@ -114,12 +135,11 @@ describe('Trail API Test Collection', () => {
                     description: "Just testing.",
                     latitude: 49.0,
                     longitude: -123.0,
-                    tags: ["Test", "New"]
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(201);
                     expect(res.body.message).to.equal("Trail added successfully");
-                    expect(res.body.trail).to.include({ name: "New Trail" });
+                    expect(res.body.trail).to.include({name: "New Trail"});
                     done();
                 });
         });

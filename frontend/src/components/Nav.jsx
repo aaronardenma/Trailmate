@@ -7,7 +7,9 @@ import { TbBuildingCommunity } from "react-icons/tb";
 import { IoChevronDown } from "react-icons/io5";
 import { HiMenu, HiX } from "react-icons/hi";
 import { GiWalkingBoot } from "react-icons/gi";
-
+import { useDispatch } from 'react-redux';
+import { setUnauthenticated } from '@/store/authSlice';
+import { clearUser } from '@/store/userSlice';
 
 export default function Nav({ onLogout }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -15,11 +17,14 @@ export default function Nav({ onLogout }) {
   const dropdownRef = useRef(null);
   const mobileMenuRef = useRef(null);
   const nav = useNavigate();
+  const dispatch = useDispatch()
 
   const handleLogout = async () => {
     if (onLogout) {
       await onLogout();
-      nav('/landing');
+      dispatch(setUnauthenticated())
+      dispatch(clearUser())
+      nav('/');
     }
   };
 
