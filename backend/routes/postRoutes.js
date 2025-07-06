@@ -6,12 +6,6 @@ const User = require("../models/users");
 const authenticateToken = require('../service/auth');
 
 router.get('/getPosts', async (req, res) => {
-    // try {
-    //     const items = await Post.find().populate({path: 'userId', match: {visibility: 'private'}, select: '_id firstName lastName gender'});
-    //     res.json(items);
-    // } catch (err) {
-    //     res.status(500).json({error: err.message});
-    // }
     try {
         const items = await Post.aggregate([
             {
