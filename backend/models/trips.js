@@ -1,5 +1,5 @@
-const mongoose = require("mongoose");
-// const {UUID} = require("mongodb");
+
+const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const tripsSchema = new Schema({

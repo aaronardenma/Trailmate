@@ -64,7 +64,7 @@ export default function CommunityPage() {
                 headers: {"Content-Type": "application/json"},
                 body: JSON.stringify({
                     // likes: post.likes,
-                    comments: post.comments,
+                    // comments: post.comments,
                     user_id: user_id
                 }),
             });
