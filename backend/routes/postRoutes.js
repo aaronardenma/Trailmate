@@ -84,10 +84,10 @@ router.post('/add', authenticateToken, async (req, res) => {
 });
 
 
-router.put('/updatePost/:id', authenticateToken, async (req, res) => {
+router.put('/updatePost/:postId', authenticateToken, async (req, res) => {
     const {title, description, photoUrl, likes, comments} = req.body;
     const userId = req.user.id
-    const postId = req.params.id
+    const postId = req.params.postId
 
     const newPost = new Post({
         userId,
@@ -130,12 +130,10 @@ router.put('/updatePostLikes/:postId', authenticateToken, async (req, res) => {
         let message;
 
         if (userIndex !== -1) {
-            // User has already liked it → unlike
             currentPost.likedByUsers.splice(userIndex, 1);
-            currentPost.likes = Math.max(0, currentPost.likes - 1); // Prevent negative likes
+            currentPost.likes = Math.max(0, currentPost.likes - 1);
             message = "You unliked this post.";
         } else {
-            // User hasn't liked it yet → like
             currentPost.likedByUsers.push(userId);
             currentPost.likes += 1;
             message = "You liked this post!";
