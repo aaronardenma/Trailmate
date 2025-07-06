@@ -212,31 +212,5 @@ router.get("/postLikeStatus/:postId", authenticateToken, async (req, res) => {
 
 })
 
-// TODO: This is the new logic
-/**
- *
- */
-router.get('/getUser/:postID', async (req, res) => {
-    const postID = req.params.postID
-    let modifiedUser = {}
-    try {
-        const post = await Post.findOne({_id: postID});
-        const user = await User.findOne({_id: post.userId});
-        // console.log("POST " + post)
-        // console.log("USER " + user)
-        if (user.visibility === 'public'){
-           modifiedUser = user
-        } else {
-            modifiedUser = {
-                firstName: user.firstName,
-                lastName: user.lastName,
-                gender: user.gender,
-            }
-        }
-        res.status(200).json(modifiedUser);
-    } catch (err) {
-        res.status(500).json({error: err.message});
-    }
-});
 
 module.exports = router;
