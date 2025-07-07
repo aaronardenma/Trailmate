@@ -19,46 +19,42 @@ The app emphasizes safety and preparation by helping users:
 ---
 
 ## Milestone 3 — Progress Summary
-## 🧪 Test Suite 
+## Test Suite
 
-This project includes a full test suite for all backend API routes using **Mocha**, **Chai**, **Chai HTTP**, and **Mochawesome** for reporting.
+This project includes a comprehensive test suite for all backend API routes, utilizing **Mocha**, **Chai**, **Chai HTTP**, and **Mochawesome** for reporting.
 
 ### Testing Overview
 
-- All backend API endpoints have been tested.
-- **Testing Framework**: Mocha
-- **Assertion Library**: Chai
-- **HTTP Integration Testing**: Chai HTTP
-- **Test Report Generator**: Mochawesome (for HTML reports)
+- **All backend API endpoints are covered.**
+- **Testing Framework**: [Mocha](https://mochajs.org/)
+- **Assertion Library**: [Chai](https://www.chaijs.com/)
+- **HTTP Integration Testing**: [Chai HTTP](https://www.chaijs.com/plugins/chai-http/)
+- **HTML Report Generator**: [Mochawesome](https://github.com/adamgruber/mochawesome)
+
+### Project Structure for Testing
+
+Test files are located in the `backend/test/` directory and cover:
+
+- User
+- Trail
+- Trip
+- Tags
+- And other route/model logic
 
 ---
 
-###  Project Structure for Testing
-
-Your test files should be located in the `backend/test/` folder and include test cases for various models and routes such as `User`, `Trail`, `Trip`, `Tags`, etc.
 ### Running the Tests
 
-#### Run All API Tests in Terminal
+#### 1. Run All API Tests via Terminal
 
-To run all backend tests via command line:
+To execute all backend tests:
 
 ```bash
 cd backend
 npm test
 
-2. Generate HTML Test Report with Mochawesome
-To create a detailed visual HTML report of your tests:
 
-bash
-Copy
-Edit
-npm run test-html
-After running the above command, it will generate an HTML file at:
 
-bash
-Copy
-Edit
-backend/mochawesome-report/mochawesome.html
 
 
 
