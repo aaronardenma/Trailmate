@@ -126,6 +126,7 @@ router.put('/updatePostLikes/:postId', authenticateToken, async (req, res) => {
         const userIndex = currentPost.likedByUsers
             .map(id => id.toString())
             .indexOf(userId);
+        console.log(userIndex)
 
         let message;
 
@@ -151,6 +152,7 @@ router.put('/updatePostLikes/:postId', authenticateToken, async (req, res) => {
 
 router.put('/updatePostComments/:postId', async (req, res) => {
     let {currentUserComments} = req.body.comments
+    console.log(currentUserComments)
     const postId = req.params.postId
     let currentPost = await Post.findOne({_id: postId})
     console.log(currentUserComments)
@@ -161,7 +163,6 @@ router.put('/updatePostComments/:postId', async (req, res) => {
         }
         console.log("current comment " + currentUserComments);
         await currentPost.save();
-        // res.json(currentPost);
         res.status(201).json({message: 'Post updated successfully'});
     } catch (err) {
         res.status(500).json({error: 'Error creating post', details: err.message});
