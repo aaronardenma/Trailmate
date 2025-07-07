@@ -193,7 +193,7 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
       const data = await res.json();
 
       if (res.ok && data.success) {
-        setSavedTripId(data.tripId);
+        // setSavedTripId(data.tripId);
         alert("Trip saved successfully!");
         nav('/profile/trips')
       } else {
