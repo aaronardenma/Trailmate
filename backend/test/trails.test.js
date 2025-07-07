@@ -23,7 +23,10 @@ const sampleTrails = [
         description: "A steep and challenging trail.",
         latitude: 49.371206,
         longitude: -123.098424,
-        tags: ["6868a33d60ce72eeb17cb831", "6868a33d60ce72eeb17cb835"]
+        tags: [
+            "6868a33d60ce72eeb17cb831",
+            "6868a33d60ce72eeb17cb835"
+        ]
     },
     {
         name: "Lynn Loop",
@@ -35,7 +38,10 @@ const sampleTrails = [
         description: "Peaceful forest loop.",
         latitude: 49.355,
         longitude: -123.016,
-        tags: ["6868a33d60ce72eeb17cb838", "6868a33d60ce72eeb17cb82e"]
+        tags: [
+            "6868a33d60ce72eeb17cb838",
+            "6868a33d60ce72eeb17cb82e"
+        ]
     },
     {
         name: "Stawamus Chief",
@@ -47,51 +53,42 @@ const sampleTrails = [
         description: "Famous granite monolith hike.",
         latitude: 49.683,
         longitude: -123.155,
-        tags: ["6868a33d60ce72eeb17cb82e", "6868a33d60ce72eeb17cb831"]
-    },
-    // {
-    //     name: "Dog Mountain",
-    //     distanceKm: 5.0,
-    //     avgElevationM: 150,
-    //     timeMinutes: 75,
-    //     location: "Mount Seymour, BC",
-    //     photoUrl: "http://example.com/dogmountain.jpg",
-    //     description: "Easy with great views.",
-    //     latitude: 49.384,
-    //     longitude: -122.95,
-    //     tags: ["Easy", "Viewpoint"]
-    // },
-    // {
-    //     name: "Quarry Rock",
-    //     distanceKm: 3.8,
-    //     avgElevationM: 100,
-    //     timeMinutes: 60,
-    //     location: "Deep Cove, BC",
-    //     photoUrl: "http://example.com/quarryrock.jpg",
-    //     description: "Short, sweet, and scenic.",
-    //     latitude: 49.325,
-    //     longitude: -122.948,
-    //     tags: ["Family", "Short"]
-    // }
-];
-
-const sampleTags = [
-    {
-        // _id: new mongoose.Schema.Types.ObjectId,
-        name: "Challenging",
+        tags: [
+            "6868a33d60ce72eeb17cb82e",
+            "6868a33d60ce72eeb17cb831"
+        ]
     },
     {
-        name: "Easy",
+        name: "Dog Mountain",
+        distanceKm: 5.0,
+        avgElevationM: 150,
+        timeMinutes: 75,
+        location: "Mount Seymour, BC",
+        photoUrl: "http://example.com/dogmountain.jpg",
+        description: "Easy with great views.",
+        latitude: 49.384,
+        longitude: -122.95,
+        tags: [
+            "6868a33d60ce72eeb17cb830",
+            "6868a33d60ce72eeb17cb834",
+            "6868a33d60ce72eeb17cb82f"
+        ]
     },
     {
-        name: "Scenic",
-    },
-    {
-        name: "Loop",
-    },
-    {
-        name: "Family",
-
+        name: "Quarry Rock",
+        distanceKm: 3.8,
+        avgElevationM: 100,
+        timeMinutes: 60,
+        location: "Deep Cove, BC",
+        photoUrl: "http://example.com/quarryrock.jpg",
+        description: "Short, sweet, and scenic.",
+        latitude: 49.325,
+        longitude: -122.948,
+        tags: [
+            "6868a33d60ce72eeb17cb82f",
+            "6868a33d60ce72eeb17cb82d",
+            "6868a33d60ce72eeb17cb838"
+        ]
     }
 ];
 
