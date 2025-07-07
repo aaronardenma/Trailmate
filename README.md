@@ -21,7 +21,7 @@ The app emphasizes safety and preparation by helping users:
 ## Milestone 3 — Progress Summary
 ## Test Suite
 
-This project includes a comprehensive test suite for all backend API routes, utilizing **Mocha**, **Chai**, **Chai HTTP**, and **Mochawesome** for reporting.
+This project includes a comprehensive test suite for all backend routes, utilizing **Mocha**, **Chai**, **Chai HTTP**, and **Mochawesome** for reporting.
 
 ### Testing Overview
 
@@ -33,8 +33,9 @@ This project includes a comprehensive test suite for all backend API routes, uti
 ---
 
 ### Running the Tests
+All the tests are in the test folder in the backend folder
 
-#### Run All API Tests via Terminal
+#### Run All Tests via Terminal
 
 To execute all backend tests:
 
@@ -53,10 +54,3 @@ npm run test-html
 ```bash
 backend/mochawesome-report/mochawesome.html
 ```
-
-
-
-
-
-
-
