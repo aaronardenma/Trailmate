@@ -3,18 +3,17 @@ services:
   backend:
     build:
       context: backend
-      dockerfile: ../Dockerfile.api
+      dockerfile: Dockerfile.api
+      args:
+        ENV_FILE: .env
     ports:
       - "5001:5001"
     volumes:
       - ./backend:/app
-    env_file:
-      - ./backend/.env
+      - /app/node_modules
   frontend:
     build:
       context: frontend
-      dockerfile: ../Dockerfile.ui
+      dockerfile: Dockerfile.ui
     ports:
       - "3000:3000"
-    volumes:
-      - ./frontend:/app

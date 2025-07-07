@@ -7,6 +7,7 @@ const authenticateToken = require('../service/auth');
 
 router.get('/getPosts', async (req, res) => {
     try {
+
         const items = await Post.aggregate([
             {
                 $lookup: {
@@ -84,6 +85,7 @@ router.post('/add', authenticateToken, async (req, res) => {
 });
 
 
+
 router.put('/updatePost/:postId', authenticateToken, async (req, res) => {
     const {title, description, photoUrl, likes, comments} = req.body;
     const userId = req.user.id
@@ -145,6 +147,7 @@ router.put('/updatePostLikes/:postId', authenticateToken, async (req, res) => {
 
     } catch (err) {
         res.status(500).json({ error: 'Error updating post', details: err.message });
+
     }
 });
 
@@ -164,6 +167,7 @@ router.put('/updatePostComments/:postId', async (req, res) => {
         console.log("current comment " + currentUserComments);
         await currentPost.save();
         res.status(201).json({message: 'Post updated successfully'});
+
     } catch (err) {
         res.status(500).json({error: 'Error creating post', details: err.message});
     }
@@ -178,7 +182,7 @@ router.delete('/deletePost/:id', async (req, res) => {
         if (!deletedUser) {
             return res.status(404).json({message: 'Post not found'});
         }
-        res.status(200).json({message: 'Post deleted successfully', user: deletedUser});
+        res.status(200).json({message: 'Post deleted successfully', post: deletedPost});
     } catch (err) {
         res.status(500).json({error: 'Error deleting post', details: err.message});
     }

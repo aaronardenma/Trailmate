@@ -35,11 +35,11 @@ router.get('/:tripId', authenticateToken, async (req, res) => {
 router.post('/save', authenticateToken, async (req, res) => {
     const { trailID, startDate, endDate, time } = req.body;
     const userId = req.user.id;
-    
+
     if (!trailID || !startDate || !endDate || !time) {
-        return res.status(400).json({ 
-            success: false, 
-            message: 'Trail ID, start date, end date, and time are required' 
+        return res.status(400).json({
+            success: false,
+            message: 'Trail ID, start date, end date, and time are required'
         });
     }
 
@@ -54,17 +54,17 @@ router.post('/save', authenticateToken, async (req, res) => {
 
     try {
         await newTrip.save();
-        res.status(201).json({ 
-            success: true, 
-            message: 'Trip saved successfully!', 
+        res.status(201).json({
+            success: true,
+            message: 'Trip saved successfully!',
             tripId: newTrip._id,
-            trip: newTrip 
+            trip: newTrip
         });
     } catch (err) {
-        res.status(500).json({ 
-            success: false, 
-            message: 'Error saving trip', 
-            error: err.message 
+        res.status(500).json({
+            success: false,
+            message: 'Error saving trip',
+            error: err.message
         });
     }
 });
@@ -75,9 +75,9 @@ router.post('/start', authenticateToken, async (req, res) => {
     console.log(typeof startDate)
     console.log(startDate)
     if (!trailID || !startDate || !endDate || !time) {
-        return res.status(400).json({ 
-            success: false, 
-            message: 'Trail ID, start date, end date, and time are required' 
+        return res.status(400).json({
+            success: false,
+            message: 'Trail ID, start date, end date, and time are required'
         });
     }
 
@@ -92,17 +92,17 @@ router.post('/start', authenticateToken, async (req, res) => {
 
     try {
         await newTrip.save();
-        res.status(201).json({ 
-            success: true, 
-            message: 'Trip started successfully!', 
+        res.status(201).json({
+            success: true,
+            message: 'Trip started successfully!',
             tripId: newTrip._id,
-            trip: newTrip 
+            trip: newTrip
         });
     } catch (err) {
-        res.status(500).json({ 
-            success: false, 
-            message: 'Error starting trip', 
-            error: err.message 
+        res.status(500).json({
+            success: false,
+            message: 'Error starting trip',
+            error: err.message
         });
     }
 });
@@ -111,11 +111,11 @@ router.put('/updateStatus/:tripId', authenticateToken, async (req, res) => {
     const { tripId } = req.params;
     const { status } = req.body;
     const userId = req.user.id;
-    
+
     if (!['Upcoming', 'In Progress', 'Completed'].includes(status)) {
-        return res.status(400).json({ 
-            success: false, 
-            message: 'Invalid status. Must be Upcoming, In Progress, or Completed' 
+        return res.status(400).json({
+            success: false,
+            message: 'Invalid status. Must be Upcoming, In Progress, or Completed'
         });
     }
 
@@ -127,22 +127,22 @@ router.put('/updateStatus/:tripId', authenticateToken, async (req, res) => {
         ).populate('trailID');
 
         if (!updatedTrip) {
-            return res.status(404).json({ 
-                success: false, 
-                message: 'Trip not found or not authorized' 
+            return res.status(404).json({
+                success: false,
+                message: 'Trip not found or not authorized'
             });
         }
 
-        res.status(200).json({ 
-            success: true, 
-            message: 'Trip status updated successfully', 
-            trip: updatedTrip 
+        res.status(200).json({
+            success: true,
+            message: 'Trip status updated successfully',
+            trip: updatedTrip
         });
     } catch (err) {
-        res.status(500).json({ 
-            success: false, 
-            message: 'Error updating trip status', 
-            error: err.message 
+        res.status(500).json({
+            success: false,
+            message: 'Error updating trip status',
+            error: err.message
         });
     }
 });
@@ -151,18 +151,18 @@ router.put('/end/:tripId', authenticateToken, async (req, res) => {
     const { tripId } = req.params;
     const { userRating, userComments } = req.body;
     const userId = req.user.id;
-    
+
     if (userRating && (userRating < 1 || userRating > 5)) {
-        return res.status(400).json({ 
-            success: false, 
-            message: 'Rating must be between 1 and 5' 
+        return res.status(400).json({
+            success: false,
+            message: 'Rating must be between 1 and 5'
         });
     }
 
     try {
         const updatedTrip = await Trip.findOneAndUpdate(
             { _id: tripId, userId },
-            { 
+            {
                 status: 'Completed',
                 ...(userRating && { userRating }),
                 ...(userComments && { userComments })
@@ -171,22 +171,22 @@ router.put('/end/:tripId', authenticateToken, async (req, res) => {
         ).populate('trailID');
 
         if (!updatedTrip) {
-            return res.status(404).json({ 
-                success: false, 
-                message: 'Trip not found or not authorized' 
+            return res.status(404).json({
+                success: false,
+                message: 'Trip not found or not authorized'
             });
         }
 
-        res.status(200).json({ 
-            success: true, 
-            message: 'Trip completed successfully', 
-            trip: updatedTrip 
+        res.status(200).json({
+            success: true,
+            message: 'Trip completed successfully',
+            trip: updatedTrip
         });
     } catch (err) {
-        res.status(500).json({ 
-            success: false, 
-            message: 'Error completing trip', 
-            error: err.message 
+        res.status(500).json({
+            success: false,
+            message: 'Error completing trip',
+            error: err.message
         });
     }
 });
@@ -211,22 +211,22 @@ router.put('/update/:tripId', authenticateToken, async (req, res) => {
         ).populate('trailID');
 
         if (!updatedTrip) {
-            return res.status(404).json({ 
-                success: false, 
-                message: 'Trip not found or not authorized' 
+            return res.status(404).json({
+                success: false,
+                message: 'Trip not found or not authorized'
             });
         }
 
-        res.status(200).json({ 
-            success: true, 
-            message: 'Trip updated successfully', 
-            trip: updatedTrip 
+        res.status(200).json({
+            success: true,
+            message: 'Trip updated successfully',
+            trip: updatedTrip
         });
     } catch (err) {
-        res.status(500).json({ 
-            success: false, 
-            message: 'Error updating trip', 
-            error: err.message 
+        res.status(500).json({
+            success: false,
+            message: 'Error updating trip',
+            error: err.message
         });
     }
 });
@@ -234,27 +234,27 @@ router.put('/update/:tripId', authenticateToken, async (req, res) => {
 router.delete('/delete/:tripId', authenticateToken, async (req, res) => {
     const { tripId } = req.params;
     const userId = req.user.id;
-    
+
     try {
         const deletedTrip = await Trip.findOneAndDelete({ _id: tripId, userId });
-        
+
         if (!deletedTrip) {
-            return res.status(404).json({ 
-                success: false, 
-                message: 'Trip not found or not authorized' 
+            return res.status(404).json({
+                success: false,
+                message: 'Trip not found or not authorized'
             });
         }
 
-        res.status(200).json({ 
-            success: true, 
-            message: 'Trip deleted successfully', 
-            trip: deletedTrip 
+        res.status(200).json({
+            success: true,
+            message: 'Trip deleted successfully',
+            trip: deletedTrip
         });
     } catch (err) {
-        res.status(500).json({ 
-            success: false, 
-            message: 'Error deleting trip', 
-            error: err.message 
+        res.status(500).json({
+            success: false,
+            message: 'Error deleting trip',
+            error: err.message
         });
     }
 });
@@ -262,11 +262,11 @@ router.delete('/delete/:tripId', authenticateToken, async (req, res) => {
 // router.get('/tripsByStatus/:status', authenticateToken, async (req, res) => {
 //     const { status } = req.params;
 //     const userId = req.user.id;
-    
+
 //     if (!['Upcoming', 'In Progress', 'Completed'].includes(status)) {
-//         return res.status(400).json({ 
-//             success: false, 
-//             message: 'Invalid status' 
+//         return res.status(400).json({
+//             success: false,
+//             message: 'Invalid status'
 //         });
 //     }
 
@@ -274,7 +274,7 @@ router.delete('/delete/:tripId', authenticateToken, async (req, res) => {
 //         const trips = await Trip.find({ userId, status })
 //             .populate('trailID')
 //             .sort({ startDate: -1 });
-            
+
 //         res.status(200).json({ success: true, trips });
 //     } catch (err) {
 //         res.status(500).json({ success: false, error: err.message });
@@ -286,16 +286,16 @@ router.delete('/delete/:tripId', authenticateToken, async (req, res) => {
 //     const userId = req.user.id;
 
 //     if (!startDate || !endDate) {
-//         return res.status(400).json({ 
-//             success: false, 
-//             message: "Start date and end date are required" 
+//         return res.status(400).json({
+//             success: false,
+//             message: "Start date and end date are required"
 //         });
 //     }
 
 //     try {
 //         const start = new Date(startDate);
 //         const end = new Date(endDate);
-        
+
 //         const trips = await Trip.find({
 //             userId,
 //             startDate: { $gte: start, $lte: end }

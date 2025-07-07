@@ -6,6 +6,7 @@ const expect = chai.expect;
 
 const server = require('../server');
 const Trails = require('../models/trails');
+const Tags = require('../models/tags')
 
 chai.use(chaiHttp);
 
@@ -59,6 +60,7 @@ const sampleTrails = [
         difficulty: "Moderate",
         distanceKm: 6.1,
         tags: []
+
     }
 ];
 
@@ -86,11 +88,13 @@ describe('Trail API Test Collection', () => {
             .get('/api/trails/getTrails')
             .end((err, res) => {
                 expect(res).to.have.status(200);
+
                 expect(res.body).to.be.an('array').with.lengthOf(4);
                 expect(res.body[0]).to.include.keys(
                     '_id', 'name', 'latitude', 'longitude', 'photoUrl', 'location',
                     'description', 'avgElevationM', 'difficulty', 'distanceKm', 'tags'
                 );
+
                 done();
             });
     });
@@ -114,7 +118,7 @@ describe('Trail API Test Collection', () => {
                 .end((err, res) => {
                     expect(res).to.have.status(201);
                     expect(res.body.message).to.equal("Trail added successfully");
-                    expect(res.body.trail).to.include({ name: "New Trail" });
+                    expect(res.body.trail).to.include({name: "New Trail"});
                     done();
                 });
         });
