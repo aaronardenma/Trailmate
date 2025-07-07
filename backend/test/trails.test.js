@@ -75,7 +75,7 @@ afterEach(async () => {
     await Trails.deleteMany({});
 });
 
-describe('Trail API Test Collection', () => {
+describe('Trail API Routes', () => {
 
     // it('should test equality of two values', function () {
     //     expect(10).to.equal(10);

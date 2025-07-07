@@ -11,7 +11,7 @@ chai.use(chaiHttp);
 const app = require('../server');
 const User = require('../models/users');
 
-describe('User API', () => {
+describe('User API Routes', () => {
     let token;
     let userId;
 
