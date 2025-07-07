@@ -45,7 +45,7 @@ Test files are located in the `backend/test/` directory and cover:
 
 ### Running the Tests
 
-#### 1. Run All API Tests via Terminal
+#### Run All API Tests via Terminal
 
 To execute all backend tests:
 
@@ -54,13 +54,13 @@ cd backend
 npm test
 ```
 
-To create a detailed visual HTML report of your tests, run the following command:
+#### To create a detailed visual HTML report of your tests, run the following command:
 
 ```bash
 npm run test-html
 ```
 
-After running the above command, the report will be generated at:
+#### After running the above command, the report will be generated at:
 ```bash
 backend/mochawesome-report/mochawesome.html
 ```
