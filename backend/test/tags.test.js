@@ -10,7 +10,7 @@ chai.use(chaiHttp);
 const sampleTags  = [{ name: 'Scenic' },
     { name: 'Challenging' }]
 
-describe('Tag API', () => {
+describe('Tag API Routes', () => {
 
     beforeEach(async () => {
         await Tag.deleteMany({});

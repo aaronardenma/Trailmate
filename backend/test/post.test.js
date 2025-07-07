@@ -14,7 +14,7 @@ let token;
 let userId;
 let postId;
 
-describe('Post API', () => {
+describe('Post API Routes', () => {
     beforeEach(async () => {
         await User.deleteMany({});
         await Post.deleteMany({});
