@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
+import Post from "@/components/Post";
 
 export default function CommunityPage() {
-    let user_id = window.localStorage.getItem("user_id")
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
@@ -11,42 +11,17 @@ export default function CommunityPage() {
     const [photoUrl, setPhotoUrl] = useState("");
     const [posting, setPosting] = useState(false);
     const [error, setError] = useState("");
-    const [showInput, setShowInput] = useState(false);
-    const [showComment, setShowComment] = useState([]);
-    const [comment, setComment] = useState("");
-    const [userLinks, setUserLink] = useState({});
+    
 
     const [showModal, setShowModal] = useState(false);
 
-    const handleSaveComment = async (post) => {
-        setShowInput(false);
-        setShowComment([])
-
-        try {
-            const res = await fetch(`http://localhost:5001/api/posts/updatePostComments/${post._id}`, {
-                method: "PUT",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    comments: comment,
-                    user_id: user_id
-                }),
-            });
-
-            if (!res.ok) throw new Error("Failed to like post");
-            const updatedPost = await res.json();
-            fetchPosts()
-        } catch (err) {
-            console.error("Error liking post:", err);
-        }
-    }
 
     const fetchPosts = () => {
-        console.log("user_id " + user_id)
-
         setLoading(true);
         fetch("http://localhost:5001/api/posts/getPosts")
             .then((res) => res.json())
             .then((data) => {
+                console.log(data)
                 setPosts(data);
                 setLoading(false);
             })
@@ -54,27 +29,6 @@ export default function CommunityPage() {
                 console.error("Failed to fetch posts:", err);
                 setLoading(false);
             });
-    };
-
-    const handleLike = async (post) => {
-        try {
-
-            const res = await fetch(`http://localhost:5001/api/posts/updatePostLikes/${post._id}`, {
-                method: "PUT",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({
-                    // likes: post.likes,
-                    // comments: post.comments,
-                    user_id: user_id
-                }),
-            });
-
-            if (!res.ok) throw new Error("Failed to like post");
-            const updatedPost = await res.json();
-            fetchPosts()
-        } catch (err) {
-            console.error("Error liking post:", err);
-        }
     };
 
     const handleYourPosts = () => {
@@ -94,11 +48,11 @@ export default function CommunityPage() {
         setPosting(true);
         setError("");
         try {
-            const userId = localStorage.getItem("user_id");
-            const res = await fetch("http://localhost:5001/api/posts/addPost", {
+            const res = await fetch("http://localhost:5001/api/posts/add", {
                 method: "POST",
+                credentials: 'include',
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({userId, title, description, dateOfPost: new Date(), photoUrl}),
+                body: JSON.stringify({title, description, dateOfPost: new Date(), photoUrl}),
             });
             if (!res.ok) throw new Error("Failed to post");
             setTitle("");
@@ -113,28 +67,8 @@ export default function CommunityPage() {
         }
     };
 
-
-    // TODO: This is the new logic
-    const handleUserLinks = async (e) => {
-        try {
-            setLoading(true);
-            fetch(`http://localhost:5001/api/posts/getUser/${post._id}`)
-                .then((res) => res.json())
-                .then((data) => {
-                    setUserLink(data);
-                    setLoading(false);
-                })
-                .catch((err) => {
-                    console.error("Failed to fetch user profile:", err);
-                    setLoading(false);
-                });
-        } catch (err) {
-            console.error("Error liking post:", err);
-        }
-    }
-
     return (
-        <div className="max-w-5xl mx-auto p-6 bg-[#DAD7CD] min-h-screen">
+        <div className="w-full p-6 bg-[#DAD7CD] min-h-screen">
             <h1 className="text-4xl font-bold mb-6 text-center text-[#588157]">Community Posts</h1>
 
             <div className="flex justify-center gap-6 mb-10">
@@ -215,81 +149,7 @@ export default function CommunityPage() {
                 ) : posts.length === 0 ? (
                     <p className="text-center text-gray-600">No posts found.</p>
                 ) : (
-                    posts.map((post) => (
-                        <div
-                            key={post._id}
-                            className="bg-white rounded-lg shadow-md overflow-hidden border border-gray-300"
-                        >
-                            {post.photoUrl && (
-                                <img
-                                    src={post.photoUrl}
-                                    alt={post.title}
-                                    className="w-full h-48 object-cover"
-                                />
-                            )}
-                            <div className="p-6">
-                                <h2 className="text-2xl font-semibold text-gray-800">{post.title}</h2>
-                                <p className="text-gray-700 mt-2">{post.description}</p>
-                                <p className="mt-3 text-sm text-gray-600">
-                                    Posted by:{" "}
-                                    <span className="font-semibold">
-                                        {post.userId?.firstName
-                                            ? `${post.userId.firstName} ${post.userId.lastName}`
-                                            : "Unknown User"}
-                                    </span>
-                                </p>
-                                <p className="mt-1 text-gray-500 text-sm flex items-center gap-2">
-                                    Likes: {post.likes}
-                                    <button
-                                        onClick={() => handleLike(post)}
-                                        className="ml-2 text-sm bg-[#A3B18A] text-white px-3 py-1 rounded hover:bg-[#859966] transition"
-                                    >Like
-                                    </button>
-                                </p>
-
-                                <p className="mt-1 text-gray-500 text-sm flex items-center gap-2">
-                                    {(
-                                        <button
-                                            onClick={() => {
-                                                // setShowInput(true);
-                                                setShowComment([post._id]);
-                                            }}
-                                            className="ml-2 text-sm bg-[#A3B18A] text-white px-3 py-1 rounded hover:bg-[#859966] transition"
-                                        >Comment
-                                        </button>
-                                    )}
-
-                                    {showComment.find(id => id === post._id) && (
-                                        <div>
-                                            <input
-                                                type="text"
-                                                placeholder="Comments..."
-                                                value={comment}
-                                                onChange={(e) => setComment(e.target.value)}
-                                                className="w-full border p-3 rounded"
-                                            />
-                                            <button
-                                                onClick={() => handleSaveComment(post)}
-                                                className="ml-2 text-sm bg-[#A3B18A] text-white px-3 py-1 rounded hover:bg-[#859966] transition"
-                                            > Save
-                                            </button>
-                                        </div>
-                                    )}
-                                </p>
-
-                                {post.comments && post.comments.length > 0 && (
-                                    <div className="mt-4 p-3 bg-gray-100 rounded">
-                                        <strong>Comments :</strong>{" "}
-                                        {/*<span>{post.comments[0]}</span>*/}
-                                        <span>{post.comments.map((comment, index) => (
-                                            <ul key={index}>
-                                                {comment}
-                                            </ul>
-                                        ))}</span>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+                    posts.map((post) => (<Post post={post}  />
                     ))
                 )}
             </div>

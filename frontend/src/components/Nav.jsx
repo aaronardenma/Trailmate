@@ -178,7 +178,7 @@ export default function Nav({ onLogout }) {
               
               <Link
                 to="/profile/trips"
-                className="flex items-center py-2 pl-8 hover:text-[#588157] transition-colors"
+                className="flex items-center py-2 hover:text-[#588157] transition-colors"
                 onClick={closeMobileMenu}
               >
                 <div className="flex items-center font-semibold"><GiWalkingBoot className='text-[#588157] text-lg mr-1' />Trips</div>

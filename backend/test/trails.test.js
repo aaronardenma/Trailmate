@@ -4,7 +4,7 @@ const chaiHttp = require('chai-http');
 const mongoose = require('mongoose');
 const expect = chai.expect;
 
-const server = require('../server'); // make sure this exports your express app
+const server = require('../server');
 const Trails = require('../models/trails');
 const Tags = require('../models/tags')
 
@@ -14,88 +14,63 @@ let trailId;
 
 const sampleTrails = [
     {
-        name: "Grouse Grind",
-        distanceKm: 2.9,
-        avgElevationM: 853,
-        timeMinutes: 105,
-        location: "North Vancouver, BC",
-        photoUrl: "https://explore-mag.com/wp-content/uploads/2024/03/Grouse-Grind_327942_max.png",
-        description: "A steep and challenging trail.",
-        latitude: 49.371206,
-        longitude: -123.098424,
-        tags: [
-            "6868a33d60ce72eeb17cb831",
-            "6868a33d60ce72eeb17cb835"
-        ]
+        name: "Sunset Ridge Trail",
+        latitude: 49.2500,
+        longitude: -123.1000,
+        photoUrl: "https://example.com/trails/sunset_ridge.jpg",
+        location: "North Vancouver",
+        description: "A beautiful trail with scenic sunset views.",
+        avgElevationM: 300,
+        difficulty: "Moderate",
+        distanceKm: 7.5,
+        tags: []
     },
     {
-        name: "Lynn Loop",
-        distanceKm: 5.1,
-        avgElevationM: 100,
-        timeMinutes: 90,
-        location: "Lynn Valley, BC",
-        photoUrl: "http://example.com/lynnloop.jpg",
-        description: "Peaceful forest loop.",
-        latitude: 49.355,
-        longitude: -123.016,
-        tags: [
-            "6868a33d60ce72eeb17cb838",
-            "6868a33d60ce72eeb17cb82e"
-        ]
+        name: "Eagle Peak Loop",
+        latitude: 49.2800,
+        longitude: -123.1300,
+        photoUrl: "https://example.com/trails/eagle_peak.jpg",
+        location: "West Vancouver",
+        description: "Challenging loop with panoramic mountain vistas.",
+        avgElevationM: 650,
+        difficulty: "Challenging",
+        distanceKm: 12.3,
+        tags: []
     },
     {
-        name: "Stawamus Chief",
-        distanceKm: 7.6,
-        avgElevationM: 610,
-        timeMinutes: 180,
-        location: "Squamish, BC",
-        photoUrl: "http://example.com/chief.jpg",
-        description: "Famous granite monolith hike.",
-        latitude: 49.683,
-        longitude: -123.155,
-        tags: [
-            "6868a33d60ce72eeb17cb82e",
-            "6868a33d60ce72eeb17cb831"
-        ]
-    },
-    {
-        name: "Dog Mountain",
-        distanceKm: 5.0,
+        name: "Maple Grove Trail",
+        latitude: 49.2650,
+        longitude: -123.1100,
+        photoUrl: "https://example.com/trails/maple_grove.jpg",
+        location: "Vancouver",
+        description: "Easy and family-friendly trail through maple forests.",
         avgElevationM: 150,
-        timeMinutes: 75,
-        location: "Mount Seymour, BC",
-        photoUrl: "http://example.com/dogmountain.jpg",
-        description: "Easy with great views.",
-        latitude: 49.384,
-        longitude: -122.95,
-        tags: [
-            "6868a33d60ce72eeb17cb830",
-            "6868a33d60ce72eeb17cb834",
-            "6868a33d60ce72eeb17cb82f"
-        ]
+        difficulty: "Easy",
+        distanceKm: 4.2,
+        tags: []
     },
     {
-        name: "Quarry Rock",
-        distanceKm: 3.8,
-        avgElevationM: 100,
-        timeMinutes: 60,
-        location: "Deep Cove, BC",
-        photoUrl: "http://example.com/quarryrock.jpg",
-        description: "Short, sweet, and scenic.",
-        latitude: 49.325,
-        longitude: -122.948,
-        tags: [
-            "6868a33d60ce72eeb17cb82f",
-            "6868a33d60ce72eeb17cb82d",
-            "6868a33d60ce72eeb17cb838"
-        ]
+        name: "Oceanview Path",
+        latitude: 49.2700,
+        longitude: -123.1250,
+        photoUrl: "https://example.com/trails/oceanview.jpg",
+        location: "Burnaby",
+        description: "Moderate trail with breathtaking views of the ocean.",
+        avgElevationM: 280,
+        difficulty: "Moderate",
+        distanceKm: 6.1,
+        tags: []
+
     }
 ];
+
+module.exports = sampleTrails;
+
 
 beforeEach(async () => {
     await Trails.deleteMany({});
     const inserted = await Trails.insertMany(sampleTrails);
-    trailId = inserted[0]._id.toString(); // Save ID of Grouse Grind
+    trailId = inserted[0]._id.toString();
 });
 
 afterEach(async () => {
@@ -104,16 +79,22 @@ afterEach(async () => {
 
 describe('Trail API Test Collection', () => {
 
-    it('should test equality of two values', function () {
-        expect(10).to.equal(10);
-    });
+    // it('should test equality of two values', function () {
+    //     expect(10).to.equal(10);
+    // });
 
     it('should get all 5 trails', (done) => {
         chai.request(server)
             .get('/api/trails/getTrails')
             .end((err, res) => {
                 expect(res).to.have.status(200);
-                expect(res.body).to.be.an('array').with.lengthOf(3);
+
+                expect(res.body).to.be.an('array').with.lengthOf(4);
+                expect(res.body[0]).to.include.keys(
+                    '_id', 'name', 'latitude', 'longitude', 'photoUrl', 'location',
+                    'description', 'avgElevationM', 'difficulty', 'distanceKm', 'tags'
+                );
+
                 done();
             });
     });
@@ -132,6 +113,7 @@ describe('Trail API Test Collection', () => {
                     description: "Just testing.",
                     latitude: 49.0,
                     longitude: -123.0,
+                    tags: []
                 })
                 .end((err, res) => {
                     expect(res).to.have.status(201);
@@ -149,7 +131,7 @@ describe('Trail API Test Collection', () => {
                 .end((err, res) => {
                     expect(res).to.have.status(200);
                     expect(res.body).to.have.property('_id', trailId);
-                    expect(res.body.name).to.equal("Grouse Grind");
+                    expect(res.body.name).to.equal("Sunset Ridge Trail");
                     done();
                 });
         });

@@ -1,21 +1,56 @@
 const express = require('express');
 const router = express.Router();
+
 const Post = require('../models/posts');
 const User = require("../models/users");
-const Trip = require("../models/trips");
+const authenticateToken = require('../service/auth');
 
 router.get('/getPosts', async (req, res) => {
     try {
-        const items = await Post.find();
-        res.status(200).json(items);
+
+        const items = await Post.aggregate([
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'userId',
+                    foreignField: '_id',
+                    as: 'userId'
+                }
+            },
+            {
+                $unwind: {
+                    path: '$userId',
+                    preserveNullAndEmptyArrays: true
+                }
+            },
+            {
+                $addFields: {
+                    userId: {
+                        $cond: {
+                            if: { $eq: ['$userId.visibility', 'private'] },
+                            then: {
+                                _id: '$userId._id',
+                                firstName: '$userId.firstName',
+                                lastName: '$userId.lastName',
+                                gender: '$userId.gender'
+                            },
+                            else: '$userId'
+                        }
+                    }
+                }
+            }
+        ]);
+
+        res.json(items);
     } catch (err) {
         res.status(500).json({error: err.message});
     }
+
 });
 
 
-router.get('/getPostsForUser/:userId', async (req, res) => {
-    const userID = req.params.userId
+router.get('/getPostsForUser/', authenticateToken, async (req, res) => {
+    const userID = req.user.id
     console.log(userID)
     try {
         console.log(userID)
@@ -27,8 +62,9 @@ router.get('/getPostsForUser/:userId', async (req, res) => {
     }
 });
 
-router.post('/addPost', async (req, res) => {
-    const {userId, title, description, photoUrl} = req.body;
+router.post('/add', authenticateToken, async (req, res) => {
+    const {title, description, photoUrl} = req.body;
+    const userId = req.user.id
 
     const newPost = new Post({
         userId,
@@ -49,8 +85,11 @@ router.post('/addPost', async (req, res) => {
 });
 
 
-router.put('/updatePost/:id', async (req, res) => {
-    const {userId, title, description, photoUrl, likes, comments} = req.body;
+
+router.put('/updatePost/:postId', authenticateToken, async (req, res) => {
+    const {title, description, photoUrl, likes, comments} = req.body;
+    const userId = req.user.id
+    const postId = req.params.postId
 
     const newPost = new Post({
         userId,
@@ -63,7 +102,7 @@ router.put('/updatePost/:id', async (req, res) => {
 
     try {
         const updatedUser = await Post.findByIdAndUpdate(
-            req.params.id,
+            postId,
             {
                 userId, title, description, photoUrl, likes, comments
             },
@@ -76,46 +115,49 @@ router.put('/updatePost/:id', async (req, res) => {
     }
 });
 
-router.put('/updatePostLikes/:id', async (req, res) => {
-    let currentUserLikingPost = req.body.user_id
-    let currentPost = await Post.findOne({_id: req.params.id})
-    let message = ""
-
-    // console.log("currentUserLikingPost " + currentUserLikingPost);
-    // console.log("starting length >>>>>>>>>>>>>>>" + currentPost.likedByUsers.length);
+router.put('/updatePostLikes/:postId', authenticateToken, async (req, res) => {
+    const userId = req.user.id;
+    const postId = req.params.postId;
 
     try {
-        if (currentPost.likes === 0) {
-            currentPost.likedByUsers.push(currentUserLikingPost)
-            currentPost.likes += 1
-            await currentPost.save();
-        } else {
-            for (let i = 0; i < currentPost.likedByUsers.length; i++) {
-                // console.log((currentPost.likedByUsers[i]).toString())
-                // console.log("_____________")
-                if (currentUserLikingPost === (currentPost.likedByUsers[i]).toString()) {
-                    message = 'You have already liked this post'
-                    return res.status(304).json({message: 'You have already liked this post'});
-                }
-            }
-            currentPost.likedByUsers.push(currentUserLikingPost)
-            currentPost.likes += 1
-            await currentPost.save();
-            message = "You liked this post!"
+        const currentPost = await Post.findById(postId);
+        if (!currentPost) {
+            return res.status(404).json({ message: "Post not found" });
         }
-        // console.log("ending lengthlength <<<<<<<<<<<<<<<<<<" + currentPost.likedByUsers.length);
-        message = "Post updated successfully"
-        res.status(201).json({message: message, post: currentPost});
+
+        const userIndex = currentPost.likedByUsers
+            .map(id => id.toString())
+            .indexOf(userId);
+        console.log(userIndex)
+
+        let message;
+
+        if (userIndex !== -1) {
+            currentPost.likedByUsers.splice(userIndex, 1);
+            currentPost.likes = Math.max(0, currentPost.likes - 1);
+            message = "You unliked this post.";
+        } else {
+            currentPost.likedByUsers.push(userId);
+            currentPost.likes += 1;
+            message = "You liked this post!";
+        }
+
+        await currentPost.save();
+        res.status(200).json({ message });
+
     } catch (err) {
-        res.status(500).json({error: 'Error liking post', details: err.message});
+        res.status(500).json({ error: 'Error updating post', details: err.message });
+
     }
-    // res.status(201).json({message: 'Post updated successfully'});
 });
 
 
-router.put('/updatePostComments/:id', async (req, res) => {
-    let currentUserComments = req.body.comments
-    let currentPost = await Post.findOne({_id: req.params.id})
+
+router.put('/updatePostComments/:postId', async (req, res) => {
+    let {currentUserComments} = req.body.comments
+    console.log(currentUserComments)
+    const postId = req.params.postId
+    let currentPost = await Post.findOne({_id: postId})
     console.log(currentUserComments)
 
     try {
@@ -124,8 +166,8 @@ router.put('/updatePostComments/:id', async (req, res) => {
         }
         console.log("current comment " + currentUserComments);
         await currentPost.save();
-        // res.json(currentPost);
-        res.status(201).json({message: 'Post updated successfully', post: currentPost});
+        res.status(201).json({message: 'Post updated successfully'});
+
     } catch (err) {
         res.status(500).json({error: 'Error creating post', details: err.message});
     }
@@ -133,11 +175,11 @@ router.put('/updatePostComments/:id', async (req, res) => {
 
 
 router.delete('/deletePost/:id', async (req, res) => {
-    console.log(req.params.id)
+    const postId = (req.params.id)
     try {
-        const deletedPost = await Post.findByIdAndDelete(req.params.id);
-        // console.log("inside delete")
-        if (!deletedPost) {
+        const deletedUser = await Post.findByIdAndDelete(postId);
+        console.log("inside delete")
+        if (!deletedUser) {
             return res.status(404).json({message: 'Post not found'});
         }
         res.status(200).json({message: 'Post deleted successfully', post: deletedPost});
@@ -146,32 +188,26 @@ router.delete('/deletePost/:id', async (req, res) => {
     }
 });
 
+router.get("/postLikeStatus/:postId", authenticateToken, async (req, res) => {
+    const postId = req.params.postId
+    const userId = req.user.id;
 
-// TODO: This is the new logic
-/**
- *
- */
-router.get('/getUser/:postID', async (req, res) => {
-    const postID = req.params.postID
-    let modifiedUser = {}
     try {
-        const post = await Post.findOne({_id: postID});
-        const user = await User.findOne({_id: post.userId});
-        // console.log("POST " + post)
-        // console.log("USER " + user)
-        if (user.visibility === 'public'){
-           modifiedUser = user
-        } else {
-            modifiedUser = {
-                firstName: user.firstName,
-                lastName: user.lastName,
-                gender: user.gender,
-            }
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
         }
-        res.status(200).json(modifiedUser);
+
+        const liked = post.likedByUsers
+            .map(id => id.toString())
+            .includes(userId);
+
+        res.status(200).json({ liked });
     } catch (err) {
-        res.status(500).json({error: err.message});
+        res.status(500).json({ error: 'Error checking like status', details: err.message });
     }
-});
+
+})
+
 
 module.exports = router;

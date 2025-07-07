@@ -22,12 +22,14 @@ export default function UserPostsPage() {
     const [editingPost, setEditingPost] = useState(null);
     const [toast, setToast] = useState("");
     const [formData, setFormData] = useState({ title: "", description: "", photoUrl: "" });
-    const userId = localStorage.getItem("user_id");
 
     const fetchPosts = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`http://localhost:5001/api/posts/getPostsForUser/${userId}`);
+            const res = await fetch(`http://localhost:5001/api/posts/getPostsForUser`, {
+                method: 'GET',
+                credentials: 'include'
+            });
             const data = await res.json();
             setPosts(data || []);
         } catch (e) {
@@ -62,6 +64,7 @@ export default function UserPostsPage() {
         e.preventDefault();
         const res = await fetch(`http://localhost:5001/api/posts/updatePost/${editingPost._id}`, {
             method: "PUT",
+            credentials: 'include',
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ ...formData }),
         });

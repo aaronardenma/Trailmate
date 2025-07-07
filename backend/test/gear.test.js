@@ -9,13 +9,15 @@ const Gear = require('../models/gear');
 
 const expect = chai.expect;
 chai.use(chaiHttp);
+let sampleGear;
 
-describe('GET /gear', () => {
+describe('Gear API Routes', () => {
 
-    const sampleGear = [
-        { name: 'Backpack', category: 'Essentials', weightKg: 1.2 },
-        { name: 'Tent', category: 'Shelter', weightKg: 2.5 }
+    sampleGear = [
+        { category: 'Essentials', items: [] },
+        { category: 'Shelter', items: [] }
     ];
+
 
 
     beforeEach(async () => {
@@ -35,6 +37,9 @@ describe('GET /gear', () => {
                 expect(res).to.have.status(200);
                 expect(res.body).to.be.an('array');
                 expect(res.body.length).to.equal(2);
+                console.log(res.body[0])
+                expect(res.body[0]).to.have.property('category');
+                expect(res.body[0]).to.have.property('items');
                 done();
             });
     });
