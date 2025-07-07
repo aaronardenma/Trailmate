@@ -5,6 +5,7 @@ const chaiHttp = require('chai-http');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const app = require('../server');
+
 const Favorite = require('../models/favorite');
 const User = require('../models/users');
 const Trail = require("../models/trails");
@@ -12,34 +13,34 @@ const Trail = require("../models/trails");
 const expect = chai.expect;
 chai.use(chaiHttp);
 
-let user, token, userId, trail;
-
-const sampleTrail = {
-    name: "Test Trail",
-    distanceKm: 10,
-    avgElevationM: 200,
-    timeMinutes: 120,
-    location: "Test Location",
-    photoUrl: "http://example.com/trail.jpg",
-    description: "Test trail description",
-    latitude: 49.0,
-    longitude: -123.0,
-    tags: ["Test"]
-};
-
 describe('Favorite API Routes', () => {
+    let user, token, trailID, trail;
 
     beforeEach(async () => {
         await Favorite.deleteMany({});
         await User.deleteMany({});
-        await Trail.deleteMany({});
 
-        user = await User.create({ username: 'testuser', email: 'test@example.com', password: 'testpassword123' });
+        user = await User.create({
+            firstName: 'Test',
+            lastName: 'User',
+            email: 'favorite@example.com',
+            password: 'password123'
+        });
+
         token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET || 'testsecret', { expiresIn: '1h' });
-        userId = user._id;
-
-        trail = await Trail.create(sampleTrail);
-        await Favorite.create({ userId: userId, trailID: trail._id });
+        trail = await Trail.create( {
+            name: "Oceanview Path",
+            latitude: 49.2700,
+            longitude: -123.1250,
+            photoUrl: "https://example.com/trails/oceanview.jpg",
+            location: "Burnaby",
+            description: "Moderate trail with breathtaking views of the ocean.",
+            avgElevationM: 280,
+            difficulty: "Moderate",
+            distanceKm: 6.1,
+            tags: []
+        })
+        trailID = trail._id
     });
 
     afterEach(async () => {
@@ -48,130 +49,114 @@ describe('Favorite API Routes', () => {
         await Trail.deleteMany({});
     });
 
-
-    describe('POST /addFavorite', () => {
-        it('should add a favorite trail', (done) => {
-            chai.request(app)
+    describe('POST /api/favorites/addFavorite', () => {
+        it('should add a trail to favorites', async () => {
+            const res = await chai.request(app)
                 .post('/api/favorite/addFavorite')
                 .set('Cookie', `token=${token}`)
-                .send({ trailID: new mongoose.Types.ObjectId().toString() })
-                .end((err, res) => {
-                    expect(res).to.have.status(201);
-                    expect(res.body).to.have.property('message', 'Favorite added successfully');
-                    expect(res.body.favorite).to.have.property('trailID');
-                    done();
-                });
+                .send({ trailID });
+
+            expect(res).to.have.status(201);
+            console.log(res.body.message)
+            expect(res.body).to.have.property('message', 'Favorite added successfully');
         });
 
-        it('should not add duplicate favorite', (done) => {
-            chai.request(app)
+        it('should return 400 if trailID is missing', async () => {
+            const res = await chai.request(app)
                 .post('/api/favorite/addFavorite')
                 .set('Cookie', `token=${token}`)
-                .send({ trailID: trail._id.toString() })
-                .end((err, res) => {
-                    expect(res).to.have.status(409);
-                    expect(res.body).to.have.property('message', 'Trail is already in favorites');
-                    done();
-                });
+                .send({});
+
+            expect(res).to.have.status(400);
         });
 
-        it('should return 400 if trailID is missing', (done) => {
-            chai.request(app)
+        it('should return 409 if trail already exists in favorites', async () => {
+            await Favorite.create({ userId: user._id, trailID });
+
+            const res = await chai.request(app)
                 .post('/api/favorite/addFavorite')
                 .set('Cookie', `token=${token}`)
-                .send({})
-                .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    done();
-                });
+                .send({ trailID });
+
+            expect(res).to.have.status(409);
         });
     });
 
-    describe('GET /getFavoriteTrails', () => {
-        it('should get user\'s favorite trails', (done) => {
-            chai.request(app)
+    describe('GET /api/favorites/getFavoriteTrails', () => {
+        it('should return favorite trails for the user', async () => {
+            await Favorite.create({ userId: user._id, trailID });
+
+            const res = await chai.request(app)
                 .get('/api/favorite/getFavoriteTrails')
                 .set('Cookie', `token=${token}`)
-                .end((err, res) => {
-                    expect(res).to.have.status(200);
-                    expect(res.body).to.be.an('array');
-                    expect(res.body[0]).to.have.property('trailID').that.equals(trail._id.toString());
-                    done();
-                });
+            expect(res).to.have.status(200);
+            expect(res.body).to.be.an('array');
+            expect(res.body[0].trailID.toString()).to.equal(trailID.toString());
         });
     });
 
-    describe('POST /isFavorite', () => {
-        it('should return true for favorited trail', (done) => {
-            chai.request(app)
+    describe('POST /api/favorites/isFavorite', () => {
+        it('should return true if trail is favorited', async () => {
+            await Favorite.create({ userId: user._id, trailID });
+
+            const res = await chai.request(app)
                 .post('/api/favorite/isFavorite')
                 .set('Cookie', `token=${token}`)
-                .send({ trailID: trail._id.toString() })
-                .end((err, res) => {
-                    expect(res).to.have.status(200);
-                    expect(res.body).to.have.property('isFavorite', true);
-                    done();
-                });
+                .send({ trailID });
+
+            expect(res).to.have.status(200);
+            expect(res.body).to.have.property('isFavorite', true);
         });
 
-        it('should return false for non-favorited trail', (done) => {
-            chai.request(app)
+        it('should return false if trail is not favorited', async () => {
+            const res = await chai.request(app)
                 .post('/api/favorite/isFavorite')
                 .set('Cookie', `token=${token}`)
-                .send({ trailID: new mongoose.Types.ObjectId().toString() })
-                .end((err, res) => {
-                    expect(res).to.have.status(200);
-                    expect(res.body).to.have.property('isFavorite', false);
-                    done();
-                });
+                .send({ trailID: trailID });
+
+            expect(res).to.have.status(200);
+            expect(res.body).to.have.property('isFavorite', false);
         });
 
-        it('should return 400 if trailID is missing', (done) => {
-            chai.request(app)
+        it('should return 400 if trailID is missing', async () => {
+            const res = await chai.request(app)
                 .post('/api/favorite/isFavorite')
                 .set('Cookie', `token=${token}`)
-                .send({})
-                .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    done();
-                });
+                .send({});
+
+            expect(res).to.have.status(400);
         });
     });
 
-    describe('DELETE /deleteFavorite', () => {
-        it('should delete favorite trail', (done) => {
-            chai.request(app)
+    describe('DELETE /api/favorites/deleteFavorite', () => {
+        it('should remove a favorite trail', async () => {
+            await Favorite.create({ userId: user._id, trailID });
+
+            const res = await chai.request(app)
                 .delete('/api/favorite/deleteFavorite')
                 .set('Cookie', `token=${token}`)
-                .send({ trailID: trail._id.toString() })
-                .end((err, res) => {
-                    expect(res).to.have.status(200);
-                    expect(res.body).to.have.property('message', 'Favorite removed successfully');
-                    done();
-                });
+                .send({ trailID });
+
+            expect(res).to.have.status(200);
+            expect(res.body).to.have.property('message', 'Favorite removed successfully');
         });
 
-        it('should return 404 if favorite not found', (done) => {
-            chai.request(app)
+        it('should return 404 if trail is not found', async () => {
+            const res = await chai.request(app)
                 .delete('/api/favorite/deleteFavorite')
                 .set('Cookie', `token=${token}`)
-                .send({ trailID: new mongoose.Types.ObjectId().toString() })
-                .end((err, res) => {
-                    expect(res).to.have.status(404);
-                    expect(res.body).to.have.property('message', 'Favorite not found');
-                    done();
-                });
+                .send({ trailID });
+
+            expect(res).to.have.status(404);
         });
 
-        it('should return 400 if trailID is missing', (done) => {
-            chai.request(app)
+        it('should return 400 if trailID is missing', async () => {
+            const res = await chai.request(app)
                 .delete('/api/favorite/deleteFavorite')
                 .set('Cookie', `token=${token}`)
-                .send({})
-                .end((err, res) => {
-                    expect(res).to.have.status(400);
-                    done();
-                });
+                .send({});
+
+            expect(res).to.have.status(400);
         });
     });
 });

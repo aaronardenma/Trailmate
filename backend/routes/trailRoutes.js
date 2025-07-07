@@ -23,18 +23,18 @@ router.get('/getTrailById/:id', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-router.delete('/deleteTrail/:id', async (req, res) => {
-    try {
-        const deletedTrail = await Trail.findByIdAndDelete(req.params.id);
-
-        if (!deletedTrail) {
-            return res.status(404).json({ message: 'Trail not found' });
-        }
-        res.status(200).json({ message: 'Trail deleted successfully', trail: deletedTrail });
-    } catch (err) {
-        res.status(500).json({ error: 'Error deleting trail', details: err.message });
-    }
-});
+// router.delete('/deleteTrail/:id', async (req, res) => {
+//     try {
+//         const deletedTrail = await Trail.findByIdAndDelete(req.params.id);
+//
+//         if (!deletedTrail) {
+//             return res.status(404).json({ message: 'Trail not found' });
+//         }
+//         res.status(200).json({ message: 'Trail deleted successfully', trail: deletedTrail });
+//     } catch (err) {
+//         res.status(500).json({ error: 'Error deleting trail', details: err.message });
+//     }
+// });
 
 
 

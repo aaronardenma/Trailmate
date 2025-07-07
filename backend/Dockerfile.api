@@ -1,0 +1,14 @@
+FROM node:19-alpine
+
+WORKDIR /app
+
+COPY . .
+
+RUN npm install
+
+ARG ENV_FILE=.env
+COPY ${ENV_FILE} .env
+
+EXPOSE 5001
+
+CMD [ "node", "server.js"]

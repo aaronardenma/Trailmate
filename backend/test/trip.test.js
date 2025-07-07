@@ -25,7 +25,7 @@ const sampleTrail = {
     description: "Test trail description",
     latitude: 49.0,
     longitude: -123.0,
-    tags: ["Test"]
+    tags: []
 };
 
 describe('Trip API Routes', () => {
