@@ -52,15 +52,18 @@ To execute all backend tests:
 ```bash
 cd backend
 npm test
+```
 
 To create a detailed visual HTML report of your tests, run the following command:
 
 ```bash
 npm run test-html
+```
 
 After running the above command, the report will be generated at:
 ```bash
 backend/mochawesome-report/mochawesome.html
+```
 
 
 
