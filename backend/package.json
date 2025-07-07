@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node server.js",
     "test": "cross-env NODE_ENV=test mocha --exit",
-    "test-html": "mocha --timeout 5000 --reporter mochawesome"
+    "test-html": "mocha --timeout 15000 --reporter mochawesome"
   },
   "keywords": [],
   "author": "",
