@@ -13,8 +13,7 @@ const postSchema = new Schema({
     dateOfPost: {type: Date, default: Date.now},
     photoUrl: {type: String, default: ''},
     likes: { type: Number, default: 0 },
-    likedByUsers: [{type: Schema.Types.ObjectId, ref: 'User'}],
-    comments: [String]
+    likedByUsers: [{type: Schema.Types.ObjectId, ref: 'User'}]
 }, {
     timestamps: true
 });
