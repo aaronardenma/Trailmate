@@ -19,6 +19,11 @@ The app emphasizes safety and preparation by helping users:
 ---
 
 ## Milestone 3 — Progress Summary
+- Implemented user management system with JWTs, cookies, Redux, and MongoDB
+- Integrated backend APIs routing for Trips, Posts, Comments, Tags with frontend pages for Past Trips, Community, and Search Filters
+- Updated Trail page UI to toggled dialogs with planning features and results
+- Integrated user-specific gear recommendations and weather API for trail plan results
+
 ## Test Suite
 
 This project includes a comprehensive test suite for all backend routes, utilizing **Mocha**, **Chai**, **Chai HTTP**, and **Mochawesome** for reporting.
