@@ -18,66 +18,48 @@ The app emphasizes safety and preparation by helping users:
 
 ---
 
-## Milestone 2 — Progress Summary
+## Milestone 3 — Progress Summary
+## 🧪 Test Suite 
 
-### User Authentication & Profiles
-- Implemented login/signup using Redux and MongoDB
-- Profile page now supports updating user details
-- “Your Past Trips” section shows previously completed or planned trips
-- Users can rate their trips post-hike
+This project includes a full test suite for all backend API routes using **Mocha**, **Chai**, **Chai HTTP**, and **Mochawesome** for reporting.
 
-### Trip Planning
-- Users can plan a trip from any trail’s description page
-- Planned trips are saved to the database
-- Planned trips automatically show up in the “Your Past Trips” section on the user profile
+### Testing Overview
 
-### Community Features
-- Users can create posts (e.g., "Looking for a hiking buddy")
-- Posts can be edited, deleted, and liked
-- All community posts are viewable on the Community page
+- All backend API endpoints have been tested.
+- **Testing Framework**: Mocha
+- **Assertion Library**: Chai
+- **HTTP Integration Testing**: Chai HTTP
+- **Test Report Generator**: Mochawesome (for HTML reports)
 
-### Favourite Trails
-- Users can save and view their favourite trails for quick access
-
-### Gear List
-- Gear recommendations dynamically generated per trail, based on difficulty and seasonal factors
-- Users can save the gear they own and modify it the user profile page to personalize the generated recommended gear list
-
-### Trail Search & Filtering
-- Search bar for trail discovery by name or keyword
-- Tag-based filtering implemented
-- Filter options now appear in a pop-up dialog for better user experience
-
-### Backend Improvements
-- Trail data now served from MongoDB
-- Improved data flow between frontend and backend via Redux and API routes
-
-
-## Milestone 1 — Progress Summary
-- **Frontend Pages**:
-  - **Home Page**: Displays an introduction to the app and featured trails.
-  - **Trail Cards**: Showcases individual trail previews with essential details such as difficulty, distance, and rating.
-  - **Nav Bar**: A responsive navigation bar for easy access to various parts of the app.
-  - **Route Maps**: A placeholder page for visualizing trail routes (non-functional for now).
-  - **Trail Description**: Each trail has a detailed description page, including trail features, tips, and an interactive map (still in progress).
-  - **Search Bar**: Allows users to search for trails based on criteria like name, location, or difficulty.
-  - **Filters**: Implemented filters for narrowing down trail search results based on specific parameters.
-  - **User Profile**: Non-functional profile page where users can view their saved trails and activity.
-- **Page Routing**:  
-  Set up routing throughout the app using React Router, enabling smooth navigation between pages.
-
-- **Reusable Web Components**:  
-  Developed reusable components such as buttons, input fields, and card layouts for easy reuse across different pages.
-
-- **Redux for State Management**:  
-  Integrated Redux to manage the state of the app, specifically for managing filters and search parameters.
-
-- **Responsive Styling**:  
-  Applied consistent and responsive design across all components using CSS and Flexbox to ensure compatibility with mobile and desktop devices.
 ---
 
-## Docker Setup
+###  Project Structure for Testing
 
-### Build the Docker Image
+Your test files should be located in the `backend/test/` folder and include test cases for various models and routes such as `User`, `Trail`, `Trip`, `Tags`, etc.
+### Running the Tests
+
+#### Run All API Tests in Terminal
+
+To run all backend tests via command line:
+
 ```bash
-docker compose up -d
+cd backend
+npm test
+
+2. Generate HTML Test Report with Mochawesome
+To create a detailed visual HTML report of your tests:
+
+bash
+Copy
+Edit
+npm run test-html
+After running the above command, it will generate an HTML file at:
+
+bash
+Copy
+Edit
+backend/mochawesome-report/mochawesome.html
+
+
+
+
