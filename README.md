@@ -30,17 +30,6 @@ This project includes a comprehensive test suite for all backend API routes, uti
 - **Assertion Library**: [Chai](https://www.chaijs.com/)
 - **HTTP Integration Testing**: [Chai HTTP](https://www.chaijs.com/plugins/chai-http/)
 - **HTML Report Generator**: [Mochawesome](https://github.com/adamgruber/mochawesome)
-
-### Project Structure for Testing
-
-Test files are located in the `backend/test/` directory and cover:
-
-- User
-- Trail
-- Trip
-- Tags
-- And other route/model logic
-
 ---
 
 ### Running the Tests
