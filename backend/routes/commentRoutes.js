@@ -16,8 +16,10 @@ router.post('/add/:postId', authenticateToken, async (req, res) => {
         postID: postId,
         comment,
     });
+    if (!comment || comment.trim() === '') {
+        return res.status(400).json({ error: 'Comment cannot be empty' });
+    }
 
-    console.log(newComment)
     try {
         await newComment.save();
         res.status(201).json({ message: 'Comment added successfully', comment: newComment });
