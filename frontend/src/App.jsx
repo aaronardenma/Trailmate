@@ -16,6 +16,7 @@ import UserPostPage from "@/pages/UserPostPage.jsx";
 import Auth from "./pages/Auth";
 import Register from "./pages/Register";
 import PastTrips from "./pages/PastTrips";
+import HazardReporting from "./components/HazardReporting";
 
 function App() {
   const dispatch = useDispatch();
@@ -125,7 +126,7 @@ function App() {
             <Route path="/yourPosts" element={<UserPostPage />} />
             <Route path="/trip/:tripId" element={<TripFeedback />} />
             <Route path="/profile/trips" element={<PastTrips />} />
-            
+            <Route path="hazard" element={<HazardReporting />}></Route>
           </>
         )}
         
