@@ -11,10 +11,12 @@ export default function CommunityPage() {
     const [photoUrl, setPhotoUrl] = useState("");
     const [posting, setPosting] = useState(false);
     const [error, setError] = useState("");
-    
-
+    const [trailSearch, setTrailSearch] = useState("");
+    const [trailSuggestions, setTrailSuggestions] = useState([]);
+    const [selectedTrail, setSelectedTrail] = useState(null);
     const [showModal, setShowModal] = useState(false);
 
+    const [allTrails, setAllTrails] = useState([]);
 
     const fetchPosts = () => {
         setLoading(true);
@@ -31,13 +33,26 @@ export default function CommunityPage() {
             });
     };
 
+    useEffect(() => {
+        const fetchAllTrails = async () => {
+            try {
+                const res = await fetch("http://localhost:5001/api/trails/getTrails");
+                if (!res.ok) {
+                    throw new Error(res.statusText);
+                }
+                const data = await res.json();
+                setAllTrails(data);
+            } catch (err) {
+                console.error("Error fetching all trails for client-side search:", err);
+            }
+        };
+        fetchAllTrails();
+        fetchPosts(); 
+    }, []);
+
     const handleYourPosts = () => {
         navigate('/yourPosts')
     }
-
-    useEffect(() => {
-        fetchPosts();
-    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -52,13 +67,21 @@ export default function CommunityPage() {
                 method: "POST",
                 credentials: 'include',
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify({title, description, dateOfPost: new Date(), photoUrl}),
+                body: JSON.stringify({
+                    title,
+                    description,
+                    dateOfPost: new Date(),
+                    photoUrl,
+                    trailId: selectedTrail ? selectedTrail._id : null,
+                  }),                  
             });
             if (!res.ok) throw new Error("Failed to post");
             setTitle("");
             setDescription("");
             setPhotoUrl("");
             setShowModal(false);
+            setSelectedTrail(null); 
+            setTrailSearch("");
             fetchPosts();
         } catch (err) {
             setError(err.message || "Error posting");
@@ -66,6 +89,28 @@ export default function CommunityPage() {
             setPosting(false);
         }
     };
+
+    const handleTrailSearchChange = (e) => {
+        const val = e.target.value;
+        setTrailSearch(val);
+        setSelectedTrail(null); 
+
+        if (val.trim() === "") {
+          setTrailSuggestions([]);
+          return;
+        }
+      
+        const filteredSuggestions = allTrails.filter(trail =>
+            trail.name.toLowerCase().includes(val.toLowerCase())
+        );
+        setTrailSuggestions(filteredSuggestions);
+    };
+      
+    const handleSelectTrail = (trail) => {
+        setSelectedTrail(trail);
+        setTrailSearch(trail.name);
+        setTrailSuggestions([]); 
+    };      
 
     return (
         <div className="w-full p-6 bg-[#DAD7CD] min-h-screen">
@@ -97,7 +142,15 @@ export default function CommunityPage() {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <button
-                            onClick={() => setShowModal(false)}
+                            onClick={() => {
+                                setShowModal(false);
+                                setSelectedTrail(null); 
+                                setTrailSearch(""); 
+                                setTitle("");
+                                setDescription("");
+                                setPhotoUrl("");
+                                setError("");
+                            }}
                             className="absolute top-2 right-2 text-gray-500 hover:text-black text-2xl"
                         >
                             &times;
@@ -131,6 +184,46 @@ export default function CommunityPage() {
                                 className="p-3 border rounded"
                                 disabled={posting}
                             />
+                            <div className="relative">
+                                {selectedTrail && (
+                                    <p className="text-sm text-gray-600 mb-1">
+                                        Selected Trail: <span className="font-semibold">{selectedTrail.name}</span>
+                                        <button 
+                                            type="button" 
+                                            onClick={() => {
+                                                setSelectedTrail(null);
+                                                setTrailSearch("");
+                                                setTrailSuggestions([]);
+                                            }}
+                                            className="ml-2 text-red-500 hover:text-red-700 text-xs"
+                                        >
+                                            (clear)
+                                        </button>
+                                    </p>
+                                )}
+                                <input
+                                    type="text"
+                                    placeholder="Search for a trail"
+                                    value={trailSearch}
+                                    onChange={handleTrailSearchChange}
+                                    className="p-3 border rounded w-full"
+                                    disabled={posting}
+                                    autoComplete="off"
+                                />
+                                {trailSuggestions.length > 0 && trailSearch.trim() !== "" && !selectedTrail && ( 
+                                    <ul className="absolute z-10 bg-white border rounded max-h-48 overflow-y-auto w-full mt-1 shadow-lg">
+                                    {trailSuggestions.map((trail) => (
+                                        <li
+                                        key={trail._id}
+                                        onClick={() => handleSelectTrail(trail)}
+                                        className="p-2 cursor-pointer hover:bg-[#A3B18A]"
+                                        >
+                                        {trail.name}
+                                        </li>
+                                    ))}
+                                    </ul>
+                                )}
+                            </div>
                             <button
                                 type="submit"
                                 disabled={posting}
@@ -149,7 +242,7 @@ export default function CommunityPage() {
                 ) : posts.length === 0 ? (
                     <p className="text-center text-gray-600">No posts found.</p>
                 ) : (
-                    posts.map((post) => (<Post post={post}  />
+                    posts.map((post) => (<Post key={post._id} post={post} />
                     ))
                 )}
             </div>
