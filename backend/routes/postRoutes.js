@@ -4,66 +4,117 @@ const router = express.Router();
 const Post = require('../models/posts');
 const User = require("../models/users");
 const authenticateToken = require('../service/auth');
+const Trail = require('../models/trails'); 
+const mongoose = require('mongoose'); 
 
-router.get('/getPosts', async (req, res) => {
-    try {
-
-        const items = await Post.aggregate([
-            {
-                $lookup: {
-                    from: 'users',
-                    localField: 'userId',
-                    foreignField: '_id',
-                    as: 'userId'
-                }
-            },
-            {
-                $unwind: {
-                    path: '$userId',
-                    preserveNullAndEmptyArrays: true
-                }
-            },
-            {
-                $addFields: {
-                    userId: {
-                        $cond: {
-                            if: { $eq: ['$userId.visibility', 'private'] },
-                            then: {
-                                _id: '$userId._id',
-                                firstName: '$userId.firstName',
-                                lastName: '$userId.lastName',
-                                gender: '$userId.gender'
-                            },
-                            else: '$userId'
-                        }
+const getPostAggregationPipeline = (matchConditions = {}) => {
+    return [
+        { $match: matchConditions }, 
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'userId',
+                foreignField: '_id',
+                as: 'userId'
+            }
+        },
+        {
+            $unwind: {
+                path: '$userId',
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $addFields: {
+                userId: {
+                    $cond: {
+                        if: { $eq: ['$userId.visibility', 'private'] },
+                        then: {
+                            _id: '$userId._id',
+                            firstName: '$userId.firstName',
+                            lastName: '$userId.lastName',
+                            gender: '$userId.gender'
+                        },
+                        else: '$userId'
                     }
                 }
             }
-        ]);
+        },
+        {
+            $lookup: {
+                from: 'trails', 
+                localField: 'trailId',
+                foreignField: '_id',
+                as: 'trailId'
+            }
+        },
+        {
+            $unwind: {
+                path: '$trailId',
+                preserveNullAndEmptyArrays: true 
+            }
+        },
+        { $sort: { dateOfPost: -1 } } 
+    ];
+};
 
+
+router.get('/getPosts', async (req, res) => {
+    try {
+        const pipeline = getPostAggregationPipeline();
+        const items = await Post.aggregate(pipeline);
         res.json(items);
     } catch (err) {
+        console.error("Error fetching posts:", err.message);
         res.status(500).json({error: err.message});
     }
+});
 
+router.get('/searchAndFilter', async (req, res) => {
+    const { q } = req.query; 
+
+    try {
+        let matchConditions = {};
+
+        if (q) {
+            const regex = new RegExp(q, 'i');
+            const matchingTrails = await Trail.find({ name: regex }).select('_id');
+
+            if (matchingTrails.length === 0) {
+                return res.json([]); 
+            }
+            matchConditions.trailId = { $in: matchingTrails.map(trail => trail._id) };
+        }
+
+        const pipeline = getPostAggregationPipeline(matchConditions);
+        const posts = await Post.aggregate(pipeline);
+
+        res.json(posts);
+    } catch (err) {
+        console.error("Error searching/filtering posts:", err.message);
+        res.status(500).json({ error: 'Error searching and filtering posts', details: err.message });
+    }
 });
 
 
 router.get('/getPostsForUser/', authenticateToken, async (req, res) => {
-    const userID = req.user.id
-    console.log(userID)
+    const userID = req.user.id; 
+
     try {
-        console.log(userID)
-        const posts = await Post.find({userId: userID});
-        console.log(posts)
+        const userObjectId = new mongoose.Types.ObjectId(userID);
+        
+        const pipeline = getPostAggregationPipeline({ userId: userObjectId });
+        const posts = await Post.aggregate(pipeline);
+        
         res.status(200).json(posts);
     } catch (err) {
+        console.error("Error fetching posts for user:", err.message);
         res.status(500).json({error: err.message});
     }
 });
 
 router.post('/add', authenticateToken, async (req, res) => {
-    const {title, description, photoUrl} = req.body;
+    const {title, description, photoUrl, trailId} = req.body; 
     const userId = req.user.id
 
     const newPost = new Post({
@@ -71,47 +122,50 @@ router.post('/add', authenticateToken, async (req, res) => {
         title,
         description,
         dateOfPost: new Date(),
+        likes: 0,
         likedByUsers: [],
         photoUrl: photoUrl || '',
+        trailId: trailId || null,
     });
-    console.log(newPost)
 
     try {
         await newPost.save();
-        res.status(201).json({message: 'Post created successfully', post: newPost});
+        res.status(201).json({message: 'Post created successfully', post: newPost}); 
     } catch (err) {
+        console.error('Error creating post:', err);
         res.status(500).json({error: 'Error creating post', details: err.message});
     }
 });
 
 
-
 router.put('/updatePost/:postId', authenticateToken, async (req, res) => {
-    const {title, description, photoUrl, likes, comments} = req.body;
+    const {title, description, photoUrl, likes, comments, trailId} = req.body; 
     const userId = req.user.id
     const postId = req.params.postId
 
-    const newPost = new Post({
-        userId,
-        title,
-        description,
-        dateOfPost: new Date(),
-        photoUrl: photoUrl || '', likes, comments
-    });
-    console.log(newPost)
-
     try {
-        const updatedUser = await Post.findByIdAndUpdate(
+        const updateData = {
+            title,
+            description,
+            photoUrl: photoUrl || '',
+            trailId: trailId || null,
+        };
+
+        const updatedPost = await Post.findByIdAndUpdate(
             postId,
-            {
-                userId, title, description, photoUrl, likes, comments
-            },
+            updateData,
             {new: true, runValidators: true}
         );
 
-        res.status(201).json({message: 'Post created successfully', post: updatedUser});
+        if (!updatedPost) {
+            return res.status(404).json({ message: 'Post not found' });
+        }
+        
+        const populatedUpdatedPost = await Post.aggregate(getPostAggregationPipeline({ _id: updatedPost._id }));
+        res.status(200).json({message: 'Post updated successfully', post: populatedUpdatedPost[0]});
     } catch (err) {
-        res.status(500).json({error: 'Error creating post', details: err.message});
+        console.error('Error updating post:', err);
+        res.status(500).json({error: 'Error updating post', details: err.message});
     }
 });
 
@@ -128,7 +182,6 @@ router.put('/updatePostLikes/:postId', authenticateToken, async (req, res) => {
         const userIndex = currentPost.likedByUsers
             .map(id => id.toString())
             .indexOf(userId);
-        console.log(userIndex)
 
         let message;
 
@@ -143,33 +196,42 @@ router.put('/updatePostLikes/:postId', authenticateToken, async (req, res) => {
         }
 
         await currentPost.save();
-        res.status(200).json({ message });
-
-    } catch (err) {
-        res.status(500).json({ error: 'Error updating post', details: err.message });
-
+        res.status(200).json({ message, likes: currentPost.likes });
+    }
+    catch (err) {
+        console.error('Error updating post likes:', err);
+        res.status(500).json({ error: 'Error updating post likes', details: err.message });
     }
 });
 
 
-
 router.put('/updatePostComments/:postId', async (req, res) => {
-    let {currentUserComments} = req.body.comments
-    console.log(currentUserComments)
-    const postId = req.params.postId
-    let currentPost = await Post.findOne({_id: postId})
-    console.log(currentUserComments)
+    let { comment } = req.body;
+    const postId = req.params.postId;
+    const userId = req.user ? req.user.id : null; 
 
     try {
-        if (currentUserComments !== null) {
-            currentPost.comments.push(currentUserComments);
+        let currentPost = await Post.findById(postId);
+        if (!currentPost) {
+            return res.status(404).json({ message: 'Post not found' });
         }
-        console.log("current comment " + currentUserComments);
+
+        if (!currentPost.comments) {
+            currentPost.comments = [];
+        }
+
+        currentPost.comments.push({
+            comment: comment,
+            userId: userId,
+            date: new Date()
+        });
+        
         await currentPost.save();
-        res.status(201).json({message: 'Post updated successfully'});
+        res.status(201).json({ message: 'Comment added successfully' });
 
     } catch (err) {
-        res.status(500).json({error: 'Error creating post', details: err.message});
+        console.error('Error updating post comments:', err);
+        res.status(500).json({error: 'Error adding comment to post', details: err.message});
     }
 });
 
@@ -177,13 +239,13 @@ router.put('/updatePostComments/:postId', async (req, res) => {
 router.delete('/deletePost/:id', async (req, res) => {
     const postId = (req.params.id)
     try {
-        const deletedUser = await Post.findByIdAndDelete(postId);
-        console.log("inside delete")
-        if (!deletedUser) {
+        const deletedPost = await Post.findByIdAndDelete(postId);
+        if (!deletedPost) {
             return res.status(404).json({message: 'Post not found'});
         }
         res.status(200).json({message: 'Post deleted successfully', post: deletedPost});
     } catch (err) {
+        console.error('Error deleting post:', err.message);
         res.status(500).json({error: 'Error deleting post', details: err.message});
     }
 });
@@ -204,10 +266,10 @@ router.get("/postLikeStatus/:postId", authenticateToken, async (req, res) => {
 
         res.status(200).json({ liked });
     } catch (err) {
+        console.error('Error checking like status:', err.message);
         res.status(500).json({ error: 'Error checking like status', details: err.message });
     }
 
 })
-
 
 module.exports = router;

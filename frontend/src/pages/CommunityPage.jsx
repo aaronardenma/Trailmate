@@ -11,26 +11,35 @@ export default function CommunityPage() {
     const [photoUrl, setPhotoUrl] = useState("");
     const [posting, setPosting] = useState(false);
     const [error, setError] = useState("");
-    const [trailSearch, setTrailSearch] = useState("");
-    const [trailSuggestions, setTrailSuggestions] = useState([]);
-    const [selectedTrail, setSelectedTrail] = useState(null);
+    const [trailSearch, setTrailSearch] = useState(""); 
+    const [trailSuggestions, setTrailSuggestions] = useState([]); 
+    const [selectedTrail, setSelectedTrail] = useState(null); 
     const [showModal, setShowModal] = useState(false);
 
-    const [allTrails, setAllTrails] = useState([]);
+    const [allTrails, setAllTrails] = useState([]); 
+    const [postTrailFilter, setPostTrailFilter] = useState("");
 
-    const fetchPosts = () => {
+
+    const fetchPosts = async (searchTerm = "") => {
         setLoading(true);
-        fetch("http://localhost:5001/api/posts/getPosts")
-            .then((res) => res.json())
-            .then((data) => {
-                console.log(data)
-                setPosts(data);
-                setLoading(false);
-            })
-            .catch((err) => {
-                console.error("Failed to fetch posts:", err);
-                setLoading(false);
-            });
+        let url = "http://localhost:5001/api/posts/getPosts";
+        if (searchTerm) {
+            url = `http://localhost:5001/api/posts/searchAndFilter?q=${encodeURIComponent(searchTerm)}`;
+        }
+        
+        try {
+            const res = await fetch(url);
+            if (!res.ok) {
+                throw new Error("Failed to fetch posts");
+            }
+            const data = await res.json();
+            console.log(data)
+            setPosts(data);
+            setLoading(false);
+        } catch (err) {
+            console.error("Failed to fetch posts:", err);
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -49,6 +58,15 @@ export default function CommunityPage() {
         fetchAllTrails();
         fetchPosts(); 
     }, []);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            fetchPosts(postTrailFilter);
+        }, 300);
+
+        return () => clearTimeout(handler);
+    }, [postTrailFilter]);
+
 
     const handleYourPosts = () => {
         navigate('/yourPosts')
@@ -81,8 +99,8 @@ export default function CommunityPage() {
             setPhotoUrl("");
             setShowModal(false);
             setSelectedTrail(null); 
-            setTrailSearch("");
-            fetchPosts();
+            setTrailSearch(""); 
+            fetchPosts(postTrailFilter); 
         } catch (err) {
             setError(err.message || "Error posting");
         } finally {
@@ -131,6 +149,17 @@ export default function CommunityPage() {
                     Your Posts
                 </button>
             </div>
+
+            <div className="mb-8 flex justify-center">
+                <input
+                    type="text"
+                    placeholder="Search"
+                    value={postTrailFilter}
+                    onChange={(e) => setPostTrailFilter(e.target.value)}
+                    className="p-3 border rounded-lg w-full max-w-md text-gray-700 focus:ring-2 focus:ring-[#588157] focus:border-transparent transition duration-200"
+                />
+            </div>
+
 
             {showModal && (
                 <div

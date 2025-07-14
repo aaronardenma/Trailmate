@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import UserPreview from "./UserPreview";
 import { useEffect, useState } from "react";
 
@@ -116,6 +115,14 @@ export default function Post({ post }) {
       <div className="p-6">
         <h2 className="text-2xl font-semibold text-gray-800">{post.title}</h2>
         <p className="text-gray-700 mt-2">{post.description}</p>
+        {post.trailId && (
+          <p className="text-sm text-gray-600 mt-2">
+            Trail:{" "}
+            <span to={`/trails/${post.trailId._id}`} className="font-semibold text-[#588157] hover:underline">
+              {post.trailId.name}
+            </span>
+          </p>
+        )}
         <div className="flex mt-3 text-sm text-gray-600">
           Posted by:
           <UserPreview
