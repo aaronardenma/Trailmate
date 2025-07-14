@@ -100,6 +100,12 @@ export default function Post({ post }) {
     }
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
     <div
       key={post._id}
@@ -118,7 +124,7 @@ export default function Post({ post }) {
         {post.trailId && (
           <p className="text-sm text-gray-600 mt-2">
             Trail:{" "}
-            <span to={`/trails/${post.trailId._id}`} className="font-semibold text-[#588157] hover:underline">
+            <span className="font-semibold text-gray-700">
               {post.trailId.name}
             </span>
           </p>
@@ -136,6 +142,12 @@ export default function Post({ post }) {
             }
           />
         </div>
+        {post.dateOfPost && (
+            <p className="mt-1 text-gray-500 text-sm">
+                {formatDate(post.dateOfPost)}
+            </p>
+        )}
+
         <p className="mt-1 text-gray-500 text-sm flex items-center gap-2">
           Likes: {likes}
           <button
