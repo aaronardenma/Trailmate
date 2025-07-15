@@ -10,6 +10,7 @@ import { GiWalkingBoot } from "react-icons/gi";
 import { useDispatch } from 'react-redux';
 import { setUnauthenticated } from '@/store/authSlice';
 import { clearUser } from '@/store/userSlice';
+import { useSelector } from 'react-redux';
 
 export default function Nav({ onLogout }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -18,6 +19,8 @@ export default function Nav({ onLogout }) {
   const mobileMenuRef = useRef(null);
   const nav = useNavigate();
   const dispatch = useDispatch()
+  const user = useSelector((state) => state.user.user); 
+  const displayName = user?.firstName || 'User'; 
 
   const handleLogout = async () => {
     if (onLogout) {
@@ -89,13 +92,13 @@ export default function Nav({ onLogout }) {
               className="flex items-center hover:text-[#588157] transition-colors cursor-pointer"
             >
               <FaRegUserCircle className="text-[#588157] mr-1.5 text-xl" />
-              <span className="font-semibold">User</span>
+              <span className="font-semibold">{displayName}</span>
               <IoChevronDown 
                 className={`ml-1 text-[#588157] transition-transform duration-200 ${
                   isDropdownOpen ? 'rotate-180' : ''
                 }`} 
               />
-            </div>
+            </button>
             
             {/* desktop */}
             {isDropdownOpen && (
