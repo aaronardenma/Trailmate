@@ -98,7 +98,7 @@ export default function Nav({ onLogout }) {
                   isDropdownOpen ? 'rotate-180' : ''
                 }`} 
               />
-            </button>
+            </div>
             
             {/* desktop */}
             {isDropdownOpen && (
