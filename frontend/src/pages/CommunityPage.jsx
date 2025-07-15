@@ -286,12 +286,11 @@ export default function CommunityPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label htmlFor="trailSearch" className="block text-sm font-medium text-gray-700 mb-1">
-              Search by Trail Name
             </label>
             <input
               type="text"
               id="trailSearch"
-              placeholder="..."
+              placeholder="Search Trails..."
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
@@ -302,7 +301,6 @@ export default function CommunityPage() {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Select Date Range:
             </label>
             <PopoverCalendar date={dateRange} setDate={setDateRange} />
           </div>
