@@ -19,6 +19,8 @@ export default function TripDialogContent({
 }) {
   const trail = trip.trailID;
 
+
+  // TODO: integrate recent hazards UI 
   return updating ? (
     <div className="mb-8 space-y-4">
       {trip.status !== "Completed" && (

@@ -28,11 +28,11 @@ export default function Nav({ onLogout }) {
     }
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+  const handleMouseEnter = () => {
+    setIsDropdownOpen(true);
   };
 
-  const closeDropdown = () => {
+  const handleMouseLeave = () => {
     setIsDropdownOpen(false);
   };
 
@@ -46,9 +46,6 @@ export default function Nav({ onLogout }) {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        closeDropdown();
-      }
       if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
         closeMobileMenu();
       }
@@ -82,10 +79,14 @@ export default function Nav({ onLogout }) {
             </Link>
           </li>
           
-          <li className="relative" ref={dropdownRef}>
-            <button 
-              onClick={toggleDropdown}
-              className="flex items-center hover:text-[#588157] transition-colors focus:outline-none cursor-pointer"
+          <li 
+            className="relative" 
+            ref={dropdownRef}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            <div
+              className="flex items-center hover:text-[#588157] transition-colors cursor-pointer"
             >
               <FaRegUserCircle className="text-[#588157] mr-1.5 text-xl" />
               <span className="font-semibold">User</span>
@@ -94,28 +95,29 @@ export default function Nav({ onLogout }) {
                   isDropdownOpen ? 'rotate-180' : ''
                 }`} 
               />
-            </button>
+            </div>
             
             {/* desktop */}
             {isDropdownOpen && (
+              <>
+              <div className="absolute top-full right-0 w-full h-2 bg-transparent"></div>
               <div className="absolute top-full right-0 mt-2 w-fit bg-white rounded-md shadow-lg border border-gray-200 z-50">
                 <div className="py-1">
                   <Link
                     to="/profile"
                     className="block px-4 py-2 text-sm text-right font-semibold hover:bg-gray-100 hover:text-[#588157] transition-colors"
-                    onClick={closeDropdown}
                   >
                     Profile
                   </Link>
                   <Link
                     to="/profile/trips"
                     className="block px-4 py-2 text-sm text-right font-semibold hover:bg-gray-100 hover:text-[#588157] transition-colors"
-                    onClick={closeDropdown}
                   >
                     Trips
                   </Link>
                 </div>
               </div>
+              </>
             )}
           </li>
           
