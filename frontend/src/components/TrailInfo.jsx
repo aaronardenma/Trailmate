@@ -83,7 +83,7 @@ export default function TrailInfo({
           type="submit"
           onClick={() => setPlanning(true)}
         >
-          GO
+          START HIKE
         </button>
       </div>
     </div>

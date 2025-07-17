@@ -23,7 +23,7 @@ export default function Favourites() {
 
     return (
         <div className="flex flex-col bg-[#A3B18A] min-h-screen">
-            <h1 className="font-bold text-4xl pl-6 pt-8 pb-4 text-left">FAVOURITES</h1>
+            <h1 className="font-bold text-4xl pl-6 pt-8 pb-4 text-left">Favourite Trails</h1>
             <div className="grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 p-4 gap-4">
                 {favTrails.length > 0 ? (
                     favTrails.map((trail) => <TrailCard key={trail.trailID} trail_id={trail.trailID} isFavoriteInit={true} />)

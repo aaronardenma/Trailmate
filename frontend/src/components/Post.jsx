@@ -152,7 +152,8 @@ export default function Post({ post }) {
           Likes: {likes}
           <button
             onClick={() => handleLike(post)}
-            className="ml-2 text-sm bg-[#A3B18A] text-white px-3 py-1 rounded hover:bg-[#859966] transition cursor-pointer"
+            className={`ml-2 text-sm text-white px-3 py-1 rounded hover:bg-[#859966] transition cursor-pointer
+              ${likeStatus ? 'bg-[#5e6e45]' : 'bg-[#A3B18A]' }`}
           >
             {likeStatus ? "Unlike" : "Like"}
           </button>

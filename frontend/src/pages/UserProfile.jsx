@@ -49,9 +49,9 @@ export default function UserProfile() {
   const [message, setMessage] = useState("");
   const [userId, setUserId] = useState(null);
 
-  const [gearData, setGearData] = useState([]);  
+  const [gearData, setGearData] = useState([]);
   const [ownedGear, setOwnedGear] = useState({});
-  const [isSaved, setIsSaved] = useState(true);
+  const [isSaved, setIsSaved] = useState(false);
 
   const getCurrentUser = async () => {
     try {
@@ -96,7 +96,7 @@ export default function UserProfile() {
         if (userData.gear && userData.gear.length > 0) {
           setOwnedGear(gearArrayToNestedObject(userData.gear));
         } else {
-          setOwnedGear({});  
+          setOwnedGear({});
         }
 
         fetchPastTrips();
@@ -107,7 +107,7 @@ export default function UserProfile() {
       });
   }, []);
 
-  
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -128,10 +128,13 @@ export default function UserProfile() {
   };
 
   const handleUpdate = async () => {
-    if (!user || !userId) return;
+    if (!user) {
+      console.log(user)
+      return;
+    }
     setUpdating(true);
     try {
-      const res = await fetch(`http://localhost:5001/api/users/update/`, {
+      const res = await fetch(`http://localhost:5001/api/users/update`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: 'include',
@@ -239,6 +242,17 @@ export default function UserProfile() {
         </div>
       </div>
 
+      <div className="flex flex-col sm:flex-row gap-4 max-w-4xl w-full mt-10 justify-center">
+        <button
+            onClick={handleUpdate}
+            disabled={updating}
+            className="bg-[#588157] hover:bg-[#476246] text-white font-semibold px-6 py-2 rounded-lg transition"
+        >
+          {updating ? "Updating..." : "Update Details"}
+        </button>
+      </div>
+
+
       <UserGear
         gearData={gearData}
         ownedGear={ownedGear}
@@ -249,16 +263,16 @@ export default function UserProfile() {
         setMessage={setMessage}
       />
 
-      
+
 
       <div className="flex flex-col sm:flex-row gap-4 max-w-4xl w-full mt-10 justify-center">
-        <button
-          onClick={handleUpdate}
-          disabled={updating}
-          className="flex-grow bg-[#A3B18A] text-white font-semibold py-3 rounded hover:bg-[#859966] transition"
-        >
-          {updating ? "Updating..." : "Update Details"}
-        </button>
+        {/*<button*/}
+        {/*  onClick={handleUpdate}*/}
+        {/*  disabled={updating}*/}
+        {/*  className="flex-grow bg-[#A3B18A] text-white font-semibold py-3 rounded hover:bg-[#859966] transition"*/}
+        {/*>*/}
+        {/*  {updating ? "Updating..." : "Update Details"}*/}
+        {/*</button>*/}
         <button
           onClick={handleDelete}
           className="flex-grow bg-red-600 text-white font-semibold py-3 rounded hover:bg-red-700 transition"

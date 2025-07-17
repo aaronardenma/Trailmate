@@ -139,13 +139,13 @@ export default function TrailPlanResults({
           className="w-fit bg-[#DAD7CD] text-black font-bold py-3 px-6 rounded-md mr-4 hover:bg-[#E5E3DB] transition-colors cursor-pointer disabled:opacity-50"
           onClick={saveTrip}
         >
-          SAVE
+          FINISH LATER
         </button>
         <button
           className="w-fit bg-[#588157] text-white font-bold py-3 px-6 rounded-md mr-4 hover:bg-[#4a6e49] transition-colors cursor-pointer disabled:opacity-50"
           onClick={startTrip}
         >
-          FINISH
+          FINISH HIKE
         </button>
       </div>
     </div>
