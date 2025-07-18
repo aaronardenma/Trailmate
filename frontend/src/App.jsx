@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setAuthenticated, setUnauthenticated } from "./store/authSlice";
 import { setUser, clearUser, updateUser } from "./store/userSlice";
 import Home from "./pages/Home";
-import Map from "./pages/Map.jsx";
+import Map from "@/components/Map.jsx";
 import Nav from "./components/Nav";
 import Filters from "./pages/Filters";
 import Landing from "./pages/Landing.jsx";
@@ -16,6 +16,8 @@ import UserPostPage from "@/pages/UserPostPage.jsx";
 import Auth from "./pages/Auth";
 import Register from "./pages/Register";
 import PastTrips from "./pages/PastTrips";
+import ReportHazardPage from "./pages/HazardReporting.jsx";
+import TripPage from "@/components/TripPage.jsx";
 
 function App() {
   const dispatch = useDispatch();
@@ -123,8 +125,10 @@ function App() {
             <Route path="/profile" element={<UserProfile />} />
             <Route path="/community" element={<CommunityPage />} />
             <Route path="/yourPosts" element={<UserPostPage />} />
-            <Route path="/trip/:tripId" element={<TripFeedback />} />
+            <Route path="/trip/:tripId" element={<TripPage />} />
+            <Route path="/tripFeedback/:tripId" element={<TripFeedback />} />
             <Route path="/profile/trips" element={<PastTrips />} />
+            <Route path="/hazard/:tripId" element={<ReportHazardPage />} />
             
           </>
         )}

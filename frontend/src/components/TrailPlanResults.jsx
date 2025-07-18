@@ -13,6 +13,10 @@ export default function TrailPlanResults({
                                          }) {
   const start = { lat: 49.261901341297744, lng: -123.2494536190855 };
   const end = { lat: trail.latitude, lng:trail.longitude };
+  //
+  // const reportHazard = () => {
+  //   navigate(`/hazard/${tripId}`);
+  // };
 
   return (
       <div>
@@ -90,7 +94,6 @@ export default function TrailPlanResults({
             </div>
           </div>
 
-          {/* Second Column - Gear and Trail Description */}
           <div className="flex flex-col">
             <div className="mb-8 space-y-4">
               <h3 className="font-semibold text-lg">Recommended Gear List</h3>
@@ -139,11 +142,18 @@ export default function TrailPlanResults({
           >
             SAVE
           </button>
+          {/*<button*/}
+          {/*    className="w-fit bg-red-600 text-white font-bold py-3 px-6 rounded-md mr-4 hover:bg-red-700 transition-colors cursor-pointer"*/}
+          {/*    onClick={reportHazard}*/}
+          {/*>*/}
+          {/*  REPORT A HAZARD*/}
+          {/*</button>*/}
+
           <button
               className="w-fit bg-[#588157] text-white font-bold py-3 px-6 rounded-md mr-4 hover:bg-[#4a6e49] transition-colors cursor-pointer disabled:opacity-50"
               onClick={startTrip}
           >
-            FINISH
+            START A TRIP
           </button>
         </div>
       </div>
