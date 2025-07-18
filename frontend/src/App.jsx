@@ -18,6 +18,7 @@ import Register from "./pages/Register";
 import PastTrips from "./pages/PastTrips";
 import ReportHazardPage from "./pages/HazardReporting.jsx";
 import TripPage from "@/components/TripPage.jsx";
+import HazardReporting from "./components/HazardReporting";
 
 function App() {
   const dispatch = useDispatch();
