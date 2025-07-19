@@ -185,4 +185,25 @@ router.put('/update', authenticateToken, async (req, res) => {
 
 })
 
+
+router.delete('/deleteUser/:userId', authenticateToken, async (req, res) => {
+    const userId = req.params.userId;
+    console.log(userId);
+
+    try {
+        const deletedUser = await User.findByIdAndDelete(
+            userId,
+            {new: true, runValidators: true}
+        );
+
+        if (!deletedUser) {
+            return res.status(404).json({success: false, message: 'User not found'});
+        }
+        res.status(200).json({success: true, message: 'User deleted successfully'});
+    } catch (err) {
+        res.status(500).json({success: false, message: 'Failed to delete user', error: err.message});
+    }
+
+})
+
 module.exports = router;
