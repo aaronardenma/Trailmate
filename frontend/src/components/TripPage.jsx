@@ -38,7 +38,7 @@ export default function TripPage() {
 
 
     const handleFinishTrip = () => {
-        navigate("/");
+        navigate(`/tripFeedback/${tripId}`);
     };
 
     const handleReportHazard = () => {
