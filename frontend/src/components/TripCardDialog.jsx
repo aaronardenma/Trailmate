@@ -202,10 +202,15 @@ export default function TripCardDialog({ trip, date, setDate, userRating, setUse
     }
   }
 
+  const handleStartTrip = async () => {
+    console.log("trip started")
+    nav(`/trip/${trip._id}`)
+
+  }
+
   const handleFinishTrip = async () => {
     console.log("finished trip")
-    nav(`/trip/${trip._id}`)
-    
+    nav(`/tripFeedback/${trip._id}`)
   }
   
   return (
@@ -251,6 +256,13 @@ export default function TripCardDialog({ trip, date, setDate, userRating, setUse
           </button>
           {trip.status !== "Completed" && !updating && (new Date() >= new Date(date.from)) && (
             <DialogClose asChild>
+              <button
+                className="w-fit bg-[#588157] text-white font-bold py-3 px-6 rounded-md hover:bg-[#4a6e49] transition-colors cursor-pointer disabled:opacity-50"
+                onClick={handleStartTrip}
+              >
+                Start a Trip
+              </button>
+
               <button
                 className="w-fit bg-[#588157] text-white font-bold py-3 px-6 rounded-md hover:bg-[#4a6e49] transition-colors cursor-pointer disabled:opacity-50"
                 onClick={handleFinishTrip}
