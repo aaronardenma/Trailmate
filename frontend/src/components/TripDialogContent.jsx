@@ -196,7 +196,7 @@ export default function TripDialogContent({
           {trip.status === "Completed" && (
             <div>
               <h3 className="font-semibold text-lg mb-3">Comments</h3>
-              <p className="text-gray-700">{trip.userComments.length > 0 ? trip.userComments : 'No comments made'}</p>
+              <p className="text-gray-700">{userComments.length > 0 ? userComments : 'No comments made'}</p>
             </div>
           )}
         </div>
