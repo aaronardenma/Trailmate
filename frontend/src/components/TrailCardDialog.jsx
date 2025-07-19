@@ -18,6 +18,7 @@ import TrailPlanResults from "./TrailPlanResults.jsx";
 import { fetchWeather } from "../utils/weatherAPI.js";
 import { recommendGear } from "../utils/gearRecommendation";
 import { useNavigate } from "react-router-dom";
+import { getCombinedDateTime } from "@/utils/datetime.js";
 
 export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) {
   const [trail, setTrail] = useState(null);
@@ -177,6 +178,14 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
   };
 
   const saveTrip = async () => {
+    const plannedStart = getCombinedDateTime(date.from, time);
+    const now = new Date();
+
+    if (plannedStart < now) {
+      alert("Start date and time cannot be in the past.");
+      return;
+    }
+
     try {
       const res = await fetch("http://localhost:5001/api/trips/save", {
         method: "POST",
@@ -207,6 +216,14 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
   };
 
   const startTrip = async () => {
+    const plannedStart = getCombinedDateTime(date.from, time);
+    const now = new Date();
+
+    if (plannedStart < now) {
+      alert("Start date and time cannot be in the past.");
+      return;
+    }
+    
     try {
       const res = await fetch("http://localhost:5001/api/trips/start", {
         method: "POST",

@@ -254,7 +254,7 @@ export default function TripCardDialog({ trip, date, setDate, userRating, setUse
           >
             Update
           </button>
-          {trip.status !== "Completed" && !updating && (new Date() >= new Date(date.from)) && (
+          {/* {trip.status === "Upcoming" && !updating && (new Date() >= new Date(date.from)) && (
             <DialogClose asChild>
               <button
                 className="w-fit bg-[#588157] text-white font-bold py-3 px-6 rounded-md hover:bg-[#4a6e49] transition-colors cursor-pointer disabled:opacity-50"
@@ -270,7 +270,7 @@ export default function TripCardDialog({ trip, date, setDate, userRating, setUse
                 Finish
               </button>
             </DialogClose>
-          )}
+          )} */}
         </DialogFooter>
       </DialogContent>
     </Dialog>
