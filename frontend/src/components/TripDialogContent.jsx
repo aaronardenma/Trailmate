@@ -143,14 +143,7 @@ export default function TripDialogContent({
                   "Loading..."
                 )}
               </p>
-              <p>
-                <span className="font-bold">Trail: </span>
-                {/* TODO: input trail conditions */}
-              </p>
-              <p>
-                <span className="font-bold">Summit: </span>
-                {/* TODO: input summit conditions */}
-              </p>
+              
               <p className="text-center">
                 Based on your experience and gear, you{" "}
                 {/* TODO: input recommendation */} hike {trail.name}
