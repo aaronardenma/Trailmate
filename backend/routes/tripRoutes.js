@@ -20,6 +20,7 @@ router.get('/', authenticateToken, async (req, res) => {
 router.get('/:tripId', authenticateToken, async (req, res) => {
     const userId = req.user.id
     const {tripId} = req.params
+    console.log("ehwhwr")
     try {
         const trip = await Trip.findOne({_id: tripId, userId: userId})
         console.log(trip)
