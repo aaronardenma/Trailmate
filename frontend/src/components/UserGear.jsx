@@ -62,13 +62,16 @@ export default function UserGear({ gearData, ownedGear, setOwnedGear, onSave, is
         ))
       )}
 
-      <button
-        className="bg-[#588157] hover:bg-[#476246] text-white font-semibold px-6 py-2 rounded-lg transition"
-        onClick={handleSaveGear}
-        disabled={isSaved}
-      >
-        Save Gear Changes
-      </button>
+      <div className="flex flex-col sm:flex-row gap-4 max-w-4xl w-full mt-10 justify-center">
+        <button
+            className="bg-[#588157] hover:bg-[#476246] text-white font-semibold px-6 py-2 rounded-lg transition"
+            onClick={handleSaveGear}
+            disabled={isSaved}
+        >
+          Save Gear Changes
+        </button>
+      </div>
+
 
       {!isSaved && <p className="mt-2 text-sm text-gray-500">You have unsaved changes.</p>}
       {isSaved && <p className="mt-2 text-sm text-green-600">Changes saved!</p>}

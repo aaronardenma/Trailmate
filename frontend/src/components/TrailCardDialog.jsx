@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { useState, useEffect } from "react";
 import LocationMap from "./LocationMap.jsx";
-import { FaRegStar } from "react-icons/fa";
+import {FaHeart, FaRegHeart, FaRegStar} from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
 import { addDays, set } from "date-fns";
 import TrailInfo from "./TrailInfo.jsx";
@@ -43,7 +43,7 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
         );
         if (!response.ok) throw new Error("Failed to fetch trail data");
         const data = await response.json();
-        setTrail(data);   
+        setTrail(data);
 
         const favRes = await fetch(
           `http://localhost:5001/api/favorite/isFavorite`,
@@ -70,14 +70,14 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
 
   useEffect(() => {
     if (!trail || !trail.latitude || !trail.longitude || !date?.from) return;
-  
+
     const fetchWeatherForDate = async () => {
       const weatherData = await fetchWeather(trail.latitude, trail.longitude, date.from);
       setWeather(weatherData);
     };
-  
+
     fetchWeatherForDate();
-  }, [trail, date?.from]);  
+  }, [trail, date?.from]);
 
   useEffect(() => {
     async function fetchGear() {
@@ -125,16 +125,16 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
       !date.from
     )
       return;
-  
+
     const conditions = {
       temperatureC: weather.temperatureC,
       raining: weather.raining,
       tripLengthDays: Math.max(1, Math.ceil((date.to - date.from) / (1000 * 60 * 60 * 24))),
       difficulty: trail.difficulty,
     };
-  
+
     const recs = recommendGear(conditions);
-  
+
     const grouped = {};
     gearData.forEach(({ category, items }) => {
       const recommendedItems = items.filter(item => recs.includes(item));
@@ -142,9 +142,9 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
         grouped[category] = recommendedItems;
       }
     });
-  
+
     setRecommendedByCategory(grouped);
-  }, [weather, gearData, trail, date?.to, date?.from]);  
+  }, [weather, gearData, trail, date?.to, date?.from]);
 
   const handleFavorite = async () => {
     if (favorite) {
@@ -239,7 +239,7 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
   return (
     <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent 
+      <DialogContent
         className="max-w-[calc(100%-2rem)] sm:max-w-7xl w-[95vw] max-h-[90vh] overflow-y-auto"
         showBackButton={planning}
         onBackClick={() => setPlanning(false)}
@@ -252,19 +252,19 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
                 className="text-2xl p-2 rounded-full hover:bg-gray-100 hover:scale-110 duration-300 mr-2 cursor-pointer"
               >
                 {favorite ? (
-                  <FaStar className="text-yellow-500" />
+                    <FaHeart className="text-red-500" />
                 ) : (
-                  <FaRegStar className="text-gray-400" />
+                    <FaRegHeart className="text-gray-400" />
                 )}
               </button>
               <h1 className="text-3xl font-bold">{trail?.name}</h1>
-              
+
             </div>
           </DialogTitle>
         </DialogHeader>
-        
+
         <DialogDescription />
-        
+
         {planning ? (
           <TrailPlanResults
             trail={trail}
@@ -272,7 +272,7 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
             time={time}
             saveTrip={saveTrip}
             startTrip={startTrip}
-            weather={weather} 
+            weather={weather}
             recommendedByCategory={recommendedByCategory}
             ownedGear={ownedGear}
           />
