@@ -74,7 +74,7 @@ export default function PastTrips() {
           <p className="text-center text-gray-600">No past trips found.</p>
         )}
         {pastTrips.map((trip) =>
-          trip.status !== "Completed" ? (
+          trip.status === "In Progress" ? (
             <div
               key={trip._id}
               onClick={() => handleTripClick(trip._id)}
