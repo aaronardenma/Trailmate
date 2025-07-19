@@ -89,7 +89,7 @@ export default function UserProfile() {
   useEffect(() => {
     getCurrentUser()
       .then((userData) => {
-        setUserId(userData.id);
+        setUserId(userData._id);
         setUser(userData);
         setLoading(false);
 
