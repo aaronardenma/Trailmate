@@ -13,7 +13,8 @@ const postSchema = new Schema({
     dateOfPost: {type: Date, default: Date.now},
     photoUrl: {type: String, default: ''},
     likes: { type: Number, default: 0 },
-    likedByUsers: [{type: Schema.Types.ObjectId, ref: 'User'}]
+    likedByUsers: [{type: Schema.Types.ObjectId, ref: 'User'}],
+    trailId: { type: mongoose.Schema.Types.ObjectId, ref: 'Trail', default: null }
 }, {
     timestamps: true
 });
