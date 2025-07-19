@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Hazard = require('../models/hazard');
-const authenticateToken = require('../../../team26---/backend/service/auth');
+const authenticateToken = require('../service/auth');
 
 router.post('/add', authenticateToken, async (req, res) => {
     const userId = req.user.id;
