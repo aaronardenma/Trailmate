@@ -68,7 +68,7 @@ export default function TrailPlanResults({
                 )}
               </p>
 
-              <p>
+              {/* <p>
                 <span className="font-bold">Trail: </span>
                 {trail?.conditions ?? "N/A"}
               </p>
@@ -76,7 +76,7 @@ export default function TrailPlanResults({
               <p>
                 <span className="font-bold">Summit: </span>
                 {trail?.summitConditions ?? "N/A"}
-              </p>
+              </p> */}
 
               <p>
                 Based on your experience and gear, you{" "}
@@ -135,26 +135,20 @@ export default function TrailPlanResults({
           </div>
         </div>
 
-        <div className="flex justify-between px-6 pb-6">
+        <div className="flex justify-end px-6 pb-6">
           <button
               className="w-fit bg-[#DAD7CD] text-black font-bold py-3 px-6 rounded-md mr-4 hover:bg-[#E5E3DB] transition-colors cursor-pointer disabled:opacity-50"
               onClick={saveTrip}
           >
-             FINISH LATER
+             SAVE TRIP
           </button>
-          {/*<button*/}
-          {/*    className="w-fit bg-red-600 text-white font-bold py-3 px-6 rounded-md mr-4 hover:bg-red-700 transition-colors cursor-pointer"*/}
-          {/*    onClick={reportHazard}*/}
-          {/*>*/}
-          {/*  REPORT A HAZARD*/}
-          {/*</button>*/}
 
-          <button
+          {/* <button
               className="w-fit bg-[#588157] text-white font-bold py-3 px-6 rounded-md mr-4 hover:bg-[#4a6e49] transition-colors cursor-pointer disabled:opacity-50"
               onClick={startTrip}
           >
             START A TRIP
-          </button>
+          </button> */}
         </div>
       </div>
   );

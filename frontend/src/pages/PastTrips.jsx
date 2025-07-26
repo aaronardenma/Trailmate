@@ -24,8 +24,13 @@ export default function PastTrips() {
   });
 
   useEffect(() => {
-    const fetchTrips = async () => {
+    const checkStatusAndFetchTrips = async () => {
       try {
+        await fetch(`http://localhost:5001/api/trips/check-status`, {
+          method: "GET",
+          credentials: "include",
+        });
+
         const res = await fetch(`http://localhost:5001/api/trips/`, {
           method: "GET",
           credentials: "include",
@@ -38,7 +43,8 @@ export default function PastTrips() {
         console.error(err);
       }
     };
-    fetchTrips();
+    
+    checkStatusAndFetchTrips();
   }, []);
 
   const handleDelete = async (tripId) => {
@@ -109,7 +115,7 @@ export default function PastTrips() {
                 <button
                   key={tab.key}
                   onClick={() => setActiveTab(tab.key)}
-                  className={`py-2 px-1 border-b-2 cursor-pointer font-medium text-md whitespace-nowrap ${
+                  className={`py-2 px-1 border-b-2 cursor-pointer font-medium text-sm whitespace-nowrap ${
                     activeTab === tab.key
                       ? "border-[#588157] text-[#588157]"
                       : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
@@ -165,11 +171,6 @@ export default function PastTrips() {
             <p className="text-gray-600 text-base sm:text-lg">
               No trips found.
             </p>
-            {activeTab === "Upcoming" && (
-              <p className="text-gray-500 text-sm mt-2">
-                Plan your next adventure!
-              </p>
-            )}
           </div>
         ) : (
           currentTrips.map(renderTripCard)
