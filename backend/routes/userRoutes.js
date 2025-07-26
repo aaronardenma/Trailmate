@@ -165,22 +165,53 @@ router.post('/update/gear', authenticateToken, async (req, res) => {
 
 router.put('/update', authenticateToken, async (req, res) => {
     const userId = req.user.id;
-    const newUser = req.body;
+    const { firstName, lastName, nickname, country, language, gender, badge } = req.body;
+
+    const cleanString = (str) => {
+        if (typeof str !== 'string') return str;
+        return str.replace(/<[^>]*>/g, '').trim();
+    };
+    
+    const updateData = {};
+    
+    if (firstName !== undefined) updateData.firstName = cleanString(firstName);
+    if (lastName !== undefined) updateData.lastName = cleanString(lastName);
+    if (nickname !== undefined) updateData.nickname = cleanString(nickname);
+    if (country !== undefined) updateData.country = cleanString(country);
+    if (language !== undefined) updateData.language = cleanString(language);
+    
+    if (badge !== undefined) {
+        const validBadges = ['Beginner', 'Intermediate', 'Advanced', 'Expert'];
+        if (validBadges.includes(badge)) {
+            updateData.badge = badge;
+        }
+    }
 
     try {
         const user = await User.findByIdAndUpdate(
             userId,
-            newUser,
-            {new: true, runValidators: true}
+            updateData,
+            { new: true, runValidators: true }
         );
 
         if (!user) {
-            return res.status(404).json({success: false, message: 'User not found'});
+            return res.status(404).json({
+                success: false, 
+                message: 'User not found'
+            });
         }
 
-        res.status(200).json({success: true, message: 'User updated successfully', user});
+        res.status(200).json({
+            success: true, 
+            message: 'User updated successfully', 
+            user
+        });
     } catch (err) {
-        res.status(500).json({success: false, message: 'Failed to update user', error: err.message});
+        console.error('Update error:', err);
+        res.status(500).json({
+            success: false, 
+            message: 'Failed to update user'
+        });
     }
 
 })

@@ -132,6 +132,18 @@ export default function UserProfile() {
       console.log(user)
       return;
     }
+
+    const textFields = ['firstName', 'lastName', 'nickname', 'country', 'language'];
+    const htmlTagPattern = /<[^>]*>/;
+    
+    for (const field of textFields) {
+      if (user[field] && htmlTagPattern.test(user[field])) {
+        alert('HTML tags are not accepted as valid inputs. Please remove any < > characters from your text fields.');
+        return;
+      }
+    }
+
+
     setUpdating(true);
     try {
       const res = await fetch(`http://localhost:5001/api/users/update`, {
@@ -237,8 +249,8 @@ export default function UserProfile() {
           <Input name="nickname" value={user.nickname || ""} onChange={handleChange} placeholder="Nickname" className="w-full" />
           <h1 className="mb-1 mt-6 font-semibold text-gray-700">Country</h1>
           <Input name="country" value={user.country || ""} onChange={handleChange} placeholder="Country" className="w-full" />
-          <h1 className="mb-1 mt-6 font-semibold text-gray-700">Email</h1>
-          <Input name="email" value={user.email || ""} onChange={handleChange} placeholder="Email" type="email" className="w-full" />
+          {/* <h1 className="mb-1 mt-6 font-semibold text-gray-700">Email</h1>
+          <Input name="email" value={user.email || ""} onChange={handleChange} placeholder="Email" type="email" className="w-full" /> */}
         </div>
       </div>
 
