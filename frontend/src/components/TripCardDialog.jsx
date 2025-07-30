@@ -83,7 +83,6 @@ export default function TripCardDialog({ trip, date, setDate, userRating, setUse
 
   useEffect(() => {
       if (!trail || !trail.latitude || !trail.longitude || !date?.from) return;
-      console.log(date.from)
       const fetchWeatherForDate = async () => {
         const weatherData = await fetchWeather(trail.latitude, trail.longitude, new Date(date.from));
         setWeather(weatherData);

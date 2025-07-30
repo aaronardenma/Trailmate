@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { useState, useEffect } from "react";
 import LocationMap from "./LocationMap.jsx";
-import {FaHeart, FaRegHeart, FaRegStar} from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaRegStar } from "react-icons/fa";
 import { FaStar } from "react-icons/fa6";
 import { addDays, set } from "date-fns";
 import TrailInfo from "./TrailInfo.jsx";
@@ -20,7 +20,12 @@ import { recommendGear } from "../utils/gearRecommendation";
 import { useNavigate } from "react-router-dom";
 import { getCombinedDateTime } from "@/utils/datetime.js";
 
-export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) {
+export default function TrailDialog({
+  trigger,
+  trailId,
+  favorite,
+  setFavorite,
+}) {
   const [trail, setTrail] = useState(null);
   const [date, setDate] = useState({
     from: new Date(),
@@ -32,7 +37,7 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
   const [gearData, setGearData] = useState([]);
   const [ownedGear, setOwnedGear] = useState({});
   const [recommendedByCategory, setRecommendedByCategory] = useState({});
-  const nav = useNavigate()
+  const nav = useNavigate();
 
   useEffect(() => {
     if (!trailId) return;
@@ -73,7 +78,11 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
     if (!trail || !trail.latitude || !trail.longitude || !date?.from) return;
 
     const fetchWeatherForDate = async () => {
-      const weatherData = await fetchWeather(trail.latitude, trail.longitude, date.from);
+      const weatherData = await fetchWeather(
+        trail.latitude,
+        trail.longitude,
+        date.from
+      );
       setWeather(weatherData);
     };
 
@@ -130,7 +139,10 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
     const conditions = {
       temperatureC: weather.temperatureC,
       raining: weather.raining,
-      tripLengthDays: Math.max(1, Math.ceil((date.to - date.from) / (1000 * 60 * 60 * 24))),
+      tripLengthDays: Math.max(
+        1,
+        Math.ceil((date.to - date.from) / (1000 * 60 * 60 * 24))
+      ),
       difficulty: trail.difficulty,
     };
 
@@ -138,7 +150,7 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
 
     const grouped = {};
     gearData.forEach(({ category, items }) => {
-      const recommendedItems = items.filter(item => recs.includes(item));
+      const recommendedItems = items.filter((item) => recs.includes(item));
       if (recommendedItems.length > 0) {
         grouped[category] = recommendedItems;
       }
@@ -204,7 +216,7 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
       if (res.ok && data.success) {
         // setSavedTripId(data.tripId);
         alert("Trip saved successfully!");
-        nav('/profile/trips')
+        nav("/profile/trips");
       } else {
         alert("Failed to save trip. Please try again.");
       }
@@ -223,7 +235,7 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
       alert("Start date and time cannot be in the past.");
       return;
     }
-    
+
     try {
       const res = await fetch("http://localhost:5001/api/trips/start", {
         method: "POST",
@@ -241,8 +253,7 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
 
       if (res.ok && data.success) {
         alert("Trip started successfully! Have a great hike!");
-        nav(`/trip/${data.tripId}`)
-
+        nav(`/trip/${data.tripId}`);
       } else {
         alert("Failed to start trip. Please try again.");
       }
@@ -251,7 +262,6 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
       alert("Error starting trip: " + err.message);
     }
   };
-
 
   return (
     <Dialog>
@@ -269,13 +279,12 @@ export default function TrailDialog({ trigger, trailId, favorite, setFavorite}) 
                 className="text-2xl p-2 rounded-full hover:bg-gray-100 hover:scale-110 duration-300 mr-2 cursor-pointer"
               >
                 {favorite ? (
-                    <FaHeart className="text-red-500" />
+                  <FaStar className="text-yellow-500" />
                 ) : (
-                    <FaRegHeart className="text-gray-400" />
+                  <FaRegStar className="text-gray-400" />
                 )}
               </button>
               <h1 className="text-3xl font-bold">{trail?.name}</h1>
-
             </div>
           </DialogTitle>
         </DialogHeader>

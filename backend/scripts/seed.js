@@ -2,6 +2,9 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const Tag = require('../models/tags');
 const Trail = require('../models/trails');
+const Trip = require('../models/trips');
+const Hazard = require('../models/hazard');
+const Favorite = require('../models/favorite');
 const rawTagData = require("./tags.json");
 const rawTrails = require('./data.json');
 
@@ -11,7 +14,10 @@ async function seed() {
 
     await Promise.all([
       Tag.deleteMany({}),
-      Trail.deleteMany({})
+      Trail.deleteMany({}),
+      Trip.deleteMany({}),
+      Hazard.deleteMany({}),
+      Favorite.deleteMany({})
     ]);
 
     const insertedTags = await Tag.insertMany(rawTagData.map(name => ({ name })));

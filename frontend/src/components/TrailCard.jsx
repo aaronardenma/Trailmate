@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { FaRegHeart } from "react-icons/fa";
 import { FaHeart } from "react-icons/fa";
+import { FaRegStar } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
 import TrailCardDialog from "./TrailCardDialog";
 
 export default function TrailCard({ trail_id }) {
@@ -85,12 +87,12 @@ export default function TrailCard({ trail_id }) {
                             <button
                                 onClick={handleFavoriteToggle}
                                 aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
-                                className="absolute top-2 right-2 bg-white bg-opacity-80 rounded-full p-1 hover:bg-gray-100 hover:scale-110 transition z-10"
+                                className="absolute top-2 right-2 bg-white bg-opacity-80 rounded-full p-1 hover:bg-gray-100 cursor-pointer hover:scale-110 transition z-10"
                             >
                                 {isFavorite ? (
-                                    <FaHeart className="text-red-500" />
+                                    <FaStar className="text-yellow-500" />
                                 ) : (
-                                    <FaRegHeart className="text-gray-400" />
+                                    <FaRegStar className="text-gray-400" />
                                 )}
                             </button>
                         </div>

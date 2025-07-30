@@ -3,7 +3,7 @@ const router = express.Router();
 const Trip = require("../models/trips");
 const mongoose = require("mongoose");
 const authenticateToken = require("../service/auth");
-const { validateDate } = require("../service/datetime");
+const { validateDate, getCombinedDateTime } = require("../service/datetime");
 
 router.get("/", authenticateToken, async (req, res) => {
   const userID = req.user.id;
@@ -11,10 +11,62 @@ router.get("/", authenticateToken, async (req, res) => {
     const trips = await Trip.find({ userId: userID })
       .populate("trailID")
       .sort({ startDate: -1 });
-    console.log(trips);
+    // console.log(trips);
     res.status(200).json({ success: true, trips });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+router.get('/check-status', authenticateToken, async (req, res) => {
+  const userId = req.user.id;
+  const today = new Date();
+
+  try {
+    console.log(`[check-status] Fetching trips for user: ${userId}`);
+    
+    const trips = await Trip.find({ 
+      userId,
+      status: { $in: ['Upcoming', 'In Progress'] }
+    });
+
+    console.log(`[check-status] Found ${trips.length} trips`);
+
+    const updates = [];
+
+    for (const trip of trips) {
+      const startDate = new Date(trip.startDate);
+      const endDate = new Date(trip.endDate);
+
+      const startDateTime = getCombinedDateTime(startDate, trip.time)
+      endDate.setHours(0, 0, 0, 0);
+
+      let newStatus = trip.status;
+
+      if (today >= startDateTime && today <= endDate && trip.status === 'Upcoming') {
+        newStatus = 'In Progress';
+      }
+
+      if (newStatus !== trip.status) {
+        console.log(`[check-status] Updating trip ${trip._id} from ${trip.status} → ${newStatus}`);
+        await Trip.findByIdAndUpdate(trip._id, { status: newStatus });
+        updates.push({ tripId: trip._id, oldStatus: trip.status, newStatus });
+      }
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'Trip statuses checked and updated',
+      updates
+    });
+
+  } catch (err) {
+    console.error('[check-status] Error:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to check trip statuses',
+      error: err.message
+    });
   }
 });
 
@@ -283,52 +335,8 @@ router.delete("/delete/:tripId", authenticateToken, async (req, res) => {
   }
 });
 
-// router.get('/tripsByStatus/:status', authenticateToken, async (req, res) => {
-//     const { status } = req.params;
-//     const userId = req.user.id;
 
-//     if (!['Upcoming', 'In Progress', 'Completed'].includes(status)) {
-//         return res.status(400).json({
-//             success: false,
-//             message: 'Invalid status'
-//         });
-//     }
 
-//     try {
-//         const trips = await Trip.find({ userId, status })
-//             .populate('trailID')
-//             .sort({ startDate: -1 });
 
-//         res.status(200).json({ success: true, trips });
-//     } catch (err) {
-//         res.status(500).json({ success: false, error: err.message });
-//     }
-// });
-
-// router.get('/tripsByDateRange', authenticateToken, async (req, res) => {
-//     const { startDate, endDate } = req.query;
-//     const userId = req.user.id;
-
-//     if (!startDate || !endDate) {
-//         return res.status(400).json({
-//             success: false,
-//             message: "Start date and end date are required"
-//         });
-//     }
-
-//     try {
-//         const start = new Date(startDate);
-//         const end = new Date(endDate);
-
-//         const trips = await Trip.find({
-//             userId,
-//             startDate: { $gte: start, $lte: end }
-//         }).populate('trailID').sort({ startDate: 1 });
-
-//         res.status(200).json({ success: true, trips });
-//     } catch (err) {
-//         res.status(500).json({ success: false, error: err.message });
-//     }
-// });
 
 module.exports = router;
