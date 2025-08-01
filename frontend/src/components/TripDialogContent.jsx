@@ -19,6 +19,8 @@ export default function TripDialogContent({
 }) {
   const trail = trip.trailID;
 
+
+  // TODO: integrate recent hazards UI 
   return updating ? (
     <div className="mb-8 space-y-4">
       {trip.status !== "Completed" && (
@@ -141,14 +143,7 @@ export default function TripDialogContent({
                   "Loading..."
                 )}
               </p>
-              <p>
-                <span className="font-bold">Trail: </span>
-                {/* TODO: input trail conditions */}
-              </p>
-              <p>
-                <span className="font-bold">Summit: </span>
-                {/* TODO: input summit conditions */}
-              </p>
+              
               <p className="text-center">
                 Based on your experience and gear, you{" "}
                 {/* TODO: input recommendation */} hike {trail.name}
@@ -194,7 +189,7 @@ export default function TripDialogContent({
           {trip.status === "Completed" && (
             <div>
               <h3 className="font-semibold text-lg mb-3">Comments</h3>
-              <p className="text-gray-700">{trip.userComments.length > 0 ? trip.userComments : 'No comments made'}</p>
+              <p className="text-gray-700">{userComments.length > 0 ? userComments : 'No comments made'}</p>
             </div>
           )}
         </div>

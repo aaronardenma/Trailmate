@@ -10,6 +10,7 @@ import { GiWalkingBoot } from "react-icons/gi";
 import { useDispatch } from 'react-redux';
 import { setUnauthenticated } from '@/store/authSlice';
 import { clearUser } from '@/store/userSlice';
+import { useSelector } from 'react-redux';
 
 export default function Nav({ onLogout }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -18,6 +19,8 @@ export default function Nav({ onLogout }) {
   const mobileMenuRef = useRef(null);
   const nav = useNavigate();
   const dispatch = useDispatch()
+  const user = useSelector((state) => state.user.user);
+  const displayName = user?.firstName || 'User';
 
   const handleLogout = async () => {
     if (onLogout) {
@@ -28,11 +31,11 @@ export default function Nav({ onLogout }) {
     }
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
+  const handleMouseEnter = () => {
+    setIsDropdownOpen(true);
   };
 
-  const closeDropdown = () => {
+  const handleMouseLeave = () => {
     setIsDropdownOpen(false);
   };
 
@@ -46,9 +49,6 @@ export default function Nav({ onLogout }) {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        closeDropdown();
-      }
       if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
         closeMobileMenu();
       }
@@ -63,10 +63,10 @@ export default function Nav({ onLogout }) {
   return (
     <nav className="bg-[#DAD7CD]">
       <div className="flex justify-between items-center px-4 sm:px-8">
-        <Link to="/" className="text-2xl sm:text-3xl text-[#588157] font-bold py-4">
+        <Link to="/" className="text-2xl sm:text-3xl text-[#588157] font-bold py-4 hover:text-[#3d3f3b] transition-colors">
           TrailMate
         </Link>
-        
+
         <ul className="hidden md:flex items-center space-x-6">
           <li>
             <Link to="/community" className="flex items-center hover:text-[#588157] transition-colors">
@@ -74,55 +74,60 @@ export default function Nav({ onLogout }) {
               <span className="font-semibold">Community</span>
             </Link>
           </li>
-          
+
           <li>
             <Link to="/favourites" className="flex items-center hover:text-[#588157] transition-colors">
               <FaRegStar className="text-[#588157] mr-1.5 text-xl" />
               <span className="font-semibold">Favourites</span>
             </Link>
           </li>
-          
-          <li className="relative" ref={dropdownRef}>
-            <button 
-              onClick={toggleDropdown}
-              className="flex items-center hover:text-[#588157] transition-colors focus:outline-none cursor-pointer"
+
+          <li
+            className="relative"
+            ref={dropdownRef}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            <div
+              className="flex items-center hover:text-[#588157] transition-colors cursor-pointer"
             >
               <FaRegUserCircle className="text-[#588157] mr-1.5 text-xl" />
-              <span className="font-semibold">User</span>
-              <IoChevronDown 
+              <span className="font-semibold">{displayName}</span>
+              <IoChevronDown
                 className={`ml-1 text-[#588157] transition-transform duration-200 ${
                   isDropdownOpen ? 'rotate-180' : ''
-                }`} 
+                }`}
               />
-            </button>
-            
+            </div>
+
             {/* desktop */}
             {isDropdownOpen && (
+              <>
+              <div className="absolute top-full right-0 w-full h-2 bg-transparent"></div>
               <div className="absolute top-full right-0 mt-2 w-fit bg-white rounded-md shadow-lg border border-gray-200 z-50">
                 <div className="py-1">
                   <Link
                     to="/profile"
                     className="block px-4 py-2 text-sm text-right font-semibold hover:bg-gray-100 hover:text-[#588157] transition-colors"
-                    onClick={closeDropdown}
                   >
                     Profile
                   </Link>
                   <Link
                     to="/profile/trips"
                     className="block px-4 py-2 text-sm text-right font-semibold hover:bg-gray-100 hover:text-[#588157] transition-colors"
-                    onClick={closeDropdown}
                   >
                     Trips
                   </Link>
                 </div>
               </div>
+              </>
             )}
           </li>
-          
+
           <li>
-            <Link 
-              to="/" 
-              className="flex items-center hover:text-[#588157] transition-colors" 
+            <Link
+              to="/"
+              className="flex items-center hover:text-[#588157] transition-colors"
               onClick={handleLogout}
             >
               <TbLogout className="text-[#588157] mr-1.5 text-xl" />
@@ -155,7 +160,7 @@ export default function Nav({ onLogout }) {
               <TbBuildingCommunity className="text-[#588157] mr-1.5 text-xl" />
               <span className="font-semibold">Community</span>
             </Link>
-            
+
             <Link
               to="/favourites"
               className="flex items-center py-2 hover:text-[#588157] transition-colors"
@@ -175,7 +180,7 @@ export default function Nav({ onLogout }) {
                 <FaRegUserCircle className="text-[#588157] mr-1.5 text-xl" />
                 <span className="font-semibold">Profile</span>
               </Link>
-              
+
               <Link
                 to="/profile/trips"
                 className="flex items-center py-2 hover:text-[#588157] transition-colors"
@@ -184,7 +189,7 @@ export default function Nav({ onLogout }) {
                 <div className="flex items-center font-semibold"><GiWalkingBoot className='text-[#588157] text-lg mr-1' />Trips</div>
               </Link>
             </div>
-            
+
             <Link
               to="/"
               className="flex items-center py-2 hover:text-[#588157] transition-colors border-t border-[#A3B18A] pt-2"

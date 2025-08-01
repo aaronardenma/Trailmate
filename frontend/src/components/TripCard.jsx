@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import TripCardDialog from "./TripCardDialog";
 import { useState } from "react";
+import { GoTrash } from "react-icons/go";
 
 export default function TripCard({ trip, onDelete, defaultOpen}) {
     const [isOpen, setIsOpen] = useState(defaultOpen || false);
@@ -9,17 +10,28 @@ export default function TripCard({ trip, onDelete, defaultOpen}) {
 
     const nav = useNavigate()
 
-  const handleDelete = () => {
+  const handleDelete = (e) => {
+    e.stopPropagation();
     onDelete(trip._id);
   };
 
-  const handleFinish = async () => {
-    
+  const handleFinish = async (e) => {
+    e.stopPropagation();
     nav(`/trip/${trip._id}`)
   }
-  // console.log(trip)
+
   return (
     <div className="relative rounded cursor-pointer min-w-full max-w-1/3 hover:shadow-lg transition-shadow duration-200">
+      <button
+        className="absolute top-3 right-3 cursor-pointer z-10 group flex items-center justify-center w-8 h-8 rounded-full bg-white/90 backdrop-blur-sm hover:bg-red-50 border border-gray-200 hover:border-red-300 transition-all duration-200 hover:shadow-md"
+        onClick={handleDelete}
+        title="Delete trip"
+      >
+        <GoTrash 
+          className="w-4 h-4 text-gray-500 group-hover:text-red-500 transition-colors duration-200" 
+        />
+      </button>
+
       <TripCardDialog
         trip={trip}
         date = {date} setDate = {setDate}
@@ -35,7 +47,7 @@ export default function TripCard({ trip, onDelete, defaultOpen}) {
               />
             </div>
             <div className="w-2/3 p-6 flex flex-col justify-center">
-              <h3 className="text-xl font-bold text-gray-800">
+              <h3 className="text-xl font-bold text-gray-800 pr-8">
                 {trip.trailID.name}
               </h3>
 
@@ -79,19 +91,15 @@ export default function TripCard({ trip, onDelete, defaultOpen}) {
               </div>
               
             </div>
-            <div className="flex flex-col justify-center p-4 space-y-2">
-              <button
-                className="outline rounded-md p-2 h-fit cursor-pointer bg-red-500 hover:bg-red-600 font-bold text-white transition-colors"
-                onClick={handleDelete}
-              >
-                Delete
-              </button>
-              {trip.status !== "Completed" && (new Date() > new Date(date.to)) && <button
-                className="outline rounded-md p-2 h-fit cursor-pointer bg-green-500 hover:bg-green-600 font-bold text-white transition-colors"
-                onClick={handleFinish}
-              >
-                Finish
-              </button>}
+            <div className="flex flex-col justify-center p-4">
+              {trip.status !== "Completed" && (new Date() > new Date(date.to)) && (
+                <button
+                  className="px-3 py-2 text-sm rounded-md bg-green-500 hover:bg-green-600 font-medium text-white transition-colors duration-200 hover:shadow-md"
+                  onClick={handleFinish}
+                >
+                  Finish
+                </button>
+              )}
             </div>
           </div>
         }

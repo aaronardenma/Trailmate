@@ -13,6 +13,10 @@ export default function TrailPlanResults({
                                          }) {
   const start = { lat: 49.261901341297744, lng: -123.2494536190855 };
   const end = { lat: trail.latitude, lng:trail.longitude };
+  //
+  // const reportHazard = () => {
+  //   navigate(`/hazard/${tripId}`);
+  // };
 
   return (
       <div>
@@ -64,7 +68,7 @@ export default function TrailPlanResults({
                 )}
               </p>
 
-              <p>
+              {/* <p>
                 <span className="font-bold">Trail: </span>
                 {trail?.conditions ?? "N/A"}
               </p>
@@ -72,7 +76,7 @@ export default function TrailPlanResults({
               <p>
                 <span className="font-bold">Summit: </span>
                 {trail?.summitConditions ?? "N/A"}
-              </p>
+              </p> */}
 
               <p>
                 Based on your experience and gear, you{" "}
@@ -90,7 +94,6 @@ export default function TrailPlanResults({
             </div>
           </div>
 
-          {/* Second Column - Gear and Trail Description */}
           <div className="flex flex-col">
             <div className="mb-8 space-y-4">
               <h3 className="font-semibold text-lg">Recommended Gear List</h3>
@@ -132,19 +135,20 @@ export default function TrailPlanResults({
           </div>
         </div>
 
-        <div className="flex justify-between px-6 pb-6">
+        <div className="flex justify-end px-6 pb-6">
           <button
               className="w-fit bg-[#DAD7CD] text-black font-bold py-3 px-6 rounded-md mr-4 hover:bg-[#E5E3DB] transition-colors cursor-pointer disabled:opacity-50"
               onClick={saveTrip}
           >
-            SAVE
+             SAVE TRIP
           </button>
-          <button
+
+          {/* <button
               className="w-fit bg-[#588157] text-white font-bold py-3 px-6 rounded-md mr-4 hover:bg-[#4a6e49] transition-colors cursor-pointer disabled:opacity-50"
               onClick={startTrip}
           >
-            FINISH
-          </button>
+            START A TRIP
+          </button> */}
         </div>
       </div>
   );

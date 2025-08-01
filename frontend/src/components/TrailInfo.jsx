@@ -11,7 +11,6 @@ export default function TrailInfo({
   return (
     <div>
       <div className="grid md:grid-cols-2 gap-10 px-6 pb-6">
-        {/* First Column - Trail Info */}
         <div className="flex flex-col">
           <div className="flex flex-col items-start mb-6">
             <div className="w-full">
@@ -42,9 +41,7 @@ export default function TrailInfo({
           </div>
         </div>
 
-        {/* Second Column - Form and Description */}
         <div className="flex flex-col">
-          {/* Form Section */}
           <div className="mb-8 space-y-4">
             <h3 className="font-semibold text-lg">Plan Your Hike</h3>
               <div>
@@ -68,7 +65,6 @@ export default function TrailInfo({
               </div>
           </div>
 
-          {/* Description Section */}
           <div className="flex-1">
             <h3 className="font-semibold text-lg mb-3">About This Trail</h3>
             <p className="text-gray-700 leading-relaxed">
@@ -83,7 +79,7 @@ export default function TrailInfo({
           type="submit"
           onClick={() => setPlanning(true)}
         >
-          GO
+          PLAN TRIP
         </button>
       </div>
     </div>

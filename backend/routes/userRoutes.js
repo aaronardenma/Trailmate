@@ -3,25 +3,22 @@ const router = express.Router();
 const jwt = require('jsonwebtoken')
 const authenticateToken = require('../service/auth');
 const User = require('../models/users');
-const { error } = require('console');
+const {error} = require('console');
 
 router.get('/me', authenticateToken, async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
-        
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({message: 'User not found'});
         }
-
         res.status(200).json(user.toJSON());
-        
     } catch (err) {
-        res.status(500).json({ error: err.message });
+        res.status(500).json({error: err.message});
     }
 });
 
 router.post("/register/auth", async (req, res) => {
-    const { email, password } = req.body;
+    const {email, password} = req.body;
     console.log(email, password)
 
     if (!email || !password) {
@@ -38,13 +35,13 @@ router.post("/register/auth", async (req, res) => {
             throw new Error('Email already registered');
         }
         console.log('no existing user')
-        
+
         const newUser = new User({email: email.toLowerCase(), password: password})
         console.log('new user created')
-        
+
         const savedUser = await newUser.save()
         console.log('new user saved')
-        
+
         const token = jwt.sign(
             {id: savedUser._id, email: email},
             process.env.JWT_SECRET,
@@ -53,7 +50,7 @@ router.post("/register/auth", async (req, res) => {
             }
         )
         console.log('token generated')
-        
+
         res.cookie('token', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
@@ -77,20 +74,24 @@ router.post("/register/auth", async (req, res) => {
 });
 
 router.post('/register/setup', authenticateToken, async (req, res) => {
-    const { firstName, lastName, badge, gender, nickname, country, gear, visibility } = req.body;
+    const {firstName, lastName, badge, gender, nickname, country, gear, visibility} = req.body;
     const userId = req.user.id;
-    
+
     try {
-        const user = await User.findOneAndUpdate({_id: userId}, {$set: {firstName: firstName,
-                                                lastName: lastName,
-                                                badge: badge,
-                                                gender: gender,
-                                                nickname: nickname,
-                                                country: country,
-                                                gear: gear,
-                                                visibility: visibility,
-                                            profileCompleted: true}},
-                                                 {new: true, runValidators: true})
+        const user = await User.findOneAndUpdate({_id: userId}, {
+                $set: {
+                    firstName: firstName,
+                    lastName: lastName,
+                    badge: badge,
+                    gender: gender,
+                    nickname: nickname,
+                    country: country,
+                    gear: gear,
+                    visibility: visibility,
+                    profileCompleted: true
+                }
+            },
+            {new: true, runValidators: true})
 
         if (!user) {
             throw new Error('User not found');
@@ -104,18 +105,18 @@ router.post('/register/setup', authenticateToken, async (req, res) => {
 });
 
 router.post('/login/auth', async (req, res) => {
-    const { email, password } = req.body;
+    const {email, password} = req.body;
 
     try {
-        const user = await User.findOne({ email });
+        const user = await User.findOne({email});
         if (!user || !(await user.comparePassword(password))) {
-            return res.status(401).json({ success: false, message: 'Invalid credentials' });
+            return res.status(401).json({success: false, message: 'Invalid credentials'});
         }
 
         const token = jwt.sign(
-            { id: user._id, email: user.email },
+            {id: user._id, email: user.email},
             process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+            {expiresIn: '1h'}
         );
 
         res.cookie('token', token, {
@@ -132,40 +133,108 @@ router.post('/login/auth', async (req, res) => {
         });
 
     } catch (err) {
-        res.status(500).json({ success: false, message: 'Server error', error: err.message });
+        res.status(500).json({success: false, message: 'Server error', error: err.message});
     }
 });
 
 router.post('/logout', (req, res) => {
     res.clearCookie('token');
-    res.status(200).json({ success: true, message: 'Logged out successfully' });
+    res.status(200).json({success: true, message: 'Logged out successfully'});
 });
 
 router.post('/update/gear', authenticateToken, async (req, res) => {
-    const { gear } = req.body;
+    const {gear} = req.body;
     const userId = req.user.id;
 
     try {
         const user = await User.findByIdAndUpdate(
             userId,
-            { gear },
+            {gear},
+            {new: true, runValidators: true}
+        );
+
+        if (!user) {
+            return res.status(404).json({success: false, message: 'User not found'});
+        }
+
+        res.status(200).json({success: true, message: 'Gear updated successfully', user});
+    } catch (err) {
+        res.status(500).json({success: false, message: 'Failed to update gear', error: err.message});
+    }
+});
+
+router.put('/update', authenticateToken, async (req, res) => {
+    const userId = req.user.id;
+    const { firstName, lastName, nickname, country, language, gender, badge } = req.body;
+
+    const cleanString = (str) => {
+        if (typeof str !== 'string') return str;
+        return str.replace(/<[^>]*>/g, '').trim();
+    };
+    
+    const updateData = {};
+    
+    if (firstName !== undefined) updateData.firstName = cleanString(firstName);
+    if (lastName !== undefined) updateData.lastName = cleanString(lastName);
+    if (nickname !== undefined) updateData.nickname = cleanString(nickname);
+    if (country !== undefined) updateData.country = cleanString(country);
+    if (language !== undefined) updateData.language = cleanString(language);
+    
+    if (badge !== undefined) {
+        const validBadges = ['Beginner', 'Intermediate', 'Advanced', 'Expert'];
+        if (validBadges.includes(badge)) {
+            updateData.badge = badge;
+        }
+    }
+
+    try {
+        const user = await User.findByIdAndUpdate(
+            userId,
+            updateData,
             { new: true, runValidators: true }
         );
 
         if (!user) {
-            return res.status(404).json({ success: false, message: 'User not found' });
+            return res.status(404).json({
+                success: false, 
+                message: 'User not found'
+            });
         }
 
-        res.status(200).json({ success: true, message: 'Gear updated successfully', user });
+        res.status(200).json({
+            success: true, 
+            message: 'User updated successfully', 
+            user
+        });
     } catch (err) {
-        res.status(500).json({ success: false, message: 'Failed to update gear', error: err.message });
+        console.error('Update error:', err);
+        res.status(500).json({
+            success: false, 
+            message: 'Failed to update user'
+        });
     }
-});
 
-router.put('update', authenticateToken, async (req, res) => {
-    const userId = req.user.id;
+})
 
-    
+
+router.delete('/deleteUser/:userId', authenticateToken, async (req, res) => {
+    const userId = req.params.userId;
+    console.log(userId);
+
+    try {
+        const deletedUser = await User.findByIdAndDelete(
+            userId,
+            {new: true, runValidators: true}
+        );
+
+        if (!deletedUser) {
+            return res.status(404).json({success: false, message: 'User not found'});
+        }
+        res.status(200).json({success: true, message: 'User deleted successfully'});
+    } catch (err) {
+        res.status(500).json({success: false, message: 'Failed to delete user', error: err.message});
+    }
+
 })
 
 module.exports = router;

@@ -83,7 +83,6 @@ export default function TripCardDialog({ trip, date, setDate, userRating, setUse
 
   useEffect(() => {
       if (!trail || !trail.latitude || !trail.longitude || !date?.from) return;
-      console.log(date.from)
       const fetchWeatherForDate = async () => {
         const weatherData = await fetchWeather(trail.latitude, trail.longitude, new Date(date.from));
         setWeather(weatherData);
@@ -202,10 +201,15 @@ export default function TripCardDialog({ trip, date, setDate, userRating, setUse
     }
   }
 
+  const handleStartTrip = async () => {
+    console.log("trip started")
+    nav(`/trip/${trip._id}`)
+
+  }
+
   const handleFinishTrip = async () => {
     console.log("finished trip")
-    nav(`/trip/${trip._id}`)
-    
+    nav(`/tripFeedback/${trip._id}`)
   }
   
   return (
@@ -249,8 +253,15 @@ export default function TripCardDialog({ trip, date, setDate, userRating, setUse
           >
             Update
           </button>
-          {trip.status !== "Completed" && !updating && (new Date() >= new Date(date.from)) && (
+          {/* {trip.status === "Upcoming" && !updating && (new Date() >= new Date(date.from)) && (
             <DialogClose asChild>
+              <button
+                className="w-fit bg-[#588157] text-white font-bold py-3 px-6 rounded-md hover:bg-[#4a6e49] transition-colors cursor-pointer disabled:opacity-50"
+                onClick={handleStartTrip}
+              >
+                Start a Trip
+              </button>
+
               <button
                 className="w-fit bg-[#588157] text-white font-bold py-3 px-6 rounded-md hover:bg-[#4a6e49] transition-colors cursor-pointer disabled:opacity-50"
                 onClick={handleFinishTrip}
@@ -258,7 +269,7 @@ export default function TripCardDialog({ trip, date, setDate, userRating, setUse
                 Finish
               </button>
             </DialogClose>
-          )}
+          )} */}
         </DialogFooter>
       </DialogContent>
     </Dialog>

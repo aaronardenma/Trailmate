@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import UserPreview from "./UserPreview";
 import { useEffect, useState } from "react";
 
@@ -101,6 +100,12 @@ export default function Post({ post }) {
     }
   };
 
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
     <div
       key={post._id}
@@ -116,6 +121,14 @@ export default function Post({ post }) {
       <div className="p-6">
         <h2 className="text-2xl font-semibold text-gray-800">{post.title}</h2>
         <p className="text-gray-700 mt-2">{post.description}</p>
+        {post.trailId && (
+          <p className="text-sm text-gray-600 mt-2">
+            Trail:{" "}
+            <span className="font-semibold text-gray-700">
+              {post.trailId.name}
+            </span>
+          </p>
+        )}
         <div className="flex mt-3 text-sm text-gray-600">
           Posted by:
           <UserPreview
@@ -129,11 +142,18 @@ export default function Post({ post }) {
             }
           />
         </div>
+        {post.dateOfPost && (
+            <p className="mt-1 text-gray-500 text-sm">
+                {formatDate(post.dateOfPost)}
+            </p>
+        )}
+
         <p className="mt-1 text-gray-500 text-sm flex items-center gap-2">
           Likes: {likes}
           <button
             onClick={() => handleLike(post)}
-            className="ml-2 text-sm bg-[#A3B18A] text-white px-3 py-1 rounded hover:bg-[#859966] transition cursor-pointer"
+            className={`ml-2 text-sm text-white px-3 py-1 rounded hover:bg-[#859966] transition cursor-pointer
+              ${likeStatus ? 'bg-[#5e6e45]' : 'bg-[#A3B18A]' }`}
           >
             {likeStatus ? "Unlike" : "Like"}
           </button>

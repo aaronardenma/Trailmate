@@ -49,9 +49,9 @@ export default function UserProfile() {
   const [message, setMessage] = useState("");
   const [userId, setUserId] = useState(null);
 
-  const [gearData, setGearData] = useState([]);  
+  const [gearData, setGearData] = useState([]);
   const [ownedGear, setOwnedGear] = useState({});
-  const [isSaved, setIsSaved] = useState(true);
+  const [isSaved, setIsSaved] = useState(false);
 
   const getCurrentUser = async () => {
     try {
@@ -89,14 +89,14 @@ export default function UserProfile() {
   useEffect(() => {
     getCurrentUser()
       .then((userData) => {
-        setUserId(userData.id);
+        setUserId(userData._id);
         setUser(userData);
         setLoading(false);
 
         if (userData.gear && userData.gear.length > 0) {
           setOwnedGear(gearArrayToNestedObject(userData.gear));
         } else {
-          setOwnedGear({});  
+          setOwnedGear({});
         }
 
         fetchPastTrips();
@@ -107,7 +107,7 @@ export default function UserProfile() {
       });
   }, []);
 
-  
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -128,10 +128,25 @@ export default function UserProfile() {
   };
 
   const handleUpdate = async () => {
-    if (!user || !userId) return;
+    if (!user) {
+      console.log(user)
+      return;
+    }
+
+    const textFields = ['firstName', 'lastName', 'nickname', 'country', 'language'];
+    const htmlTagPattern = /<[^>]*>/;
+    
+    for (const field of textFields) {
+      if (user[field] && htmlTagPattern.test(user[field])) {
+        alert('HTML tags are not accepted as valid inputs. Please remove any < > characters from your text fields.');
+        return;
+      }
+    }
+
+
     setUpdating(true);
     try {
-      const res = await fetch(`http://localhost:5001/api/users/update/`, {
+      const res = await fetch(`http://localhost:5001/api/users/update`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: 'include',
@@ -234,10 +249,21 @@ export default function UserProfile() {
           <Input name="nickname" value={user.nickname || ""} onChange={handleChange} placeholder="Nickname" className="w-full" />
           <h1 className="mb-1 mt-6 font-semibold text-gray-700">Country</h1>
           <Input name="country" value={user.country || ""} onChange={handleChange} placeholder="Country" className="w-full" />
-          <h1 className="mb-1 mt-6 font-semibold text-gray-700">Email</h1>
-          <Input name="email" value={user.email || ""} onChange={handleChange} placeholder="Email" type="email" className="w-full" />
+          {/* <h1 className="mb-1 mt-6 font-semibold text-gray-700">Email</h1>
+          <Input name="email" value={user.email || ""} onChange={handleChange} placeholder="Email" type="email" className="w-full" /> */}
         </div>
       </div>
+
+      <div className="flex flex-col sm:flex-row gap-4 max-w-4xl w-full mt-10 justify-center">
+        <button
+            onClick={handleUpdate}
+            disabled={updating}
+            className="bg-[#588157] hover:bg-[#476246] text-white font-semibold px-6 py-2 rounded-lg transition"
+        >
+          {updating ? "Updating..." : "Update Details"}
+        </button>
+      </div>
+
 
       <UserGear
         gearData={gearData}
@@ -249,16 +275,16 @@ export default function UserProfile() {
         setMessage={setMessage}
       />
 
-      
+
 
       <div className="flex flex-col sm:flex-row gap-4 max-w-4xl w-full mt-10 justify-center">
-        <button
-          onClick={handleUpdate}
-          disabled={updating}
-          className="flex-grow bg-[#A3B18A] text-white font-semibold py-3 rounded hover:bg-[#859966] transition"
-        >
-          {updating ? "Updating..." : "Update Details"}
-        </button>
+        {/*<button*/}
+        {/*  onClick={handleUpdate}*/}
+        {/*  disabled={updating}*/}
+        {/*  className="flex-grow bg-[#A3B18A] text-white font-semibold py-3 rounded hover:bg-[#859966] transition"*/}
+        {/*>*/}
+        {/*  {updating ? "Updating..." : "Update Details"}*/}
+        {/*</button>*/}
         <button
           onClick={handleDelete}
           className="flex-grow bg-red-600 text-white font-semibold py-3 rounded hover:bg-red-700 transition"
