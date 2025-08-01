@@ -1,8 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import { io } from 'socket.io-client';
 
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
@@ -33,64 +32,27 @@ const GreenIcon = new L.Icon({
 
 const TrailMap = ({ trail }) => {
     const [hazards, setHazards] = useState([]);
-    const socket = useRef(null);
-    const lastEmitTime = useRef(0);
-    const [currentPosition, setCurrentPosition] = useState(null);
-
-    const watchLocation = () => {
-        console.log("Starting to watch location");
-
-        if (!navigator.geolocation) {
-            console.warn("Geolocation not supported in this browser.");
-            return;
-        }
-
-        navigator.geolocation.watchPosition(
-            (position) => {
-                const { latitude, longitude } = position.coords;
-                console.log("Location update:", latitude, longitude);
-
-                const now = Date.now();
-                if (now - lastEmitTime.current > 2000) {
-                    if (socket.current && socket.current.connected) {
-                        console.log("Emitting location to server");
-                        socket.current.emit('send-location', { latitude, longitude });
-                        lastEmitTime.current = now;
-                    } else {
-                        console.warn("Socket not connected yet; skipping emit");
-                    }
-                }
-            },
-            (error) => {
-                console.error('Error fetching geolocation:', error);
-            },
-            {
-                enableHighAccuracy: true,
-                timeout: 5000,
-                maximumAge: 0,
-            }
-        );
-    };
+    const [currentPosition, setCurrentPosition] = useState(() => {
+        const stored = localStorage.getItem('currentLocation');
+        return stored
+            ? JSON.parse(stored)
+            : { latitude: 49.261901341297744, longitude: -123.2494536190855 };
+    });
 
     useEffect(() => {
-        console.log("Initializing map and socket");
+        const interval = setInterval(() => {
+            const stored = localStorage.getItem('currentLocation');
+            if (stored) {
+                try {
+                    const { latitude, longitude } = JSON.parse(stored);
+                    setCurrentPosition({ latitude, longitude });
+                } catch (err) {
+                    console.warn('Invalid location data in localStorage:', err);
+                }
+            }
+        }, 5000);
 
-        socket.current = io("http://localhost:5001");
-
-        socket.current.on("connect", () => {
-            console.log("Connected to socket with id:", socket.current.id);
-            watchLocation();
-        });
-
-        socket.current.on("connect_error", (error) => {
-            console.error("Socket connection error:", error);
-        });
-
-        socket.current.on("receive-location", (data) => {
-            const { id, latitude, longitude } = data;
-            setCurrentPosition({ latitude, longitude });
-            console.log(`Received location from ${id}:`, latitude, longitude);
-        });
+        return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {
@@ -100,8 +62,17 @@ const TrailMap = ({ trail }) => {
             try {
                 const res = await fetch(`http://localhost:5001/api/hazards/get/${trail._id}`);
                 const data = await res.json();
-                console.log("Fetched hazards:", data);
-                setHazards(data);
+
+                const now = new Date();
+                const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+
+                const recentHazards = data.filter(hazard => {
+                    if (!hazard.date) return false;
+                    const hazardDate = new Date(hazard.date);
+                    return hazardDate > oneDayAgo;
+                });
+
+                setHazards(recentHazards);
             } catch (err) {
                 console.error("Error fetching hazards:", err);
             }
@@ -114,16 +85,16 @@ const TrailMap = ({ trail }) => {
         return <p>Invalid trail data</p>;
     }
 
-    const position = [trail.latitude, trail.longitude];
+    const trailPosition = [trail.latitude, trail.longitude];
 
     return (
-        <MapContainer center={position} zoom={14} style={{ height: '100vh', width: '100%' }}>
+        <MapContainer center={trailPosition} zoom={14} style={{ height: '100vh', width: '100%' }}>
             <TileLayer
                 attribution='&copy; OpenStreetMap contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
 
-            <Marker position={position}>
+            <Marker position={trailPosition}>
                 <Popup>
                     <div style={{ maxWidth: 200 }}>
                         <h3>{trail.name}</h3>
