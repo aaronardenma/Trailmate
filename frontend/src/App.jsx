@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { setAuthenticated, setUnauthenticated } from "./store/authSlice";
@@ -26,6 +26,39 @@ function App() {
   const nav = useNavigate();
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const profileCompleted = useSelector(state => state.user.profileCompleted)
+
+  const [currentLocation, setCurrentLocation] = useState(() => {
+    const stored = localStorage.getItem('currentLocation');
+    return stored ? JSON.parse(stored) : null;
+  });
+  useEffect(() => {
+    const updateLocation = () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              const newLocation = { latitude, longitude };
+
+              setCurrentLocation(newLocation);
+
+              localStorage.setItem('currentLocation', JSON.stringify(newLocation));
+            },
+            (error) => {
+              console.error("Geolocation error:", error);
+            },
+            { enableHighAccuracy: true }
+        );
+      } else {
+        console.warn("Geolocation not supported.");
+      }
+    };
+
+    updateLocation(); // Initial update
+    const intervalId = setInterval(updateLocation, 5000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
   // console.log(profileCompleted)
   const checkAuthStatus = async () => {
     try {

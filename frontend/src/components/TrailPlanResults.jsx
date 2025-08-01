@@ -11,8 +11,8 @@ export default function TrailPlanResults({
                                            recommendedByCategory,
                                            ownedGear,
                                          }) {
-  const start = { lat: 49.261901341297744, lng: -123.2494536190855 };
-  const end = { lat: trail.latitude, lng:trail.longitude };
+  // const start = { lat: 49.261901341297744, lng: -123.2494536190855 };
+  const trailLocation = { lat: trail.latitude, lng:trail.longitude };
   //
   // const reportHazard = () => {
   //   navigate(`/hazard/${tripId}`);
@@ -25,7 +25,7 @@ export default function TrailPlanResults({
             <div className="flex flex-col">
               <div className="flex flex-col items-start mb-6">
                 <div className="w-full h-80 rounded-xl overflow-hidden border border-gray-300 shadow-lg mb-2">
-                  <RouteMap from={start} to={end} />
+                  <RouteMap trailLocation={trailLocation} />
                 </div>
                 <p className="text-center text-gray-600 w-full">{trail?.location}</p>
               </div>
