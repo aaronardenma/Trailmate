@@ -218,7 +218,12 @@ export default function TrailDialog({
         alert("Trip saved successfully!");
         nav("/profile/trips");
       } else {
-        alert("Failed to save trip. Please try again.");
+        if (res.status === 409) {
+          alert('Cannot save a trip with overlapping dates with an existing trip')
+        } else {
+
+          alert("Failed to save trip. Please try again.");
+        }
       }
     } catch (err) {
       console.error(err);

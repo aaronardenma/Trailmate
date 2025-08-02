@@ -91,7 +91,7 @@ export default function TripCard({ trip, onDelete, defaultOpen}) {
               </div>
               
             </div>
-            <div className="flex flex-col justify-center p-4">
+            {/* <div className="flex flex-col justify-center p-4">
               {trip.status !== "Completed" && (new Date() > new Date(date.to)) && (
                 <button
                   className="px-3 py-2 text-sm rounded-md bg-green-500 hover:bg-green-600 font-medium text-white transition-colors duration-200 hover:shadow-md"
@@ -100,7 +100,7 @@ export default function TripCard({ trip, onDelete, defaultOpen}) {
                   Finish
                 </button>
               )}
-            </div>
+            </div> */}
           </div>
         }
       />

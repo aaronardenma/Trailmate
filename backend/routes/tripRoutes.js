@@ -105,17 +105,39 @@ router.post("/save", authenticateToken, async (req, res) => {
     });
   }
 
-  const newTrip = new Trip({
-    userId,
-    trailID,
-    startDate,
-    endDate,
-    time,
-    status: "Upcoming",
-  });
-
   try {
+    const overlappingTrip = await Trip.findOne({
+      userId,
+      $or: [
+        {
+          startDate: { $lte: new Date(startDate) },
+          endDate: { $gte: new Date(endDate) },
+        },
+        {
+          startDate: { $gte: new Date(startDate) },
+          endDate: { $lte: new Date(endDate) },
+        },
+      ],
+    });
+
+    if (overlappingTrip) {
+      return res.status(409).json({
+        success: false,
+        message: "Trip dates conflict with an existing trip",
+      });
+    }
+
+    const newTrip = new Trip({
+      userId,
+      trailID,
+      startDate,
+      endDate,
+      time,
+      status: "Upcoming",
+    });
+
     await newTrip.save();
+
     res.status(201).json({
       success: true,
       message: "Trip saved successfully!",
@@ -130,6 +152,7 @@ router.post("/save", authenticateToken, async (req, res) => {
     });
   }
 });
+
 
 router.post("/start", authenticateToken, async (req, res) => {
   const { trailID, startDate, endDate, time } = req.body;
