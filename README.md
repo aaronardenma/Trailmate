@@ -24,3 +24,5 @@ The app emphasizes safety and preparation by helping users:
 ### Update the goals list from M4: Minimal (add if missing), Standard, and Stretch.
 ### Update the Non-trivial elements section from M4, what was finished or dropped, and explain why dropped.
 ### M5 highlights: List any M5 highlights, i.e., what has been added, changed, or removed for this milestone; especially anything that has been dropped.
+- We fixed the trips page, particularly how a trip is saved and started so it makes more logical sense for this application
+- Some other minor bug fixes were made
