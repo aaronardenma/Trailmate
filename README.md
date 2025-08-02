@@ -18,44 +18,9 @@ The app emphasizes safety and preparation by helping users:
 
 ---
 
-## Milestone 3 — Progress Summary
-- Implemented user management system with JWTs, cookies, Redux, and MongoDB
-- Integrated backend APIs routing for Trips, Posts, Comments, Tags with frontend pages for Past Trips, Community, and Search Filters
-- Updated Trail page UI to toggled dialogs with planning features and results
-- Integrated user-specific gear recommendations and weather API for trail plan results
+## Demo: 
 
-## Test Suite
-
-This project includes a comprehensive test suite for all backend routes, utilizing **Mocha**, **Chai**, **Chai HTTP**, and **Mochawesome** for reporting.
-
-### Testing Overview
-
-- **All backend API endpoints are covered.**
-- **Testing Framework**: [Mocha](https://mochajs.org/)
-- **Assertion Library**: [Chai](https://www.chaijs.com/)
-- **HTTP Integration Testing**: [Chai HTTP](https://www.chaijs.com/plugins/chai-http/)
-- **HTML Report Generator**: [Mochawesome](https://github.com/adamgruber/mochawesome)
----
-
-### Running the Tests
-All the tests are in the test folder in the backend folder
-
-#### Run All Tests via Terminal
-
-To execute all backend tests:
-
-```bash
-cd backend
-npm test
-```
-
-#### To create a detailed visual HTML report of your tests, run the following command:
-
-```bash
-npm run test-html
-```
-
-#### After running the above command, the report will be generated at:
-```bash
-backend/mochawesome-report/mochawesome.html
-```
+Add a section titled Demo and in there document the key features of your demo with screenshots (target 3-5, more if necessary; do not include trivial things like logging in or registering as a user).
+Update the goals list from M4: Minimal (add if missing), Standard, and Stretch.
+Update the Non-trivial elements section from M4, what was finished or dropped, and explain why dropped.
+M5 highlights: List any M5 highlights, i.e., what has been added, changed, or removed for this milestone; especially anything that has been dropped.
