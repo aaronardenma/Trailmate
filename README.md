@@ -54,3 +54,4 @@ Features that we have implemented to make our app non-trivial are:
 - Fixed XSS susceptible user profile update fields
 - Adjusted Google maps to not show directions and have better centering
 - Some other minor bug fixes were made
+# Trailmate
