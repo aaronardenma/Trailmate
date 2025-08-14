@@ -1,10 +1,10 @@
 # TrailMate — Hikers and Compilers
 
 ## Team Members
-- Aaron Ma  
-- Laura Qiu  
-- Pranjali Das  
-- Charvi Gulati  
+- Aaron 
+- Laura
+- Pranjali  
+- Charvi
 
 ---
 
@@ -54,4 +54,3 @@ Features that we have implemented to make our app non-trivial are:
 - Fixed XSS susceptible user profile update fields
 - Adjusted Google maps to not show directions and have better centering
 - Some other minor bug fixes were made
-# Trailmate
